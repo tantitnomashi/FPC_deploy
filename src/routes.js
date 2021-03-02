@@ -33,6 +33,7 @@ const OtherDocs = React.lazy(() => import('./Demo/Other/Docs'));
 const routes = [
     { path: '/dashboard/default', exact: true, name: 'Default', component: DashboardDefault },
     { path: '/user', exact: true, name: 'User', component: DashboardUser },
+    { path: '/cabinet', exact: true, name: 'Cabinet', component: DashboardCabinet },
     { path: '/transaction', exact: true, name: 'Transaction', component: DashboardTransaction },
     { path: '/basic/button', exact: true, name: 'Basic Button', component: UIBasicButton },
     { path: '/basic/badges', exact: true, name: 'Basic Badges', component: UIBasicBadges },

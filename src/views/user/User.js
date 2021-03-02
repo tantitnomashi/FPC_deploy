@@ -3,22 +3,60 @@ import { Row, Col, Card, Table, Tabs, Tab, Button } from 'react-bootstrap';
 
 import Aux from "../../hoc/_Aux";
 import DEMO from "../../store/constant";
-import { Modal } from '@material-ui/core';
 import avatar1 from '../../assets/images/user/avatar-1.jpg';
 import avatar2 from '../../assets/images/user/avatar-2.jpg';
 import avatar3 from '../../assets/images/user/avatar-3.jpg';
-import CreateUserForm from './CreateUser';
+import UserForm from './UserForm';
+import ConfirmDialog from '../commonComponent/confirm';
+
+var test = require('../../sampleData.json');
 
 export default function Dashboard() {
-    const [openForm, setOpenForm] = useState(false);
-    const openFormCreateUser = () => {
-        console.log("aaaaaaaaaa");
-        setOpenForm(true);
-    }
-    const closeFormCreateUser = () =>{
-        setOpenForm(false);
+
+    console.log(test[0].age + "aaaa");
+
+
+    const [open, setOpen] = React.useState(false);
+
+    const [users, setUser] = React.useState(test);
+
+
+    const [openConfirm, setOpenConfirm] = React.useState(false);
+    const [currentProfile, setCurrentProfile] = React.useState(null);
+
+    const setOpenForm = (currentProfile) => {
+        setOpen(true);
+        setCurrentProfile(currentProfile);
+    };
+
+    const setCloseForm = () => {
+        setOpen(false);
+    };
+    const setCloseConfirmForm = () => {
+        setOpenConfirm(false);
+
+    };
+
+
+    let demoProfile = {
+        fullName: "Tran Minh Tan",
+        username: "tantitnomashi"
     }
 
+    const handleDelete = (currentProfile) => {
+        setOpenConfirm(true);
+        if (currentProfile) {
+            setCurrentProfile(currentProfile);
+        } else {
+            setCurrentProfile(null);
+        }
+    }
+    const requestDelete = (username) => {
+        setTimeout(() => {
+
+            setOpenConfirm(true);
+        }, 2000);
+    }
     const tabContent = (
         <Aux>
             <div className="media friendlist-box align-items-center justify-content-center m-b-20">
@@ -82,13 +120,18 @@ export default function Dashboard() {
 
 
         <Aux>
+            <UserForm open={open} handleClickClose={setCloseForm} currentProfile={currentProfile} />
+            <ConfirmDialog open={openConfirm}
+                tilte="Delete Confirm" message={"Are your sure to delete " + currentProfile?.fullName} onAccess={() => requestDelete(currentProfile?.username)} onCancel={setCloseConfirmForm} />
             <Row>
                 <Col md={6} xl={8}>
                 </Col>
 
                 <Col md={6} xl={4}>
                     <div className="text-right mb-3">
-                        <Button size="small" onClick={openFormCreateUser} >Create New User</Button>
+                        <Button size="small" onClick={() => setOpenForm()}>
+                            Create User
+                        </Button>
                     </div>
                 </Col>
             </Row>
@@ -102,6 +145,25 @@ export default function Dashboard() {
                         <Card.Body className='px-0 py-2'>
                             <Table responsive hover>
                                 <tbody>
+                                    {console.log(users)}
+                                    {
+                                        users.map(user =>
+                                            <tr className="unread">
+                                                <td><img className="rounded-circle" style={{ width: '40px' }} src={avatar1} alt="activity-user" /></td>
+                                                <td>
+                                                    <h6 className="mb-1">{user.name}</h6>
+                                                    <p className="m-0">{user.email}</p>
+                                                </td>
+                                                <td>
+                                                    <h6 className="text-muted"><i className="fa fa-circle text-c-green f-10 m-r-15" />{user.registered}</h6>
+                                                </td>
+                                                <td>
+                                                    <Button size="small" className="label theme-bg2 text-white f-12" onClick={() => handleDelete(user)}>Delete</Button>
+                                                    <Button size="small" className="label theme-bg text-white f-12" onClick={() => setOpenForm(user)}>Details</Button>
+                                                </td>
+                                            </tr>
+                                        )
+                                    }
                                     <tr className="unread">
                                         <td><img className="rounded-circle" style={{ width: '40px' }} src={avatar1} alt="activity-user" /></td>
                                         <td>
@@ -111,51 +173,10 @@ export default function Dashboard() {
                                         <td>
                                             <h6 className="text-muted"><i className="fa fa-circle text-c-green f-10 m-r-15" />11 MAY 12:56</h6>
                                         </td>
-                                        <td><a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Delete</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Details</a></td>
-                                    </tr>
-                                    <tr className="unread">
-                                        <td><img className="rounded-circle" style={{ width: '40px' }} src={avatar2} alt="activity-user" /></td>
                                         <td>
-                                            <h6 className="mb-1">Hieu Nguyen DT</h6>
-                                            <p className="m-0">Lorem Ipsum is simply dummy text of…</p>
+                                            <Button size="small" className="label theme-bg2 text-white f-12" onClick={() => handleDelete(demoProfile)}>Delete</Button>
+                                            <Button size="small" className="label theme-bg text-white f-12" onClick={() => setOpenForm(demoProfile)}>Details</Button>
                                         </td>
-                                        <td>
-                                            <h6 className="text-muted"><i className="fa fa-circle text-c-red f-10 m-r-15" />11 MAY 10:35</h6>
-                                        </td>
-                                        <td><a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Delete</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Details</a></td>
-                                    </tr>
-                                    <tr className="unread">
-                                        <td><img className="rounded-circle" style={{ width: '40px' }} src={avatar3} alt="activity-user" /></td>
-                                        <td>
-                                            <h6 className="mb-1">Vuong Ho X.</h6>
-                                            <p className="m-0">Lorem Ipsum is simply dummy text of…</p>
-                                        </td>
-                                        <td>
-                                            <h6 className="text-muted"><i className="fa fa-circle text-c-green f-10 m-r-15" />9 MAY 17:38</h6>
-                                        </td>
-                                        <td><a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Delete</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Details</a></td>
-                                    </tr>
-                                    <tr className="unread">
-                                        <td><img className="rounded-circle" style={{ width: '40px' }} src={avatar1} alt="activity-user" /></td>
-                                        <td>
-                                            <h6 className="mb-1">Anh Tuan N.</h6>
-                                            <p className="m-0">Lorem Ipsum is simply dummy text of…</p>
-                                        </td>
-                                        <td>
-                                            <h6 className="text-muted f-w-300"><i className="fa fa-circle text-c-red f-10 m-r-15" />19 MAY 12:56</h6>
-                                        </td>
-                                        <td><a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Delete</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Details</a></td>
-                                    </tr>
-                                    <tr className="unread">
-                                        <td><img className="rounded-circle" style={{ width: '40px' }} src={avatar2} alt="activity-user" /></td>
-                                        <td>
-                                            <h6 className="mb-1">Lam Phuong</h6>
-                                            <p className="m-0">Lorem Ipsum is simply dummy text of…</p>
-                                        </td>
-                                        <td>
-                                            <h6 className="text-muted"><i className="fa fa-circle text-c-green f-10 m-r-15" />21 July 12:56</h6>
-                                        </td>
-                                        <td><a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Delete</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Details</a></td>
                                     </tr>
                                 </tbody>
                             </Table>
@@ -240,9 +261,8 @@ export default function Dashboard() {
                     </Tabs> */}
                 </Col>
             </Row>
-            <Modal open={openForm}>
-                <CreateUserForm closeForm={closeFormCreateUser}/>
-            </Modal>
+            {/* <Modal open={openForm}> */}
+            {/* </Modal> */}
 
         </Aux>
     );

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, Table, Tabs, Tab, Button } from 'react-bootstrap';
+import API from '../../utils/adminApi'
 
 import Aux from "../../hoc/_Aux";
 import DEMO from "../../store/constant";
@@ -13,7 +14,7 @@ var test = require('../../sampleData.json');
 
 export default function Dashboard() {
 
-    console.log(test[0].age + "aaaa");
+
 
 
     const [open, setOpen] = React.useState(false);
@@ -23,6 +24,20 @@ export default function Dashboard() {
 
     const [openConfirm, setOpenConfirm] = React.useState(false);
     const [currentProfile, setCurrentProfile] = React.useState(null);
+
+
+
+
+    useEffect(() => {
+        API.getUser()
+            .then((response) => {
+                console.log('load users' + response);
+            }).catch(e => console.log(e + "hihi"));
+
+    }, []);
+
+
+
 
     const setOpenForm = (currentProfile) => {
         setOpen(true);
@@ -115,6 +130,8 @@ export default function Dashboard() {
             </div>
         </Aux>
     );
+
+
     return (
 
 
@@ -145,7 +162,6 @@ export default function Dashboard() {
                         <Card.Body className='px-0 py-2'>
                             <Table responsive hover>
                                 <tbody>
-                                    {console.log(users)}
                                     {
                                         users.map(user =>
                                             <tr className="unread">

@@ -1,73 +1,82 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from 'react-bootstrap';
-import { TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
+import { Button, Form, FormControl, Row, Col } from 'react-bootstrap';
+import { TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Switch } from '@material-ui/core';
 
 export default function UserForm(props) {
   const { open, handleClickClose, currentProfile } = props;
   console.log(currentProfile);
+  const [state, setState] = React.useState({
+    checkedA: true,
+    checkedB: true,
+  });
 
+  const handleChange = (event) => {
+    setState({ ...state, [event.target.name]: event.target.checked });
+  };
   return (
     <div>
 
-      <Dialog className="dialog-userForm" open={open} onClose={handleClickClose} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">{currentProfile ? "Update" : "Create User"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText fullWidth >
+      <Dialog style={{ width: '800px', margin: 'auto', border: '1px solid red' }} className="dialog-userForm " open={open} onClose={handleClickClose} aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">{currentProfile ? "Update" : "Create Account"}</DialogTitle>
+        <DialogContent style={{ border: '1px solid blue' }} className='w-100' >
+          <DialogContentText  >
             To {currentProfile ? "update" : "create"} User, please fill all fields below.
               </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Full Name"
-            type="text"
-            value={currentProfile?.name}
-            fullWidth
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="email"
-            label="Email"
-            type="email"
-            value={currentProfile?.email}
-            fullWidth
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="phone"
-            label="Phone Number"
-            type="text"
-            value={currentProfile?.phone}
-            fullWidth
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Username"
-            type="text"
-            value={currentProfile?.email}
 
-            fullWidth
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Password"
-            type="password"
-            fullWidth
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Re-Password"
-            type="password"
-            fullWidth
-          />
+          <Row style={{ border: '1px solid violet' }} className='w-100' >
+
+            <Col md={6} xl={6}>
+              <Form.Label column lg={12}>Name </Form.Label>
+              <Form.Control className="my-1" autoFocus id="name" name="name" value={currentProfile?.name}
+                label="Name" fullWidth
+                type="Text" placeholder="" />
+
+              <Form.Label column lg={12}>Email </Form.Label>
+              <Form.Control className="my-1" id="email"
+                label="Email"
+                type="email"
+                value={currentProfile?.email} />
+
+              <Form.Label column lg={12}>Phone Number </Form.Label>
+              <Form.Control className="my-1" id="phone"
+                type="text"
+                value={currentProfile?.phone} />
+
+            </Col>
+            <Col md={6} xl={6}>
+
+              <Form.Label column lg={12}>Username </Form.Label>
+              <Form.Control className="my-1" id="username" name="username"
+                type="text" disabled={currentProfile ? true : false}
+                value={currentProfile?.email} />
+
+              <Form.Label column lg={12}>Password </Form.Label>
+              <Form.Control className="my-1" id="password" name="password"
+                type="password"
+              />
+
+              <Form.Label column lg={12}> Re Password </Form.Label>
+              <Form.Control className="my-1" id="re-password" name="re-password"
+                type="password"
+              />
+              <Form.Label column lg={12}> Active </Form.Label>
+
+              <Switch
+                checked={state.checkedB}
+                onChange={handleChange}
+                color="primary"
+                name="checkedB"
+                disabled={true}
+                inputProps={{ 'aria-label': 'primary checkbox' }}
+              />
+
+
+            </Col>
+          </Row>
+
+
+
+
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClickClose} variant="secondary">

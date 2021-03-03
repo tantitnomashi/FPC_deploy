@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-//const route_api = ''
-const route_api = 'http://127.0.0.1:8000'
+const route_api = 'http://mayao.eastus.cloudapp.azure.com:5000'
+//const route_api = 'http://127.0.0.1:8000'
 const instance = axios.create({
 	baseURL: `${route_api}/api/`,
 	timeout: 5000,
@@ -37,4 +37,4 @@ const adminApi = {
 	withdraw: (params) => instance.post('/wallet/withdraw', params),
 }
 
-export default adminApi;
+export default adminApi; 	

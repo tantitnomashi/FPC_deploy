@@ -82,7 +82,7 @@ export default function TemplateForm(props) {
 
     return (
 
-        <Dialog maxWidth={'xl'} className="dialog-userForm" open={open} onClose={handleClickClose} aria-labelledby="form-dialog-title">
+        <Dialog fullScreen={true} className="dialog-userForm" open={open} onClose={handleClickClose} aria-labelledby="form-dialog-title">
             <DialogTitle id="form-dialog-title">{currentProfile ? "Update" : "Create Cabinet"}</DialogTitle>
             <DialogContent>
                 <DialogContentText   >
@@ -94,15 +94,13 @@ export default function TemplateForm(props) {
 
                         <Col md={6} xl={6}>
                             <Form.Label column lg={12}>Name </Form.Label>
-                            <Form.Control className="my-1" id="name"
+                            <Form.Control className="my-1" id="name" name="cabinet-name"
                                 label="Name"
                                 type="Text" placeholder="" />
 
-
-
                             <Form.Label column lg={12}>Box Amount</Form.Label>
                             <Form.Control className="my-1" id="base-price" onChange={(e) => handleBoxAmountChange(e)}
-                                type="number" min="1" />
+                                type="number" min="1" name="base-price" />
 
                             <Button onClick={handleAddBoxToCabinet} variant="dark">
                                 Generate
@@ -120,7 +118,7 @@ export default function TemplateForm(props) {
                         <Col md={6} xl={6}>
 
                             <img src={imagePreviewUrl} size='sm'
-                                style={{ width: '620px', height: '300px', objectFit: 'scale-down' }}
+                                style={{ width: '600px', height: '380px', objectFit: 'scale-down' }}
                             />
 
                             <div>
@@ -129,7 +127,6 @@ export default function TemplateForm(props) {
                                         onChange={(e) => { handleImageChange(e) }}
                                         variant="secondary" id="chooseFile" label="Upload template image" />
                                 </Form.Group>
-
 
                             </div>
 

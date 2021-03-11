@@ -9,7 +9,8 @@ const DashboardDefault = React.lazy(() => import('./Demo/Dashboard/Default'));
 const DashboardUser = React.lazy(() => import('./views/user/User'));
 const DashboardTransaction = React.lazy(() => import('./views/transaction/Transaction'));
 const DashboardCabinet = React.lazy(() => import('./views/cabinet/Cabinet'));
-
+const Boxsize = React.lazy(() => import('./views/boxsize/boxSize'))
+const Box = React.lazy(() => import('./views/box/Box'))
 
 const UIBasicButton = React.lazy(() => import('./Demo/UIElements/Basic/Button'));
 const UIBasicBadges = React.lazy(() => import('./Demo/UIElements/Basic/Badges'));
@@ -36,6 +37,8 @@ const routes = [
     { path: '/cabinet', exact: true, name: 'Cabinet', component: DashboardCabinet },
     { path: '/transaction', exact: true, name: 'Transaction', component: DashboardTransaction },
     { path: '/basic/button', exact: true, name: 'Basic Button', component: UIBasicButton },
+    { path: '/box-size', exact: true, name: 'Box Size', component: Boxsize },
+    { path: '/box/:id', exact: true, name: 'Box', component: Box },
     { path: '/basic/badges', exact: true, name: 'Basic Badges', component: UIBasicBadges },
     { path: '/basic/breadcrumb-paging', exact: true, name: 'Basic Breadcrumb Pagination', component: UIBasicBreadcrumbPagination },
     { path: '/basic/collapse', exact: true, name: 'Basic Collapse', component: UIBasicCollapse },

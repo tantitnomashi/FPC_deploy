@@ -56,7 +56,6 @@ export default function TransactionDetail(props) {
                         id="time"
                         label="Rental Start Time"
                         type="time"
-                        value={currentProfile?.RentalStartTime}
                         fullWidth
                     />
                     <TextField

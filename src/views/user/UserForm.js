@@ -16,31 +16,31 @@ export default function UserForm(props) {
   return (
     <div>
 
-      <Dialog style={{ width: '800px', margin: 'auto', border: '1px solid red' }} className="dialog-userForm " open={open} onClose={handleClickClose} aria-labelledby="form-dialog-title">
+      <Dialog maxWidth={'md'} fullWidth={true} className="dialog-userForm " open={open} onClose={handleClickClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">{currentProfile ? "Update" : "Create Account"}</DialogTitle>
-        <DialogContent style={{ border: '1px solid blue' }} className='w-100' >
+        <DialogContent className='w-100' >
           <DialogContentText  >
             To {currentProfile ? "update" : "create"} User, please fill all fields below.
               </DialogContentText>
 
-          <Row style={{ border: '1px solid violet' }} className='w-100' >
+          <Row className='w-100' >
 
             <Col md={6} xl={6}>
               <Form.Label column lg={12}>Name </Form.Label>
-              <Form.Control className="my-1" autoFocus id="name" name="name" value={currentProfile?.name}
+              <Form.Control className="my-1" autoFocus id="name" name="name" value={currentProfile?.fullName}
                 label="Name" fullWidth
-                type="Text" placeholder="" />
+                type="Text" placeholder="" required={true} />
 
               <Form.Label column lg={12}>Email </Form.Label>
               <Form.Control className="my-1" id="email"
                 label="Email"
                 type="email"
-                value={currentProfile?.email} />
+                value={currentProfile?.email} required={true} />
 
               <Form.Label column lg={12}>Phone Number </Form.Label>
               <Form.Control className="my-1" id="phone"
                 type="text"
-                value={currentProfile?.phone} />
+                value={currentProfile?.phoneNumber} required={true} />
 
             </Col>
             <Col md={6} xl={6}>
@@ -48,16 +48,16 @@ export default function UserForm(props) {
               <Form.Label column lg={12}>Username </Form.Label>
               <Form.Control className="my-1" id="username" name="username"
                 type="text" disabled={currentProfile ? true : false}
-                value={currentProfile?.email} />
+                value={currentProfile?.userName} required={true} />
 
               <Form.Label column lg={12}>Password </Form.Label>
               <Form.Control className="my-1" id="password" name="password"
-                type="password"
+                type="password" required={true}
               />
 
               <Form.Label column lg={12}> Re Password </Form.Label>
               <Form.Control className="my-1" id="re-password" name="re-password"
-                type="password"
+                type="password" required={true}
               />
               <Form.Label column lg={12}> Active </Form.Label>
 
@@ -66,16 +66,13 @@ export default function UserForm(props) {
                 onChange={handleChange}
                 color="primary"
                 name="checkedB"
-                disabled={true}
+                disabled={false}
                 inputProps={{ 'aria-label': 'primary checkbox' }}
               />
 
 
             </Col>
           </Row>
-
-
-
 
         </DialogContent>
         <DialogActions>

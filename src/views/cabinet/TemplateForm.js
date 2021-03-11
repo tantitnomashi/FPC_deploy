@@ -82,8 +82,11 @@ export default function TemplateForm(props) {
 
     return (
 
-        <Dialog fullScreen={true} className="dialog-userForm" open={open} onClose={handleClickClose} aria-labelledby="form-dialog-title">
+        <Dialog maxWidth={'lg'} fullWidth={true} className="dialog-userForm" open={open} onClose={handleClickClose} aria-labelledby="form-dialog-title">
             <DialogTitle id="form-dialog-title">{currentProfile ? "Update" : "Create Cabinet"}</DialogTitle>
+            <div>
+
+            </div>
             <DialogContent>
                 <DialogContentText   >
                     To {currentProfile ? "update" : "create"} Cabinet, please fill all fields below.

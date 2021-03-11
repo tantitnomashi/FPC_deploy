@@ -9,14 +9,19 @@ const navGroup = (props) => {
         const groups = props.group.children;
         navItems = Object.keys(groups).map(item => {
             item = groups[item];
-            switch (item.type) {
-                case 'collapse':
-                    return <NavCollapse key={item.id} collapse={item} type="main" />;
-                case 'item':
-                    return <NavItem layout={props.layout} key={item.id} item={item} />;
-                default:
-                    return false;
+            if (item.display) {
+                switch (item.type) {
+                    case 'collapse':
+                        return <NavCollapse key={item.id} collapse={item} type="main" />;
+                    case 'item':
+                        return <NavItem layout={props.layout} key={item.id} item={item} />;
+                    default:
+                        return false;
+                }
+            } else {
+                return false;
             }
+
         });
     }
 

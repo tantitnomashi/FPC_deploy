@@ -1,35 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, Table, Tabs, Tab, Button } from 'react-bootstrap';
-
+import API from '../../utils/adminApi';
 import Aux from "../../hoc/_Aux";
-import DEMO from "../../store/constant";
-import avatar1 from '../../assets/images/user/avatar-1.jpg';
-import avatar2 from '../../assets/images/user/avatar-2.jpg';
-import avatar3 from '../../assets/images/user/avatar-3.jpg';
 import CabinetForm from './CabinetForm';
-import CabinetTempalteForm from './TemplateForm';
 import ConfirmDialog from '../commonComponent/confirm';
 import TemplateForm from './TemplateForm';
-
-var test = require('../../sampleData.json');
+import BoxList from '../box/Box';
+import { Redirect } from 'react-router-dom';
 
 export default function Dashboard() {
 
-    console.log(test[0].age + "aaaa");
 
 
-
-    const [users, setUser] = React.useState(test);
+    // const history = useHistory();
+    const [cabinets, setCabinets] = React.useState([]);
 
     const [open, setOpen] = React.useState(false);
     const [openConfirm, setOpenConfirm] = React.useState(false);
     const [openTemplate, setOpenTemplate] = React.useState(false);
 
-    const [currentCabinet, setCurrentProfile] = React.useState(null);
+    const [currentCabinet, setCurrentCabinet] = React.useState(null);
+
+    useEffect(() => {
+        loadAdminCabinets();
+    }, []);
+
+    const loadAdminCabinets = () => {
+        API.getCabitnet()
+            .then((response) => {
+                if (response.data.statusCode == 200) {
+                    console.log('load cabinets ', response.data.data[0]);
+                    setCabinets(response.data.data);
+                } else if (response.data.statusCode == 201) {
+                    setCabinets(response.data.data);
+
+                } else {
+                    alert('Cant get Cabi !')
+                }
+            }).catch(e => console.log(e + "hihi"));
+
+    }
 
     const setOpenForm = (currentCabinet) => {
         setOpen(true);
-        setCurrentProfile(currentCabinet);
+        setCurrentCabinet(currentCabinet);
     };
 
     const setOpenTemplateForm = () => {
@@ -43,93 +57,45 @@ export default function Dashboard() {
     };
 
 
-    let demoProfile = {
-        fullName: "Tran Minh Tan",
-        username: "tantitnomashi"
+    const handleRedirect = (id) => {
+        //  history.push()
+
+        window.location.href = '/box/' + id;
+
     }
 
     const handleDelete = (currentCabinet) => {
         setOpenConfirm(true);
         if (currentCabinet) {
-            setCurrentProfile(currentCabinet);
+            setCurrentCabinet(currentCabinet);
         } else {
-            setCurrentProfile(null);
+            setCurrentCabinet(null);
         }
     }
-    const requestDelete = (username) => {
-        setTimeout(() => {
+    const requestDelete = (cabinetId) => {
+        API.deleteCabinet(currentCabinet.id)
+            .then((response) => {
+                if (response.data.statusCode == 200) {
+                    console.log(response.data, 'load cabinets ');
 
-            setOpenConfirm(true);
-        }, 2000);
+                    setCabinets(response.data.data);
+                    loadAdminCabinets();
+                } else {
+                    alert('Cant Delete Cabinet !')
+                }
+            }).catch(e => console.log(" ##  Delete Cabinet ERR", e));
+        setCloseForm();
     }
-    const tabContent = (
-        <Aux>
-            <div className="media friendlist-box align-items-center justify-content-center m-b-20">
-                <div className="m-r-10 photo-table">
-                    <a href={DEMO.BLANK_LINK}><img className="rounded-circle" style={{ width: '40px' }} src={avatar1} alt="activity-user" /></a>
-                </div>
-                <div className="media-body">
-                    <h6 className="m-0 d-inline">Silje Larsen</h6>
-                    <span className="float-right d-flex  align-items-center"><i className="fa fa-caret-up f-22 m-r-10 text-c-green" />3784</span>
-                </div>
-            </div>
-            <div className="media friendlist-box align-items-center justify-content-center m-b-20">
-                <div className="m-r-10 photo-table">
-                    <a href={DEMO.BLANK_LINK}><img className="rounded-circle" style={{ width: '40px' }} src={avatar2} alt="activity-user" /></a>
-                </div>
-                <div className="media-body">
-                    <h6 className="m-0 d-inline">Julie Vad</h6>
-                    <span className="float-right d-flex  align-items-center"><i className="fa fa-caret-up f-22 m-r-10 text-c-green" />3544</span>
-                </div>
-            </div>
-            <div className="media friendlist-box align-items-center justify-content-center m-b-20">
-                <div className="m-r-10 photo-table">
-                    <a href={DEMO.BLANK_LINK}><img className="rounded-circle" style={{ width: '40px' }} src={avatar3} alt="activity-user" /></a>
-                </div>
-                <div className="media-body">
-                    <h6 className="m-0 d-inline">Storm Hanse</h6>
-                    <span className="float-right d-flex  align-items-center"><i className="fa fa-caret-down f-22 m-r-10 text-c-red" />2739</span>
-                </div>
-            </div>
-            <div className="media friendlist-box align-items-center justify-content-center m-b-20">
-                <div className="m-r-10 photo-table">
-                    <a href={DEMO.BLANK_LINK}><img className="rounded-circle" style={{ width: '40px' }} src={avatar1} alt="activity-user" /></a>
-                </div>
-                <div className="media-body">
-                    <h6 className="m-0 d-inline">Frida Thomse</h6>
-                    <span className="float-right d-flex  align-items-center"><i className="fa fa-caret-down f-22 m-r-10 text-c-red" />1032</span>
-                </div>
-            </div>
-            <div className="media friendlist-box align-items-center justify-content-center m-b-20">
-                <div className="m-r-10 photo-table">
-                    <a href={DEMO.BLANK_LINK}><img className="rounded-circle" style={{ width: '40px' }} src={avatar2} alt="activity-user" /></a>
-                </div>
-                <div className="media-body">
-                    <h6 className="m-0 d-inline">Silje Larsen</h6>
-                    <span className="float-right d-flex  align-items-center"><i className="fa fa-caret-up f-22 m-r-10 text-c-green" />8750</span>
-                </div>
-            </div>
-            <div className="media friendlist-box align-items-center justify-content-center">
-                <div className="m-r-10 photo-table">
-                    <a href={DEMO.BLANK_LINK}><img className="rounded-circle" style={{ width: '40px' }} src={avatar3} alt="activity-user" /></a>
-                </div>
-                <div className="media-body">
-                    <h6 className="m-0 d-inline">Storm Hanse</h6>
-                    <span className="float-right d-flex  align-items-center"><i className="fa fa-caret-down f-22 m-r-10 text-c-red" />8750</span>
-                </div>
-            </div>
-        </Aux>
-    );
+
     return (
 
 
 
         <Aux>
-            <CabinetForm open={open} handleClickClose={setCloseForm} currentCabinet={currentCabinet} />
+            <CabinetForm reload={loadAdminCabinets} open={open} handleClickClose={setCloseForm} currentCabinet={currentCabinet} />
             <TemplateForm open={openTemplate} handleClickClose={setCloseForm} />
-
             <ConfirmDialog open={openConfirm}
-                tilte="Delete Confirm" message={"Are your sure to delete " + currentCabinet?.fullName} onAccess={() => requestDelete(currentCabinet?.username)} onCancel={setCloseForm} />
+                tilte="Delete Confirm" message={"Are your sure to delete " + currentCabinet?.name} onAccess={() => requestDelete(currentCabinet?.name)} onCancel={setCloseForm} />
             <Row>
                 <Col md={6} xl={8}>
 
@@ -156,44 +122,42 @@ export default function Dashboard() {
                         <Card.Header>
                             <Card.Title as='h5'>Cabinet List</Card.Title>
                         </Card.Header>
-                        <Card.Body className='px-0 py-2'>
-                            <Table responsive hover>
-                                <tbody>
-                                    {console.log(users)}
-                                    {
-                                        users.map(user =>
-                                            <tr className="unread">
-                                                <td><img className="rounded-circle" style={{ width: '40px' }} src={avatar1} alt="activity-user" /></td>
-                                                <td>
-                                                    <h6 className="mb-1">{user.name}</h6>
-                                                    <p className="m-0">{user.email}</p>
-                                                </td>
-                                                <td>
-                                                    <h6 className="text-muted"><i className="fa fa-circle text-c-green f-10 m-r-15" />{user.registered}</h6>
-                                                </td>
-                                                <td>
-                                                    <Button size="small" className="label theme-bg2 text-white f-12" onClick={() => handleDelete(user)}>Delete</Button>
-                                                    <Button size="small" className="label theme-bg text-white f-12" onClick={() => setOpenForm(user)}>Details</Button>
-                                                </td>
-                                            </tr>
-                                        )
-                                    }
-                                    <tr className="unread">
-                                        <td><img className="rounded-circle" style={{ width: '40px' }} src={avatar1} alt="activity-user" /></td>
-                                        <td>
-                                            <h6 className="mb-1">Tan Tran M.</h6>
-                                            <p className="m-0">Description of the header…</p>
-                                        </td>
-                                        <td>
-                                            <h6 className="text-muted"><i className="fa fa-circle text-c-green f-10 m-r-15" />11 MAY 12:56</h6>
-                                        </td>
-                                        <td>
-                                            <Button size="small" className="label theme-bg2 text-white f-12" onClick={() => handleDelete(demoProfile)}>Delete</Button>
-                                            <Button size="small" className="label theme-bg text-white f-12" onClick={() => setOpenForm(demoProfile)}>Details</Button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </Table>
+                        <Card.Body className='px-3 py-2'>
+
+                            {
+                                cabinets?.map(cabinet =>
+                                    <Row className="unread py-3 px-1 my-2 border-bottom border-light">
+                                        <Col md={1} className='text-center' >
+
+                                            {/* <img className="rounded-circle" style={{ width: '40px' }} src={avatar1} alt="activity-user" /> */}
+
+                                            <i className={cabinet.isActive == true ?
+                                                "fa fa-circle text-c-green f-30 m-r-15" :
+                                                "fa fa-circle text-c-red f-30 m-r-15"} />
+                                        </Col>
+                                        <Col md={2} className='text-left' >
+                                            <h6 className="mb-1">{cabinet.name}</h6>
+                                            <p className="m-0">{cabinet.location.buildingName}</p>
+                                        </Col>
+
+                                        <Col md={4} className='text-left'>
+                                            <h6 className="text-muted">
+                                                {/* <i className="fa fa-room text-c-black f-20 m-r-15" /> */}
+                                                <span class="material-icons f-20 m-r-5">
+                                                    room</span>
+                                                {cabinet.location.fullAddress}
+                                            </h6>
+                                        </Col>
+                                        <Col md={4} className='d-flex justify-content-end  '>
+                                            <Button size="small" className="label theme-bg2 text-white f-12" onClick={() => handleDelete(cabinet)}>Delete</Button>
+                                            <Button size="small" className="label theme-bg text-white f-12" onClick={() => setOpenForm(cabinet)}>Details</Button>
+                                            <Button variant="dark" size="small" className="label text-white f-12" onClick={() => handleRedirect(cabinet.id)}> Manage Box</Button>
+                                        </Col>
+                                    </Row>
+                                )
+                            }
+
+
                         </Card.Body>
                     </Card>
                 </Col>
@@ -203,7 +167,7 @@ export default function Dashboard() {
                         <Card.Body className='border-bottom'>
                             <div className="row align-items-center justify-content-center">
                                 <div className="col-auto">
-                                    <i className="fa fa-users text-c-black f-36" />
+                                    <i className="fa fa-cabinets text-c-black f-36" />
                                 </div>
                                 <div className="col text-right">
                                     <h3>11,200</h3>
@@ -261,22 +225,8 @@ export default function Dashboard() {
                     </Card>
                 </Col>
 
-                <Col md={6} xl={8} className='m-b-30'>
-                    {/* <Tabs defaultActiveKey="today" id="uncontrolled-tab-example">
-                        <Tab eventKey="today" title="Today">
-                            {tabContent}
-                        </Tab>
-                        <Tab eventKey="week" title="This Week">
-                            {tabContent}
-                        </Tab>
-                        <Tab eventKey="all" title="All">
-                            {tabContent}
-                        </Tab>
-                    </Tabs> */}
-                </Col>
+
             </Row>
-            {/* <Modal open={openForm}> */}
-            {/* </Modal> */}
 
         </Aux>
     );

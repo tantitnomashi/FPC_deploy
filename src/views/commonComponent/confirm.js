@@ -1,29 +1,29 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
-import {  TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
+import { TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
 
 export default function ConfirmDialog(props) {
-    const {open, title, message, onAccess, onCancel}=props;
-    return (
-        <div>
-          
-          <Dialog open={open}  onClose={onCancel} aria-labelledby="form-dialog-title">
-            <DialogTitle id="form-dialog-title">{title}</DialogTitle>
-            <DialogContent>
-              <DialogContentText fullWidth>
-                    {message}
-              </DialogContentText>
-              
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={onCancel} color="default">
-                Cancel
+  const { open, title, message, onAccess, onCancel } = props;
+  return (
+    <div>
+
+      <Dialog open={open} onClose={onCancel} aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">{title}</DialogTitle>
+        <DialogContent>
+          <DialogContentText fullWidth>
+            {message}
+          </DialogContentText>
+
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onCancel} variant="secondary">
+            Cancel
               </Button>
-              <Button onClick={onAccess} color="primary">
-                Ok
+          <Button className='px-4' onClick={onAccess} color="primary">
+            OK
               </Button>
-            </DialogActions>
-          </Dialog>
-        </div>
-      );
+        </DialogActions>
+      </Dialog>
+    </div>
+  );
 }

@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import windowSize from 'react-window-size';
@@ -20,10 +20,10 @@ class NavContent extends Component {
         const wrapperWidth = document.getElementById('sidenav-wrapper').clientWidth;
 
         let scrollWidth = this.state.scrollWidth - wrapperWidth;
-        if(scrollWidth < 0) {
-            this.setState({scrollWidth: 0, prevDisable: true, nextDisable: false});
+        if (scrollWidth < 0) {
+            this.setState({ scrollWidth: 0, prevDisable: true, nextDisable: false });
         } else {
-            this.setState({scrollWidth: scrollWidth, prevDisable: false});
+            this.setState({ scrollWidth: scrollWidth, prevDisable: false });
         }
     };
 
@@ -34,21 +34,26 @@ class NavContent extends Component {
         let scrollWidth = this.state.scrollWidth + (wrapperWidth - 80);
         if (scrollWidth > (contentWidth - wrapperWidth)) {
             scrollWidth = contentWidth - wrapperWidth + 80;
-            this.setState({scrollWidth: scrollWidth, prevDisable: false, nextDisable: true});
+            this.setState({ scrollWidth: scrollWidth, prevDisable: false, nextDisable: true });
         } else {
-            this.setState({scrollWidth: scrollWidth, prevDisable: false});
+            this.setState({ scrollWidth: scrollWidth, prevDisable: false });
         }
     };
 
     render() {
         const navItems = this.props.navigation.map(item => {
-                switch (item.type) {
-                    case 'group':
-                        return <NavGroup layout={this.props.layout} key={item.id} group={item}/>;
-                    default:
+            switch (item.type) {
+                case 'group':
+                    if (item.display) {
+                        return <NavGroup layout={this.props.layout} key={item.id} group={item} />;
+
+                    } else {
                         return false;
-                }
+                    }
+                default:
+                    return false;
             }
+        }
         );
 
         let mainContent = '';
@@ -64,13 +69,13 @@ class NavContent extends Component {
 
             mainContent = (
                 <div className="navbar-content sidenav-horizontal" id="layout-sidenav">
-                    <a href={DEMO.BLANK_LINK} className={prevClass.join(' ')} onClick={this.scrollPrevHandler}><span/></a>
+                    <a href={DEMO.BLANK_LINK} className={prevClass.join(' ')} onClick={this.scrollPrevHandler}><span /></a>
                     <div id="sidenav-wrapper" className="sidenav-horizontal-wrapper">
-                        <ul id="sidenav-horizontal" className="nav pcoded-inner-navbar sidenav-inner" onMouseLeave={this.props.onNavContentLeave} style={{marginLeft: '-'+this.state.scrollWidth+'px'}}>
+                        <ul id="sidenav-horizontal" className="nav pcoded-inner-navbar sidenav-inner" onMouseLeave={this.props.onNavContentLeave} style={{ marginLeft: '-' + this.state.scrollWidth + 'px' }}>
                             {navItems}
                         </ul>
                     </div>
-                    <a href={DEMO.BLANK_LINK} className={nextClass.join(' ')} onClick={this.scrollNextHandler}><span/></a>
+                    <a href={DEMO.BLANK_LINK} className={nextClass.join(' ')} onClick={this.scrollNextHandler}><span /></a>
                 </div>
             );
         } else {
@@ -102,8 +107,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onNavContentLeave: () => dispatch({type: actionTypes.NAV_CONTENT_LEAVE}),
+        onNavContentLeave: () => dispatch({ type: actionTypes.NAV_CONTENT_LEAVE }),
     }
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps) (windowSize(NavContent)));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(windowSize(NavContent)));

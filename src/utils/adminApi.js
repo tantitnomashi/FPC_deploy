@@ -1,11 +1,13 @@
 import axios from 'axios';
 
-const route_api = 'http://mayao.eastus.cloudapp.azure.com:5000'
-//const route_api = 'http://127.0.0.1:8000'
+
+const ngrokID = '71a53c875bc2'
+const route_api = 'https://' + ngrokID + '.ngrok.io'
 const instance = axios.create({
-	baseURL: `${route_api}/api/`,
+	baseURL: `${route_api}/api`,
 	timeout: 5000,
-	headers: { authorization: localStorage.getItem('fpc_admin_token') }
+	headers: {
+	}
 });
 
 const adminApi = {
@@ -16,7 +18,7 @@ const adminApi = {
 			// options
 			message
 		}, {
-			// settings
+			// settings	
 			type,
 			delay: 3000,
 		});
@@ -25,8 +27,28 @@ const adminApi = {
 	loadAdminDashboard: () => instance.get('/dashboard/info'),
 	loadAdminChartWeek: () => instance.get('/dashboard/week'),
 	logout: () => instance.get('/user/logout'),
-	getCabitnet: () => instance.get('/dashboard/cabinet'),
-	getUser: () => instance.get('/dashboard/user'),
+
+
+	// API for Cainet Model
+	getCabitnet: () => instance.get('/v1/cabinets'),
+	getCabitnetTemplate: () => instance.get('/v1/cabinet-templates'),
+	updateCabinet: (id, params) => {
+		console.log('/v1/cabinets/' + id, params);
+		return instance.post('/v1/cabinets/' + id, params)
+	},
+	createCabinet: (params) => instance.post('/v1/cabinets', params),
+	deleteCabinet: (id) => instance.delete('/v1/cabinets/' + id),
+
+
+	// API for Box Size Model
+	getBoxSizes: () => instance.get('/v1/box-sizes'),
+	createBoxSize: (params) => instance.post('/v1/box-sizes', params),
+	deleteBoxSize: (id) => instance.delete('/v1/box-sizes/' + id),
+
+	// API for User Model
+
+
+	getUser: () => instance.get('/v1/users'),
 	getTransaction: () => instance.get('/dashboard/transaction'),
 	detailRequest: (params) => instance.post('/request/post_fb_detail', params),
 	getRequest: (requestId) => instance.get('/request/request_edit/' + requestId),

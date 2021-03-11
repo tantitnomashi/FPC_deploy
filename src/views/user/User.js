@@ -31,10 +31,19 @@ export default function Dashboard() {
     useEffect(() => {
         API.getUser()
             .then((response) => {
-                console.log('load users' + response);
+                if (response.data.statusCode == 200) {
+                    //  console.log('load users ', response.data.data[0]);
+                    setUser(response.data.data);
+                } else if (response.data.statusCode == 201) {
+                    setUser(response.data.data);
+
+                } else {
+                    alert('Cant get Users !')
+                }
             }).catch(e => console.log(e + "hihi"));
 
     }, []);
+
 
 
 
@@ -53,11 +62,6 @@ export default function Dashboard() {
     };
 
 
-    let demoProfile = {
-        fullName: "Tran Minh Tan",
-        username: "tantitnomashi"
-    }
-
     const handleDelete = (currentProfile) => {
         setOpenConfirm(true);
         if (currentProfile) {
@@ -72,64 +76,6 @@ export default function Dashboard() {
             setOpenConfirm(true);
         }, 2000);
     }
-    const tabContent = (
-        <Aux>
-            <div className="media friendlist-box align-items-center justify-content-center m-b-20">
-                <div className="m-r-10 photo-table">
-                    <a href={DEMO.BLANK_LINK}><img className="rounded-circle" style={{ width: '40px' }} src={avatar1} alt="activity-user" /></a>
-                </div>
-                <div className="media-body">
-                    <h6 className="m-0 d-inline">Silje Larsen</h6>
-                    <span className="float-right d-flex  align-items-center"><i className="fa fa-caret-up f-22 m-r-10 text-c-green" />3784</span>
-                </div>
-            </div>
-            <div className="media friendlist-box align-items-center justify-content-center m-b-20">
-                <div className="m-r-10 photo-table">
-                    <a href={DEMO.BLANK_LINK}><img className="rounded-circle" style={{ width: '40px' }} src={avatar2} alt="activity-user" /></a>
-                </div>
-                <div className="media-body">
-                    <h6 className="m-0 d-inline">Julie Vad</h6>
-                    <span className="float-right d-flex  align-items-center"><i className="fa fa-caret-up f-22 m-r-10 text-c-green" />3544</span>
-                </div>
-            </div>
-            <div className="media friendlist-box align-items-center justify-content-center m-b-20">
-                <div className="m-r-10 photo-table">
-                    <a href={DEMO.BLANK_LINK}><img className="rounded-circle" style={{ width: '40px' }} src={avatar3} alt="activity-user" /></a>
-                </div>
-                <div className="media-body">
-                    <h6 className="m-0 d-inline">Storm Hanse</h6>
-                    <span className="float-right d-flex  align-items-center"><i className="fa fa-caret-down f-22 m-r-10 text-c-red" />2739</span>
-                </div>
-            </div>
-            <div className="media friendlist-box align-items-center justify-content-center m-b-20">
-                <div className="m-r-10 photo-table">
-                    <a href={DEMO.BLANK_LINK}><img className="rounded-circle" style={{ width: '40px' }} src={avatar1} alt="activity-user" /></a>
-                </div>
-                <div className="media-body">
-                    <h6 className="m-0 d-inline">Frida Thomse</h6>
-                    <span className="float-right d-flex  align-items-center"><i className="fa fa-caret-down f-22 m-r-10 text-c-red" />1032</span>
-                </div>
-            </div>
-            <div className="media friendlist-box align-items-center justify-content-center m-b-20">
-                <div className="m-r-10 photo-table">
-                    <a href={DEMO.BLANK_LINK}><img className="rounded-circle" style={{ width: '40px' }} src={avatar2} alt="activity-user" /></a>
-                </div>
-                <div className="media-body">
-                    <h6 className="m-0 d-inline">Silje Larsen</h6>
-                    <span className="float-right d-flex  align-items-center"><i className="fa fa-caret-up f-22 m-r-10 text-c-green" />8750</span>
-                </div>
-            </div>
-            <div className="media friendlist-box align-items-center justify-content-center">
-                <div className="m-r-10 photo-table">
-                    <a href={DEMO.BLANK_LINK}><img className="rounded-circle" style={{ width: '40px' }} src={avatar3} alt="activity-user" /></a>
-                </div>
-                <div className="media-body">
-                    <h6 className="m-0 d-inline">Storm Hanse</h6>
-                    <span className="float-right d-flex  align-items-center"><i className="fa fa-caret-down f-22 m-r-10 text-c-red" />8750</span>
-                </div>
-            </div>
-        </Aux>
-    );
 
 
     return (
@@ -167,11 +113,11 @@ export default function Dashboard() {
                                             <tr className="unread">
                                                 <td><img className="rounded-circle" style={{ width: '40px' }} src={avatar1} alt="activity-user" /></td>
                                                 <td>
-                                                    <h6 className="mb-1">{user.name}</h6>
-                                                    <p className="m-0">{user.email}</p>
+                                                    <h6 className="mb-1">{user.fullName}</h6>
+                                                    <p className="m-0">{user.userName}</p>
                                                 </td>
                                                 <td>
-                                                    <h6 className="text-muted"><i className="fa fa-circle text-c-green f-10 m-r-15" />{user.registered}</h6>
+                                                    <h6 className="text-muted"><i className="fa fa-circle text-c-green f-10 m-r-15" />{user.createdAt}</h6>
                                                 </td>
                                                 <td>
                                                     <Button size="small" className="label theme-bg2 text-white f-12" onClick={() => handleDelete(user)}>Delete</Button>
@@ -180,20 +126,7 @@ export default function Dashboard() {
                                             </tr>
                                         )
                                     }
-                                    <tr className="unread">
-                                        <td><img className="rounded-circle" style={{ width: '40px' }} src={avatar1} alt="activity-user" /></td>
-                                        <td>
-                                            <h6 className="mb-1">Tan Tran M.</h6>
-                                            <p className="m-0">Description of the header…</p>
-                                        </td>
-                                        <td>
-                                            <h6 className="text-muted"><i className="fa fa-circle text-c-green f-10 m-r-15" />11 MAY 12:56</h6>
-                                        </td>
-                                        <td>
-                                            <Button size="small" className="label theme-bg2 text-white f-12" onClick={() => handleDelete(demoProfile)}>Delete</Button>
-                                            <Button size="small" className="label theme-bg text-white f-12" onClick={() => setOpenForm(demoProfile)}>Details</Button>
-                                        </td>
-                                    </tr>
+
                                 </tbody>
                             </Table>
                         </Card.Body>

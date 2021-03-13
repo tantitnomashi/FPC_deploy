@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Button, Image, Form, FormControl, InputGroup } from 'react-bootstrap';
 import { TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Switch } from '@material-ui/core';
 import API from '../../utils/adminApi'
-
+import AddressSearch from '../commonComponent/AddressSearch';
 export default function UserForm(props) {
     const { open, handleClickClose, currentCabinet, reload } = props;
     const [selectedTemplate, setSelectedTemplate] = useState({});
@@ -189,6 +189,9 @@ export default function UserForm(props) {
                                     disabled={false}
                                     inputProps={{ 'aria-label': 'primary checkbox' }}
                                 />
+
+                                <Form.Label column lg={12}>Location Picker</Form.Label>
+                                <AddressSearch>Picker</AddressSearch>
 
 
 

@@ -2,30 +2,12 @@ export default {
     items: [
         {
             id: 'navigation',
-            title: 'Navigation',
+            title: 'CABINET',
             type: 'group',
             icon: 'icon-navigation',
             display: true,
             children: [
-                {
-                    id: 'dashboard',
-                    title: 'Dashboard',
-                    type: 'item',
-                    url: '/dashboard/default',
-                    display: true,
 
-                    icon: 'feather icon-home',
-                },
-                {
-                    id: 'user',
-                    title: 'Users',
-                    type: 'item',
-                    url: '/user',
-                    icon: 'feather icon-users',
-                    display: true,
-
-                }
-                ,
                 {
                     id: 'cabinet',
                     title: 'Cabinets',
@@ -56,6 +38,16 @@ export default {
                 }
                 ,
                 {
+                    id: 'rentTime',
+                    title: 'Rental Time Slot',
+                    type: 'item',
+                    url: '/time-slot',
+                    icon: 'feather icon-clock',
+                    display: true,
+
+                }
+                ,
+                {
                     id: 'box',
                     title: 'Box',
                     type: 'item',
@@ -68,12 +60,31 @@ export default {
         },
         {
             id: 'ui-element',
-            title: 'UI ELEMENT',
+            title: 'OTHER',
             type: 'group',
             icon: 'icon-ui',
             display: true,
 
             children: [
+                {
+                    id: 'dashboard',
+                    title: 'Dashboard',
+                    type: 'item',
+                    url: '/dashboard/default',
+                    display: true,
+
+                    icon: 'feather icon-home',
+                },
+                {
+                    id: 'user',
+                    title: 'Users',
+                    type: 'item',
+                    url: '/user',
+                    icon: 'feather icon-users',
+                    display: true,
+
+                }
+                ,
                 {
                     id: 'basic',
                     title: 'Component',

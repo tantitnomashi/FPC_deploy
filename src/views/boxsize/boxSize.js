@@ -24,11 +24,8 @@ export default function BoxSize({ match }) {
         API.getBoxSizes()
             .then((response) => {
                 if (response.data.statusCode == 200) {
-                    console.log('load size ', response.data.data[0]);
+                    console.log('load size ', response.data.data.length);
                     setSize(response.data.data);
-                } else if (response.data.statusCode == 201) {
-                    setSize(response.data.data);
-
                 } else {
                     alert('Cant get Cabi !')
                 }

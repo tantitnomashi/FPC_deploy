@@ -8,8 +8,8 @@ import ConfirmDialog from '../commonComponent/confirm';
 
 
 export default function BoxSize({ match }) {
-    const id = match.params.id;
-    const [size, setSize] = React.useState([]);
+    const cabinetId = match.params.id;
+    const [boxes, setBoxes] = React.useState([]);
 
     const [open, setOpen] = React.useState(false);
     const [openConfirm, setOpenConfirm] = React.useState(false);
@@ -18,22 +18,19 @@ export default function BoxSize({ match }) {
 
 
     useEffect(() => {
-        loadAdminBoxSize();
+        loadBoxesInCabinet();
     }, []);
 
-    const loadAdminBoxSize = () => {
-        API.getBoxSizes()
+    const loadBoxesInCabinet = () => {
+        API.getBoxesInCabinet(cabinetId)
             .then((response) => {
                 if (response.data.statusCode == 200) {
-                    console.log('load size ', response.data.data[0]);
-                    setSize(response.data.data);
-                } else if (response.data.statusCode == 201) {
-                    setSize(response.data.data);
-
+                    console.log('load boxes ', response.data.data.length);
+                    setBoxes(response.data.data);
                 } else {
-                    alert('Cant get Cabi !')
+                    alert('Cant get Boxes in Cabinet !')
                 }
-            }).catch(e => console.log(e + "hihi"));
+            }).catch(e => console.log(e + "ERR Box in Cabinet"));
 
     }
 
@@ -51,7 +48,7 @@ export default function BoxSize({ match }) {
 
 
 
-    const handleDelete = (currentSize) => {
+    const handleDetail = (currentSize) => {
         setOpenConfirm(true);
         if (currentSize) {
             setCurrentSize(currentSize);
@@ -63,10 +60,10 @@ export default function BoxSize({ match }) {
         API.deleteBoxSize(currentSize.id)
             .then((response) => {
                 if (response.data.statusCode == 200) {
-                    console.log(response.data, 'delete size ');
+                    console.log(response.data, 'delete boxes ');
 
-                    setSize(response.data.data);
-                    loadAdminBoxSize();
+                    setBoxes(response.data.data);
+                    loadBoxesInCabinet();
                 } else {
                     alert('Cant Delete Size !')
                 }
@@ -79,94 +76,61 @@ export default function BoxSize({ match }) {
 
 
         <Aux>
-            <BoxSizeForm reload={loadAdminBoxSize} open={open} handleClickClose={setCloseForm} currentSize={currentSize} />
-            <ConfirmDialog open={openConfirm}
-                tilte="Delete Confirm" message={"Are your sure to delete " + currentSize?.sizeName} onAccess={() => requestDelete(currentSize?.name)} onCancel={setCloseForm} />
-            <Row>
-                <Col md={6} xl={8}>
 
-                </Col>
-
-                <Col md={6} xl={4}>
-                    <div className="text-right mb-3">
-                        <Button className="mx-2" variant="primary" size="small" onClick={() => setOpenForm()}>
-                            Add Box Size
-                        </Button>
-
-                    </div>
-
-
-                </Col>
-            </Row>
             <Row>
 
                 <Col md={6} xl={12}>
                     <Card className=''>
                         <Card.Header>
-                            <Card.Title as='h5'>Box Size List</Card.Title>
+                            <Card.Title as='h5'>Box List</Card.Title>
                         </Card.Header>
                         <Card.Body className='px-3 py-2'>
                             <Row className="unread py-3 px-1 my-2 border-bottom border-light">
 
                                 <Col md={3} className='text-left' >
-                                    Size Name
+                                    Box Number
                                 </Col>
 
                                 <Col md={2} className='text-left'>
-                                    Virtual Size
+                                    Rental Status
                                 </Col>
                                 <Col md={2} className='text-left '>
-                                    Actual Size
+                                    Status
                                 </Col>
-                                <Col md={2} className='justify-content-center'>
-                                    Price Weight
-                                </Col>
+
                                 <Col md={2} className='justify-content-center'>
                                 </Col>
                             </Row>
                             {
-                                size?.map(element =>
+                                boxes?.map(element =>
                                     <Row className="unread py-3 px-1 my-2 border-bottom border-light">
 
                                         <Col md={3} className='text-left d-flex align-items-center'>
-                                            <h5 className="mb-1">{element.sizeName}</h5>
+                                            <h5 className="mb-1">{element.boxNum}</h5>
                                         </Col>
 
                                         <Col md={2} className='text-left '>
                                             <h5 className="d-flex align-items-center">
-                                                <span class="material-icons f-30 m-r-5">
-                                                    crop_free</span>
-
-                                                {"   " + element.virtualHeight + " x " + element.virtualWidth}
 
 
+                                                {element.rentingStatusName}
 
-                                            </h5>
-                                        </Col>
-                                        <Col md={2} className='text-left '>
-                                            <h5 className=" d-flex align-items-center">
-                                                <span class="material-icons f-30 m-r-5">
-                                                    expand
-                                                </span>
-
-                                                {element.actualHeight + " cm  x " + element.actualWidth + " cm "}
 
 
                                             </h5>
                                         </Col>
                                         <Col md={2} className='text-left '>
                                             <h5 className=" d-flex align-items-center">
-                                                <span class="material-icons f-30 m-r-5">
-                                                    perm_data_setting
-                                                </span>
 
-                                                {element.priceWeight}
+
+                                                {element.statusName}
 
 
                                             </h5>
                                         </Col>
+
                                         <Col md={2} className='d-flex justify-content-center '>
-                                            <Button size="small" variant="dark" className="label text-white f-12" onClick={() => handleDelete(element)}>Delete</Button>
+                                            <Button size="small" variant="dark" className="label text-white f-12" onClick={() => handleDetail(element)}>Delete</Button>
                                         </Col>
                                     </Row>
                                 )

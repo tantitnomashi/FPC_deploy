@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 
-const ngrokID = '71a53c875bc2'
+const ngrokID = 'aa152e0faf28'
 const route_api = 'https://' + ngrokID + '.ngrok.io'
 const instance = axios.create({
 	baseURL: `${route_api}/api`,
@@ -38,6 +38,7 @@ const adminApi = {
 	},
 	createCabinet: (params) => instance.post('/v1/cabinets', params),
 	deleteCabinet: (id) => instance.delete('/v1/cabinets/' + id),
+	getBoxesInCabinet: (id) => instance.get('/v1/cabinets/' + id + '/boxes'),
 
 
 	// API for Box Size Model
@@ -49,6 +50,14 @@ const adminApi = {
 
 
 	getUser: () => instance.get('/v1/users'),
+
+
+	// API for Rent Time Slot Model
+	getTimeSlots: () => instance.get('/v1/rent-time-slots'),
+	deleteTimeSlot: (id) => instance.delete('/v1/rent-time-slots/' + id),
+	createTimeSlot: (params) => instance.post('/v1/rent-time-slots', params),
+
+
 	getTransaction: () => instance.get('/dashboard/transaction'),
 	detailRequest: (params) => instance.post('/request/post_fb_detail', params),
 	getRequest: (requestId) => instance.get('/request/request_edit/' + requestId),
@@ -59,4 +68,4 @@ const adminApi = {
 	withdraw: (params) => instance.post('/wallet/withdraw', params),
 }
 
-export default adminApi; 	
+export default adminApi;

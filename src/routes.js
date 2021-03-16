@@ -7,11 +7,12 @@ global.jQuery = $;
 
 const DashboardDefault = React.lazy(() => import('./Demo/Dashboard/Default'));
 const DashboardUser = React.lazy(() => import('./views/user/User'));
+const Login = React.lazy(() => import('./views/auth/login'));
 const DashboardTransaction = React.lazy(() => import('./views/transaction/Transaction'));
 const DashboardCabinet = React.lazy(() => import('./views/cabinet/Cabinet'));
-const Boxsize = React.lazy(() => import('./views/boxsize/boxSize'));
+const Boxsize = React.lazy(() => import('./views/boxsize/BoxSize'));
 const Box = React.lazy(() => import('./views/box/Box'));
-const RentalTime = React.lazy(() => import('./views/rentTimeSlot/rentTimeSlot'));
+const RentalTime = React.lazy(() => import('./views/rentTimeSlot/RentTimeSlot'));
 
 const UIBasicButton = React.lazy(() => import('./Demo/UIElements/Basic/Button'));
 const UIBasicBadges = React.lazy(() => import('./Demo/UIElements/Basic/Badges'));
@@ -33,6 +34,7 @@ const OtherSamplePage = React.lazy(() => import('./Demo/Other/SamplePage'));
 const OtherDocs = React.lazy(() => import('./Demo/Other/Docs'));
 
 const routes = [
+    { path: '/login', exact: true, name: 'Login', component: Login },
     { path: '/dashboard/default', exact: true, name: 'Default', component: DashboardDefault },
     { path: '/user', exact: true, name: 'User', component: DashboardUser },
     { path: '/cabinet', exact: true, name: 'Cabinet', component: DashboardCabinet },

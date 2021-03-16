@@ -3,7 +3,7 @@ import { Row, Col, Card, Table, Tabs, Tab, Button } from 'react-bootstrap';
 import API from '../../utils/adminApi'
 import Aux from "../../hoc/_Aux";
 import BoxSizeForm from './BoxSizeForm';
-import ConfirmDialog from '../commonComponent/confirm';
+import ConfirmDialog from '../commonComponent/Confirm';
 
 
 export default function BoxSize({ match }) {

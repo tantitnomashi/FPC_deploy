@@ -4,7 +4,7 @@ import API from '../../utils/adminApi'
 
 import Aux from "../../hoc/_Aux";
 import BoxSizeForm from '../boxsize/BoxSizeForm';
-import ConfirmDialog from '../commonComponent/confirm';
+import ConfirmDialog from '../commonComponent/Confirm';
 
 
 export default function BoxSize({ match }) {

@@ -8,7 +8,7 @@ import avatar1 from '../../assets/images/user/avatar-1.jpg';
 import avatar2 from '../../assets/images/user/avatar-2.jpg';
 import avatar3 from '../../assets/images/user/avatar-3.jpg';
 import UserForm from './UserForm';
-import ConfirmDialog from '../commonComponent/confirm';
+import ConfirmDialog from '../commonComponent/Confirm';
 
 var test = require('../../sampleData.json');
 

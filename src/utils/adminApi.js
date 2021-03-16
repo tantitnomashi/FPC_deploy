@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 
-const ngrokID = 'aa152e0faf28'
+const ngrokID = '8ab71a11293e'
 const route_api = 'https://' + ngrokID + '.ngrok.io'
 const instance = axios.create({
 	baseURL: `${route_api}/api`,
@@ -23,9 +23,8 @@ const adminApi = {
 			delay: 3000,
 		});
 	},
-	login: (params) => instance.post('/login', params),
+	login: (params) => instance.post('/v1/users/login', params),
 	loadAdminDashboard: () => instance.get('/dashboard/info'),
-	loadAdminChartWeek: () => instance.get('/dashboard/week'),
 	logout: () => instance.get('/user/logout'),
 
 
@@ -46,11 +45,20 @@ const adminApi = {
 	createBoxSize: (params) => instance.post('/v1/box-sizes', params),
 	deleteBoxSize: (id) => instance.delete('/v1/box-sizes/' + id),
 
+
+
 	// API for User Model
 
 
 	getUser: () => instance.get('/v1/users'),
 
+	// API for Rental Transaction Model
+	getTransaction: () => instance.get('/v1/rental-transactions'),
+
+	// API for Locations
+
+	getLocation: () => instance.get('/v1/locations'),
+	createLocation: (params) => instance.post('/v1/locations', params),
 
 	// API for Rent Time Slot Model
 	getTimeSlots: () => instance.get('/v1/rent-time-slots'),
@@ -58,7 +66,6 @@ const adminApi = {
 	createTimeSlot: (params) => instance.post('/v1/rent-time-slots', params),
 
 
-	getTransaction: () => instance.get('/dashboard/transaction'),
 	detailRequest: (params) => instance.post('/request/post_fb_detail', params),
 	getRequest: (requestId) => instance.get('/request/request_edit/' + requestId),
 	editRequest: (params) => instance.post('/request/request_edit', params),

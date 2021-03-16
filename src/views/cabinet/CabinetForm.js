@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Button, Image, Form, FormControl, InputGroup } from 'react-bootstrap';
+import {
+    Row, Col, Button, Image, Form, FormControl, Card,
+    Collapse, InputGroup
+} from 'react-bootstrap';
 import { TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Switch } from '@material-ui/core';
 import API from '../../utils/adminApi'
 import AddressSearch from '../commonComponent/AddressSearch';
+import ConfirmDialog from '../commonComponent/Confirm';
 export default function UserForm(props) {
     const { open, handleClickClose, currentCabinet, reload } = props;
     const [selectedTemplate, setSelectedTemplate] = useState({});
-
-
+    const [openConfirm, setOpenConfirm] = React.useState(false);
 
     const [template, setTemplate] = useState([]);
+    const [locations, setLocations] = useState([]);
 
     const [newName, setNewName] = useState('');
     const [errName, setErrName] = useState('');
@@ -18,7 +22,9 @@ export default function UserForm(props) {
     const [errBasePrice, setErrBasePrice] = useState('');
 
     const [location, setLocation] = useState(currentCabinet?.locationId);
+    const [selectedAddress, setSelectedAddress] = useState({});
     const [errLocation, setErrLocation] = useState('');
+    const [isBasic, setIsBasic] = useState(false);
     const [isActive, setIsActive] = React.useState({
         checkedB: true
     });
@@ -37,7 +43,13 @@ export default function UserForm(props) {
                 checkedB: currentCabinet?.isActive
             });
         }
+        loadData()
 
+
+    }, [currentCabinet]);
+
+
+    const loadData = () => {
         API.getCabitnetTemplate()
             .then((response) => {
                 if (response.data.statusCode == 200) {
@@ -51,11 +63,16 @@ export default function UserForm(props) {
                     alert('Cant get templates !')
                 }
             }).catch(e => console.log(e + "-- API get Template ERR"));
+        API.getLocation()
+            .then((response) => {
+                if (response.data.statusCode == 200) {
+                    setLocations(response.data.data);
 
-    }, [currentCabinet]);
-
-
-
+                } else {
+                    alert('Cant get location list !')
+                }
+            }).catch(e => console.log(e + "-- API get Locations ERR"));
+    }
 
     const validData = (text = '', fieldIndex = -1) => {
         switch (fieldIndex) {
@@ -130,12 +147,37 @@ export default function UserForm(props) {
         handleClickClose();
     }
 
+    const submitAddLocation = () => {
+
+        console.log("bfSub", selectedAddress);
+
+        API.createLocation(selectedAddress).then((response) => {
+            console.log("create: ", response.data.statusCode);
+            loadData();
+            setOpenConfirm(false);
+            setIsBasic(!isBasic)
+
+        }).catch(e => console.log("create Location ERR", e))
+    }
+    const openAddLocationConfirm = (address) => {
+        setSelectedAddress(address);
+        setOpenConfirm(true);
+    }
+
+    const setCloseForm = () => {
+
+        setOpenConfirm(false);
+
+    };
+
     return (
         <div>
 
             <Dialog maxWidth={'lg'} className="dialog-userForm" open={open} onClose={handleClickClose} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">{currentCabinet ? "Update" : "Create Cabinet"}</DialogTitle>
                 <DialogContent>
+                    <ConfirmDialog open={openConfirm}
+                        tilte="Add Location" message={"Do you want to add " + selectedAddress.buildingName + ' ?'} onAccess={() => submitAddLocation()} onCancel={setCloseForm} />
 
                     <Form>
                         <Form.Row>
@@ -157,18 +199,47 @@ export default function UserForm(props) {
 
                                 <InputGroup className="my-1 mb-2" id="address" >
 
-                                    <FormControl id="inlineFormInputGroup"
-                                        name='location' placeholder=""
-                                        defaultValue={currentCabinet?.locationId}
+                                    <Form.Control as="select" value={currentCabinet ? currentCabinet.locationId : locations[0]?.id} custom
                                         onChange={(e) => {
                                             let text = e.target.value;
-                                            setLocation(text)
-                                            validData(text, 2);
-                                        }} />
+
+                                            setLocation(text);
+                                            console.log("change location..from", text);
+                                            console.log("change location..to", location);
+
+                                        }} >
+
+                                        {
+                                            locations.map(value =>
+                                                <option value={value.id}>{value.buildingName}</option>
+                                            )
+                                        }
+
+                                    </Form.Control>
                                     <InputGroup.Append>
-                                        <InputGroup.Text><span class="material-icons">room</span></InputGroup.Text>
+                                        <InputGroup.Text onClick={() => setIsBasic(!isBasic)}><span class="material-icons">room</span></InputGroup.Text>
+
                                     </InputGroup.Append>
                                 </InputGroup>
+                                <Collapse in={isBasic}>
+                                    <Row>
+
+                                        <Col className="" md={12}>
+
+                                            <div id="basic-collapse">
+                                                <AddressSearch onSelectedLocation={openAddLocationConfirm}>Picker</AddressSearch>
+                                            </div>
+
+                                        </Col>
+                                        {/* <Col className="" md={2}>
+                                            <Button className='' onClick={submitForm} variant='dark'>
+                                                Add
+                                      </Button>
+                                        </Col> */}
+
+                                    </Row>
+                                </Collapse>
+
 
                                 <Form.Label column lg={12}>Base Price</Form.Label>
                                 <Form.Control className="my-1" id="base-price"
@@ -190,8 +261,7 @@ export default function UserForm(props) {
                                     inputProps={{ 'aria-label': 'primary checkbox' }}
                                 />
 
-                                <Form.Label column lg={12}>Location Picker</Form.Label>
-                                <AddressSearch>Picker</AddressSearch>
+
 
 
 
@@ -214,7 +284,6 @@ export default function UserForm(props) {
                                         backgroundSize: 'contain'
 
                                     }} >
-                                        {/* <Image style={{ width: '400px' }} size='sm' src={demoType[type].url} fluid /> */}
                                     </div>
                                 </div>
                                 <div>

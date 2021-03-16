@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, Table, Tabs, Tab, Button } from 'react-bootstrap';
 
 import Aux from "../../hoc/_Aux";
@@ -7,8 +7,9 @@ import DEMO from "../../store/constant";
 import avatar1 from '../../assets/images/user/avatar-1.jpg';
 import avatar2 from '../../assets/images/user/avatar-2.jpg';
 import avatar3 from '../../assets/images/user/avatar-3.jpg';
-import ConfirmDialog from '../commonComponent/confirm';
+import ConfirmDialog from '../commonComponent/Confirm';
 import TransactionDetail from './TransactionDetail';
+import API from '../../utils/adminApi';
 
 
 var test = require('../../sampleData/transactionData.json');
@@ -17,6 +18,7 @@ var test = require('../../sampleData/transactionData.json');
 export default function Transaction() {
     const [openConfirm, setOpenConfirm] = React.useState(false);
     const [currentTransaction, setCurrentProfile] = React.useState(null);
+    const [trans, setTrans] = React.useState([]);
 
 
     // for details
@@ -30,7 +32,22 @@ export default function Transaction() {
         setOpen(false);
     };
 
+    useEffect(() => {
+        loadData();
+    }, []);
 
+    const loadData = () => {
+        API.getTransaction()
+            .then((response) => {
+                if (response.data.statusCode == 200) {
+                    console.log('load transaction ', response.data.data[0]);
+                    setTrans(response.data.data);
+                } else {
+                    alert('Cant get Trans !')
+                }
+            }).catch(e => console.log(e + "hihi"));
+
+    }
 
 
     // for confirm diaglog
@@ -194,13 +211,21 @@ export default function Transaction() {
 
                                     {
 
-                                        transactions.map(transaction =>
+                                        trans.map(transaction =>
 
                                             <tr className="unread">
                                                 <td><img className="rounded-circle" style={{ width: '40px' }} src={avatar1} alt="activity-user" /></td>
                                                 <td>
-                                                    <h6 className="mb-1">{transaction._id}</h6>
-                                                    <p className="m-0"> ${transaction.Amount} - FPT Uni Cabinet - Box 06 </p>
+                                                    <h6 className="mb-1"> {transaction.cabinetName} - Box {transaction.boxNum}</h6>
+                                                    <p className="m-0 d-flex align-items-center">
+                                                        {transaction.Amount > 0 ? transaction.Amount : "Free Renting"}
+                                                        <span class="material-icons f-20 px-2">
+                                                            assignment_ind
+                                                        </span>
+
+                                                        {transaction.userName}
+
+                                                    </p>
                                                 </td>
                                                 <td>
                                                     <h6 className="text-muted">
@@ -209,7 +234,7 @@ export default function Transaction() {
                                                             "fa fa-circle text-c-green f-10 m-r-15" :
                                                             "fa fa-circle text-c-red f-10 m-r-15"} />
 
-                                                        {transaction.CreatedAt}
+                                                        {transaction.rentStartTime}
 
                                                     </h6>
 

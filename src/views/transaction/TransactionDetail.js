@@ -1,94 +1,79 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from 'react-bootstrap';
 import { TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Switch } from '@material-ui/core';
+import { Row, Col, Button, Image, Form, FormControl, InputGroup } from 'react-bootstrap';
+import API from '../../utils/adminApi'
 
 export default function TransactionDetail(props) {
-    const { open, handleClickClose, currentProfile } = props;
-    console.log(currentProfile);
+    var sapmle = require('../../sampleData/transactionStatus.json');
 
-    const [state, setState] = React.useState({
-        checkedA: true,
-        checkedB: true,
-    });
+    const { open, handleClickClose, currentTransaction } = props;
+    const [statusList, setStatusList] = useState(sapmle);
+    const [selectedStatus, setSelectedStatus] = useState();
 
-    const handleChange = (event) => {
-        setState({ ...state, [event.target.name]: event.target.checked });
-    };
+
+
+
+
+
+    const submitForm = () => {
+        if (selectedStatus != '') {
+            API.updateTransactionStatus(currentTransaction.id, selectedStatus).then((response) => {
+                console.log("rs update status: ", response.data.statusCode);
+            }).catch(e => console.log("update Status ERR", e))
+        }
+        setTimeout(handleClickClose, 200);
+        // handleClickClose();
+    }
     return (
         <div>
 
-            <Dialog className="dialog-userForm" open={open} onClose={handleClickClose} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title">{currentProfile ? "Update" : "Create User"}</DialogTitle>
+            <Dialog maxWidth={'xs'} fullWidth={true} className="dialog-userForm" open={open} onClose={handleClickClose} aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title"> Change Status</DialogTitle>
                 <DialogContent>
 
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="id"
-                        label="Id"
-                        type="text"
-                        disabled
-                        value={currentProfile?._id}
-                        fullWidth
-                    />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="name"
-                        label="Name"
-                        type="text"
-                        disabled
-                        value={currentProfile?.Name}
-                        fullWidth
-                    />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="amount"
-                        label="Price"
-                        type="text"
-                        value={currentProfile?.Amount}
-                        fullWidth
-                    />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="time"
-                        label="Rental Start Time"
-                        type="time"
-                        fullWidth
-                    />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="payment"
-                        label="Payment Method"
-                        type="text"
-                        value={currentProfile?.PaymentMethod}
-                        fullWidth
-                    />
-                    <DialogContentText  >
-                        Active
-                        <Switch
-                            checked={state.checkedB}
-                            onChange={handleChange}
-                            color="primary"
-                            name="checkedB"
-                            inputProps={{ 'aria-label': 'primary checkbox' }}
-                        />
-                    </DialogContentText>
+                    <Form>
+                        <Form.Row>
+
+                            <Col md={12} xl={12}>
+                                <Form.Label column lg={12}>Status    </Form.Label>
+                                <Form.Control as="select" defaultValue={currentTransaction?.status} custom
+                                    onChange={(e) => {
+                                        let text = e.target.value;
+                                        setSelectedStatus(text)
+                                        console.log("change status..from", text);
+
+                                    }}
+                                >
+
+                                    {
+                                        statusList.map(value =>
+                                            <option value={value.status}>{value.statusName}</option>
+                                        )
+                                    }
+
+                                </Form.Control>
+                            </Col>
 
 
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClickClose} variant="secondary">
-                        Cancel
-              </Button>
-                    <Button className='px-4' onClick={handleClickClose} color="primary">
-                        Save
-              </Button>
-                </DialogActions>
-            </Dialog>
+                        </Form.Row>
+
+
+                        <DialogActions>
+                            <Button onClick={handleClickClose} variant="secondary">
+                                Cancel
+                                  </Button>
+                            <Button className='px-4' onClick={submitForm} color="primary">
+                                Save
+                                      </Button>
+                        </DialogActions>
+
+
+                    </Form>
+                </DialogContent >
+
+
+
+            </Dialog >
         </div>
     );
 }

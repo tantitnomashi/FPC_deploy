@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Card, Table, Tabs, Tab, Button } from 'react-bootstrap';
+import {
+    Row, Col, Card, Table, Tabs, Button, Form, FormControl,
+    Collapse, InputGroup
+} from 'react-bootstrap';
 
 import Aux from "../../hoc/_Aux";
 import DEMO from "../../store/constant";
@@ -12,24 +15,24 @@ import TransactionDetail from './TransactionDetail';
 import API from '../../utils/adminApi';
 
 
-var test = require('../../sampleData/transactionData.json');
-
-
 export default function Transaction() {
     const [openConfirm, setOpenConfirm] = React.useState(false);
-    const [currentTransaction, setCurrentProfile] = React.useState(null);
+    const [currentTransaction, setCurrentTransaction] = React.useState(null);
     const [trans, setTrans] = React.useState([]);
+    const [isBasic, setIsBasic] = useState(false);
+    var sapmle = require('../../sampleData/transactionStatus.json');
 
 
     // for details
     const [open, setOpen] = React.useState(false);
-    const setOpenForm = (currentProfile) => {
+    const setOpenForm = (currentTrans) => {
         setOpen(true);
-        setCurrentProfile(currentProfile);
+        setCurrentTransaction(currentTrans);
     };
 
     const setCloseForm = () => {
         setOpen(false);
+        loadData();
     };
 
     useEffect(() => {
@@ -37,15 +40,19 @@ export default function Transaction() {
     }, []);
 
     const loadData = () => {
+        console.log("###reload data...")
         API.getTransaction()
             .then((response) => {
                 if (response.data.statusCode == 200) {
-                    console.log('load transaction ', response.data.data[0]);
-                    setTrans(response.data.data);
+                    let tmp = response.data.data;
+                    tmp = tmp.sort((a, b) => {
+                        return new Date(b.createdAt) - new Date(a.createdAt);
+                    })
+                    setTrans(tmp);
                 } else {
                     alert('Cant get Trans !')
                 }
-            }).catch(e => console.log(e + "hihi"));
+            }).catch(e => console.log(e + "##ERR load data Transactions"));
 
     }
 
@@ -54,9 +61,9 @@ export default function Transaction() {
     const handleDelete = (currentTransaction) => {
         setOpenConfirm(true);
         if (currentTransaction) {
-            setCurrentProfile(currentTransaction);
+            setCurrentTransaction(currentTransaction);
         } else {
-            setCurrentProfile(null);
+            setCurrentTransaction(null);
         }
     }
     const requestDelete = (username) => {
@@ -71,75 +78,111 @@ export default function Transaction() {
     };
 
 
-    const [transactions, setTransactions] = React.useState(test);
+    //for filter 
+    var sample = require('../../sampleData/transactionStatus.json');
+    const [filterList, setFilterList] = useState(sapmle);
+    const [activeFilter, setActiveFilter] = useState([]);
 
+    const onFilterChange = (filter) => {
 
+        if (filter === "ALL") {
+            if (activeFilter.length === filterList.length) {
+                setActiveFilter([]);
 
-    const tabContent = (
-        <Aux>
-            <div className="media friendlist-box align-items-center justify-content-center m-b-20">
-                <div className="m-r-10 photo-table">
-                    <a href={DEMO.BLANK_LINK}><img className="rounded-circle" style={{ width: '40px' }} src={avatar1} alt="activity-user" /></a>
-                </div>
-                <div className="media-body">
-                    <h6 className="m-0 d-inline">Silje Larsen</h6>
-                    <span className="float-right d-flex  align-items-center"><i className="fa fa-caret-up f-22 m-r-10 text-c-green" />3784</span>
-                </div>
-            </div>
-            <div className="media friendlist-box align-items-center justify-content-center m-b-20">
-                <div className="m-r-10 photo-table">
-                    <a href={DEMO.BLANK_LINK}><img className="rounded-circle" style={{ width: '40px' }} src={avatar2} alt="activity-user" /></a>
-                </div>
-                <div className="media-body">
-                    <h6 className="m-0 d-inline">Julie Vad</h6>
-                    <span className="float-right d-flex  align-items-center"><i className="fa fa-caret-up f-22 m-r-10 text-c-green" />3544</span>
-                </div>
-            </div>
-            <div className="media friendlist-box align-items-center justify-content-center m-b-20">
-                <div className="m-r-10 photo-table">
-                    <a href={DEMO.BLANK_LINK}><img className="rounded-circle" style={{ width: '40px' }} src={avatar3} alt="activity-user" /></a>
-                </div>
-                <div className="media-body">
-                    <h6 className="m-0 d-inline">Storm Hanse</h6>
-                    <span className="float-right d-flex  align-items-center"><i className="fa fa-caret-down f-22 m-r-10 text-c-red" />2739</span>
-                </div>
-            </div>
-            <div className="media friendlist-box align-items-center justify-content-center m-b-20">
-                <div className="m-r-10 photo-table">
-                    <a href={DEMO.BLANK_LINK}><img className="rounded-circle" style={{ width: '40px' }} src={avatar1} alt="activity-user" /></a>
-                </div>
-                <div className="media-body">
-                    <h6 className="m-0 d-inline">Frida Thomse</h6>
-                    <span className="float-right d-flex  align-items-center"><i className="fa fa-caret-down f-22 m-r-10 text-c-red" />1032</span>
-                </div>
-            </div>
-            <div className="media friendlist-box align-items-center justify-content-center m-b-20">
-                <div className="m-r-10 photo-table">
-                    <a href={DEMO.BLANK_LINK}><img className="rounded-circle" style={{ width: '40px' }} src={avatar2} alt="activity-user" /></a>
-                </div>
-                <div className="media-body">
-                    <h6 className="m-0 d-inline">Silje Larsen</h6>
-                    <span className="float-right d-flex  align-items-center"><i className="fa fa-caret-up f-22 m-r-10 text-c-green" />8750</span>
-                </div>
-            </div>
-            <div className="media friendlist-box align-items-center justify-content-center">
-                <div className="m-r-10 photo-table">
-                    <a href={DEMO.BLANK_LINK}><img className="rounded-circle" style={{ width: '40px' }} src={avatar3} alt="activity-user" /></a>
-                </div>
-                <div className="media-body">
-                    <h6 className="m-0 d-inline">Storm Hanse</h6>
-                    <span className="float-right d-flex  align-items-center"><i className="fa fa-caret-down f-22 m-r-10 text-c-red" />8750</span>
-                </div>
-            </div>
-        </Aux>
-    );
+            } else {
+                setActiveFilter(filterList.map(filter => filter.value));
+            }
+        } else {
+            if (activeFilter.includes(filter)) {
+                const filterIndex = activeFilter.indexOf(filter);
+                const newFilter = [...activeFilter];
+                newFilter.splice(filterIndex, 1);
+                setActiveFilter(newFilter);
+
+            } else {
+                setActiveFilter([...activeFilter, filter]);
+
+            }
+        }
+    }
+
+    let filteredList;
+    if (
+        activeFilter.length === 0 ||
+        activeFilter.length === filterList.length
+    ) {
+        filteredList = trans;
+    } else {
+        filteredList = trans.filter(item =>
+            activeFilter.includes(item.type)
+        );
+    }
 
     return (
         <Aux>
-            <TransactionDetail open={open} handleClickClose={setCloseForm} currentProfile={currentTransaction} />
+            <TransactionDetail open={open} handleClickClose={setCloseForm} currentTransaction={currentTransaction} />
 
             <ConfirmDialog open={openConfirm}
                 tilte="Delete Confirm" message={"Are your sure to delete this transaction:  " + currentTransaction?._id} onAccess={() => requestDelete(currentTransaction?._id)} onCancel={setCloseConfirmForm} />
+            <Row className="pb-3">
+                <Col className="text-left" md={6} xl={6}>
+                    <Button variant="outline-secondary" onClick={() => setIsBasic(!isBasic)}>Filter Status</Button>
+                    <Collapse in={isBasic}>
+                        <Row>
+
+                            <Col md={12}>
+
+                                <div id="basic-collapse">
+                                    <div>
+                                        <Form>
+                                            {/* <div className="mb-3 f-16 text-dark">
+                                                <Form.Check inline label="Requesting" />
+                                                <Form.Check inline label="Accepted" />
+                                                <Form.Check inline label="Renting" />
+                                                <Form.Check inline label="Finished" />
+                                                <Form.Check inline label="Expired" />
+                                            </div> */}
+                                            <label className="mx-1" type="checkbox"
+                                                htmlFor="myInput">All</label>
+                                            <input
+                                                className="mx-1" type="checkbox"
+
+                                                type="checkbox"
+                                                onClick={() => onFilterChange("ALL")}
+                                                checked={activeFilter.length === filterList.length}
+                                            />
+
+                                            {filterList.map(filter => (
+                                                <React.Fragment className="f-15">
+                                                    <label htmlFor={filter.status}>{filter.statusName}</label>
+                                                    <input
+                                                        className="mx-1" type="checkbox"
+                                                        checked={activeFilter.includes(filter.value)}
+                                                        onClick={() => onFilterChange(filter.value)}
+                                                    />
+                                                </React.Fragment>
+                                            ))}
+                                        </Form>
+
+                                    </div>
+                                </div>
+
+                            </Col>
+
+
+                        </Row>
+                    </Collapse>
+
+                </Col>
+                <Col className="text-right justify-content-end" md={6} xl={6}>
+                    <Form inline className="justify-content-end">
+                        <FormControl type="text" placeholder="Search" className="mr-sm-2" />
+                        <Button variant="outline-secondary">Search</Button>
+                    </Form>
+
+                </Col>
+            </Row>
+
             <Row>
                 <Col md={6} xl={4}>
                     <Card>
@@ -207,15 +250,26 @@ export default function Transaction() {
                             <Table responsive hover>
                                 <tbody>
 
-                                    {console.log(transactions)}
+                                    {
+                                        filteredList.map(item => (
+                                            <div key={item.id}>
+                                                <li>
+                                                    {item.name} -- {item.type}
+                                                </li>
+                                            </div>
+                                        ))
+                                    }
+
 
                                     {
 
                                         trans.map(transaction =>
 
-                                            <tr className="unread">
-                                                <td><img className="rounded-circle" style={{ width: '40px' }} src={avatar1} alt="activity-user" /></td>
-                                                <td>
+                                            <tr className="unread row">
+                                                <td className="col-md-1 justify-content-center text-center d-flex align-items-center">
+                                                    <img className="rounded-circle" style={{ width: '40px' }} src={avatar1} alt="activity-user" />
+                                                </td>
+                                                <td className="col-md-3 ">
                                                     <h6 className="mb-1"> {transaction.cabinetName} - Box {transaction.boxNum}</h6>
                                                     <p className="m-0 d-flex align-items-center">
                                                         {transaction.Amount > 0 ? transaction.Amount : "Free Renting"}
@@ -227,8 +281,8 @@ export default function Transaction() {
 
                                                     </p>
                                                 </td>
-                                                <td>
-                                                    <h6 className="text-muted">
+                                                <td className="col-md-2 d-flex align-items-center">
+                                                    <h6 className="">
 
                                                         <i className={transaction.Status == 1 ?
                                                             "fa fa-circle text-c-green f-10 m-r-15" :
@@ -239,9 +293,18 @@ export default function Transaction() {
                                                     </h6>
 
                                                 </td>
-                                                <td>
-                                                    <Button size="small" className="label theme-bg2 text-white f-12" onClick={() => handleDelete(transaction)}>Delete</Button>
-                                                    <Button size="small" className="label theme-bg text-white f-12" onClick={() => setOpenForm(transaction)}>Details</Button>
+                                                <td className="col-md-2 d-flex align-items-center">
+                                                    <span class="material-icons f-20 mr-2">
+                                                        query_builder
+                                                    </span>
+                                                    {transaction.rentDuration}
+                                                </td>
+                                                <td className="col-md-2 d-flex align-items-center">
+                                                    {transaction.statusName}
+                                                </td>
+                                                <td className="col-md-2 d-flex align-items-center">
+                                                    {/* <Button size="small" className="label theme-bg2 text-white f-12" onClick={() => handleDelete(transaction)}>Delete</Button> */}
+                                                    <Button size="small" className="label theme-bg text-white f-12" onClick={() => setOpenForm(transaction)}>More</Button>
                                                 </td>
                                             </tr>
 

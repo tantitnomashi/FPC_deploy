@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Card, Table, Tabs, Tab, Button } from 'react-bootstrap';
+import { Row, Col, Card, Table, Tabs, Tab, Button, Form, FormControl } from 'react-bootstrap';
 import API from '../../utils/adminApi';
 import Aux from "../../hoc/_Aux";
 import CabinetForm from './CabinetForm';
@@ -92,16 +92,15 @@ export default function Dashboard() {
 
 
         <Aux>
-            <CabinetForm reload={loadAdminCabinets} open={open} handleClickClose={setCloseForm} currentCabinet={currentCabinet} />
-            <TemplateForm open={openTemplate} handleClickClose={setCloseForm} />
-            <ConfirmDialog open={openConfirm}
-                tilte="Delete Confirm" message={"Are your sure to delete " + currentCabinet?.name} onAccess={() => requestDelete(currentCabinet?.name)} onCancel={setCloseForm} />
             <Row>
-                <Col md={6} xl={8}>
 
+                <Col className="text-left justify-content-start" md={6} xl={6}>
+                    <Form inline className=" justify-content-start d-flex align-items-center ">
+                        <FormControl type="text" placeholder="Search" className="mr-sm-2" />
+                        <Button variant="outline-secondary" className="mt-1">Search</Button>
+                    </Form>
                 </Col>
-
-                <Col md={6} xl={4}>
+                <Col className="text-right justify-content-end" md={6} xl={6}>
                     <div className="text-right mb-3">
                         <Button className="mx-2" size="small" onClick={() => setOpenForm()}>
                             Create Cabinet
@@ -114,7 +113,13 @@ export default function Dashboard() {
 
 
                 </Col>
+
             </Row>
+            <CabinetForm reload={loadAdminCabinets} open={open} handleClickClose={setCloseForm} currentCabinet={currentCabinet} />
+            <TemplateForm open={openTemplate} handleClickClose={setCloseForm} />
+            <ConfirmDialog open={openConfirm}
+                tilte="Delete Confirm" message={"Are your sure to delete " + currentCabinet?.name} onAccess={() => requestDelete(currentCabinet?.name)} onCancel={setCloseForm} />
+
             <Row>
 
                 <Col md={6} xl={12}>

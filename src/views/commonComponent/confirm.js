@@ -3,7 +3,7 @@ import { Button, Form } from 'react-bootstrap';
 import { TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Switch } from '@material-ui/core';
 
 export default function ConfirmDialog(props) {
-  const { open, title, message, onAccess, onCancel } = props;
+  const { open, title, message, onAccess, onCancel, item } = props;
   return (
     <div>
 
@@ -21,7 +21,7 @@ export default function ConfirmDialog(props) {
               </Button>
           <Button className='px-4' onClick={onAccess} color="primary">
             Open
-            </Button>
+          </Button>
         </DialogActions>
       </Dialog>
     </div>

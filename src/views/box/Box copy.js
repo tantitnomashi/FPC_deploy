@@ -145,6 +145,97 @@ export default function BoxSize({ match }) {
 
 
             </Row>
+            {/* 
+               // return <div
+                        //     id={item.id}
+                        //     className={"p-1 m-1 d-flex align-items-center justify-content-centern " + bgColor}
+                        //     style={{ width: `${w + 100}px`, height: `${h + 100}px`, border: '0.5px solid black' }}
+                        //     onClick={() => handleDetail(item.id)}
+
+                        // >
+                        //     <div className="row d-flex">
+                        //         <div className="text-center w-100 h-100" >
+                        //             <div className="text-dark text-center f-20">
+                        //                 {`Box ${item.boxNum}`}
+
+                        //             </div>
+                        //             <div className="text-dark text-center f-20" >
+                        //                 {item.rentingStatus === 1 ? "RENTING" : item.rentingStatus === 2 ? "EXPIRED" : "FREE"}
+                        //             </div>
+                        //         </div>
+                        //     </div>
+                        // </div> */}
+
+
+
+            {/* <Row>
+
+                <Col md={6} xl={12}>
+                    <Card className=''>
+                        <Card.Header>
+                            <Card.Title as='h5'>Box List</Card.Title>
+                        </Card.Header>
+                        <Card.Body className='px-3 py-2'>
+                            <Row className="unread py-3 px-1 my-2 border-bottom border-light">
+
+                                <Col md={3} className='text-left' >
+                                    Box Number
+                                </Col>
+
+                                <Col md={2} className='text-left'>
+                                    Rental Status
+                                </Col>
+                                <Col md={2} className='text-left '>
+                                    Status
+                                </Col>
+
+                                <Col md={2} className='justify-content-center'>
+                                </Col>
+                            </Row>
+                            {
+                                boxes?.map(element =>
+                                    <Row className="unread py-3 px-1 my-2 border-bottom border-light">
+
+                                        <Col md={3} className='text-left d-flex align-items-center'>
+                                            <h5 className="mb-1">{element.boxNum}</h5>
+                                        </Col>
+
+                                        <Col md={2} className='text-left '>
+                                            <h5 className="d-flex align-items-center">
+
+
+                                                {element.rentingStatusName}
+
+
+
+                                            </h5>
+                                        </Col>
+                                        <Col md={2} className='text-left '>
+                                            <h5 className=" d-flex align-items-center">
+
+
+                                                {element.statusName}
+
+
+                                            </h5>
+                                        </Col>
+
+                                        <Col md={2} className='d-flex justify-content-center '>
+                                            <Button size="small" variant="dark" className="label text-white f-12" onClick={() => handleDetail(element)}>Delete</Button>
+                                        </Col>
+                                    </Row>
+                                )
+                            }
+
+
+                        </Card.Body>
+                    </Card>
+                </Col>
+
+
+
+
+            </Row> */}
 
         </Aux >
     );

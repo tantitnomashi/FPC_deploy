@@ -6,6 +6,8 @@ const initialState = {
     isTrigger: [], //for active default menu, set blank for horizontal
     ...config,
     isFullScreen: false, // static can't change
+
+    dataBox: []
 };
 
 const reducer = (state = initialState, action) => {
@@ -67,8 +69,8 @@ const reducer = (state = initialState, action) => {
                     isTrigger: trigger,
                 };
             }
-            return {...state};
-        case actionTypes.FULL_SCREEN :
+            return { ...state };
+        case actionTypes.FULL_SCREEN:
             return {
                 ...state,
                 isFullScreen: !state.isFullScreen

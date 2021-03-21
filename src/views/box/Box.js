@@ -6,9 +6,10 @@ import Aux from "../../hoc/_Aux";
 import BoxSizeForm from '../boxsize/BoxSizeForm';
 import ConfirmDialog from './ActionDialog';
 import { element } from 'prop-types';
+import { useDispatch } from 'react-redux';
+import BoxDetail from './BoxDetail';
 
-
-export default function BoxSize({ match }) {
+export default function Box({ match }) {
 
     const cabinetId = match.params.id;
 
@@ -161,15 +162,43 @@ export default function BoxSize({ match }) {
         ]
     }
 
+    let testData = [];
     //demo => 
     const [exampleTemplate, setExampleTemplate] = useState(tmp);
 
     useEffect(() => {
         console.log("### Reload data..")
-        loadBoxesInCabinet();
+        loadDataRendering();
     }, []);
 
-    const loadBoxesInCabinet = () => {
+    useEffect(() => {
+        console.log("trigger exampleTemplate", exampleTemplate)
+        if (Object.keys(exampleTemplate).length) {
+            API.getBoxesInCabinet(cabinetId)
+                .then((response) => {
+                    if (response.data.statusCode == 200) {
+                        console.log("##Checklist boxes fr api", response.data.data);
+                        setBoxes(response.data.data);
+                        testData = response.data.data;
+
+
+                        // call generate view
+                        let dataView = generateView(response.data.data);
+                        console.log("data template", dataView)
+                        setDataTempleteArr(dataView);
+                    } else {
+                        alert('Cant get Boxes in Cabinet !')
+                    }
+                }).catch(e => console.log("ERR Box in Cabinet", e));
+
+        }
+    }, [exampleTemplate])
+
+    // console.log("aaaaaa", exampleTemplate)
+
+    console.log("Boxes outside", boxes)
+    const loadDataRendering = () => {
+
         API.getTemplateByCabinetId(cabinetId)
             .then((response) => {
 
@@ -177,21 +206,8 @@ export default function BoxSize({ match }) {
                     // force setting current Example immediately
                     console.log("##Checklist current example", response.data.data);
                     //setCurrentExample(response.data.data);
-
                     //print --> true 
                     setExampleTemplate(response.data.data);
-
-                    API.getBoxesInCabinet(cabinetId)
-                        .then((response) => {
-                            if (response.data.statusCode == 200) {
-                                console.log("##Checklist", response.data.data);
-                                setBoxes(response.data.data);
-                                let dataView = generateView(response.data.data);
-                                setDataTempleteArr(dataView);
-                            } else {
-                                alert('Cant get Boxes in Cabinet !')
-                            }
-                        }).catch(e => console.log("ERR Box in Cabinet", e));
 
                 } else {
                     alert('Cant get Template  !')
@@ -200,27 +216,11 @@ export default function BoxSize({ match }) {
 
 
         //get template
-
-
-
-
     }
-
-
-
-
-
-
-    // for generate view
-
-
-
-
     const setOpenForm = (currentBox) => {
         setOpen(true);
         setcurrentBox(currentBox);
     };
-
 
     const setCloseForm = () => {
         setOpen(false);
@@ -237,26 +237,44 @@ export default function BoxSize({ match }) {
             setExampleTemplate(arr);
         }
     }
+    const onOpenBox = (status) => {
+        console.log("Current Status update", status);
 
+        API.updateBoxStatus({
+            cabinetId: cabinetId,
+            boxNum: currentBox.boxNum,
+            status: status
+        }).then((response) => {
 
-    const handleDetail = (boxId) => {
+            if (response.data.statusCode == 200) {
 
+                console.log("##Update status successfull", response.data);
+
+            } else {
+                alert('Cant Update Box  !')
+            }
+        }).catch(e => console.log("ERR BOX status", e));
+
+        setCloseForm();
+        setTimeout(loadDataRendering, 100);
+    }
+
+    const handleDetail = (boxId, boxes) => {
         // boxes is emty
-        console.log("NNN", boxes)
-        boxes.map(element => console.log("$$$", element.id));
+        console.log("Id in handle", boxId)
+        console.log("Boxes in handle", boxes)
+        //console.log("Boxes in testData", testData)
+
         const found = boxes.find(element =>
             element.id == boxId
         );
-        alert("box" + boxId);
 
         if (found) {
-            setCurrentB(found);
+            setcurrentBox(found);
         } else {
-            setCurrentB(null);
+            setcurrentBox(null);
         }
         setOpenConfirm(true);
-
-
     }
 
 
@@ -268,7 +286,7 @@ export default function BoxSize({ match }) {
                     console.log(response.data, 'delete boxes ');
 
                     setBoxes(response.data.data);
-                    loadBoxesInCabinet();
+                    loadDataRendering();
                 } else {
                     alert('Cant Delete Size !')
                 }
@@ -279,12 +297,14 @@ export default function BoxSize({ match }) {
     const generateView = (items) => {
         let view = [];
         let data4View = [];
+        console.log("##Generate view ....");
+        console.log("##Generate current boxes", boxes);
+        console.log("##Generate current example", exampleTemplate);
         for (let i = 0; i < exampleTemplate.colsCnt; i++) {
             view.push([]);
             data4View.push([]);
         }
-        console.log("Boxes", boxes);
-        console.log("##Checklist current example", exampleTemplate);
+
 
         exampleTemplate.boxConfigurations.map((c) => {
             let index = c.topLeftPosition.indexOf(",");
@@ -313,7 +333,7 @@ export default function BoxSize({ match }) {
                 if (e1.top != currentIndex) {
                     for (let iL = 0; iL < e1.top - currentIndex; iL++) {
 
-                        boxView.push(Box(null, iArr, 30, 30));
+                        boxView.push(BoxItem(null, iArr, 30, 30));
                     }
                     currentIndex = e1.top;
                 }
@@ -324,38 +344,22 @@ export default function BoxSize({ match }) {
                 if (e1.sizeName === "Medium Potrait") {
                     e1.h *= 2.4;
                 }
-                boxView.push(Box(items, e1, e1.w, e1.h));
+                boxView.push(BoxItem(items, e1, e1.w, e1.h));
             })
         });
         return view;
     }
 
-    const Box = (boxNums, e, w, h) => {
+    const BoxItem = (boxNums, e, w, h) => {
         if (e?.id && boxNums?.length > 2) {
             return <div key={e.id}>
                 {boxNums?.map((item) => {
                     let bgColor = item.rentingStatus === 1 ? "bg-warning" : item.rentingStatus === 2 ? "bg-danger" : "bg-primary"
 
                     if (e.id == item.positionId) {
-                        return <div
-                            id={item.id}
-                            className={"p-1 m-1 d-flex align-items-center justify-content-centern " + bgColor}
-                            style={{ width: `${w + 100}px`, height: `${h + 100}px`, border: '0.5px solid black' }}
-                            onClick={() => handleDetail(item.id)}
+                        return <BoxDetail id={item.id} handleDetail={handleDetail} w={w} h={h} bgColor={bgColor} item={item} boxes={boxNums} ></BoxDetail>
 
-                        >
-                            <div className="row d-flex">
-                                <div className="text-center w-100 h-100" >
-                                    <div className="text-dark text-center f-20">
-                                        {`Box ${item.boxNum}`}
 
-                                    </div>
-                                    <div className="text-dark text-center f-20" >
-                                        {item.rentingStatus === 1 ? "RENTING" : item.rentingStatus === 2 ? "EXPIRED" : "FREE"}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     } else {
                         return null;
                     }
@@ -371,91 +375,37 @@ export default function BoxSize({ match }) {
 
 
 
-
-
-
-
-
-
-
-
-
     return (
 
 
         < Aux >
-            <div className="d-flex flex-row">
-                {
-                    dataTemplateArr.map((e, i) => (
-                        <div key={i}>
-                            {e.map((b) => b)}
-                        </div>
-                    ))
-                }
-            </div>
 
-
-            <ConfirmDialog open={openConfirm}
-                tilte="Box Detail " currentBox={currentBox} message={"Choose action for this box " + currentBox?.boxNum} onAccess={setCloseForm} onCancel={setCloseForm} />
-
-            {/* <Row>
+            <Row>
 
                 <Col md={6} xl={12}>
                     <Card className=''>
                         <Card.Header>
-                            <Card.Title as='h5'>Box List</Card.Title>
+                            <Card.Title as='h5'>Box Management</Card.Title>
                         </Card.Header>
                         <Card.Body className='px-3 py-2'>
                             <Row className="unread py-3 px-1 my-2 border-bottom border-light">
 
-                                <Col md={3} className='text-left' >
-                                    Box Number
+                                <Col md={4} className='text-left' >
+                                    <h4>Cabinet Infomation</h4>
                                 </Col>
 
-                                <Col md={2} className='text-left'>
-                                    Rental Status
-                                </Col>
-                                <Col md={2} className='text-left '>
-                                    Status
-                                </Col>
-
-                                <Col md={2} className='justify-content-center'>
+                                <Col md={8} className='text-left'>
+                                    <div className="d-flex flex-row text-center justify-content-center">
+                                        {
+                                            dataTemplateArr.map((e, i) => (
+                                                <div key={i}>
+                                                    {e.map((b) => b)}
+                                                </div>
+                                            ))
+                                        }
+                                    </div>
                                 </Col>
                             </Row>
-                            {
-                                boxes?.map(element =>
-                                    <Row className="unread py-3 px-1 my-2 border-bottom border-light">
-
-                                        <Col md={3} className='text-left d-flex align-items-center'>
-                                            <h5 className="mb-1">{element.boxNum}</h5>
-                                        </Col>
-
-                                        <Col md={2} className='text-left '>
-                                            <h5 className="d-flex align-items-center">
-
-
-                                                {element.rentingStatusName}
-
-
-
-                                            </h5>
-                                        </Col>
-                                        <Col md={2} className='text-left '>
-                                            <h5 className=" d-flex align-items-center">
-
-
-                                                {element.statusName}
-
-
-                                            </h5>
-                                        </Col>
-
-                                        <Col md={2} className='d-flex justify-content-center '>
-                                            <Button size="small" variant="dark" className="label text-white f-12" onClick={() => handleDetail(element)}>Delete</Button>
-                                        </Col>
-                                    </Row>
-                                )
-                            }
 
 
                         </Card.Body>
@@ -465,7 +415,15 @@ export default function BoxSize({ match }) {
 
 
 
-            </Row> */}
+            </Row>
+
+
+            <ConfirmDialog open={openConfirm}
+                tilte="Box Detail" currentBox={currentBox}
+                message={"Choose an action for this box " + currentBox?.boxNum}
+                item={currentBox} onOpenBox={onOpenBox} onCancel={setCloseForm} />
+
+
 
         </Aux >
     );

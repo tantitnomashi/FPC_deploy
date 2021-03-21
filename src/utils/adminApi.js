@@ -45,6 +45,9 @@ const adminApi = {
 	getTemplateByCabinetId: (id) => instance.get('/v1/cabinets/' + id + '/template-info'),
 
 
+	// API for Box 
+	updateBoxStatus: (params) => instance.post('/v1/boxes/status/' + params.status + '?cabinetId=' + params.cabinetId + '&boxNum=' + params.boxNum),
+
 	// API for Box Size Model
 	getBoxSizes: () => instance.get('/v1/box-sizes'),
 	createBoxSize: (params) => instance.post('/v1/box-sizes', params),

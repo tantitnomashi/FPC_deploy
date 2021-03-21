@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 
-const ngrokID = 'a392a7110335'
+const ngrokID = 'f58ef2ce31e9'
 const route_api = 'https://' + ngrokID + '.ngrok.io'
 const instance = axios.create({
 	baseURL: `${route_api}/api`,
@@ -30,7 +30,6 @@ const adminApi = {
 
 	// API for Cainet Model
 	getCabitnet: () => instance.get('/v1/cabinets'),
-	getCabitnetTemplate: () => instance.get('/v1/cabinet-templates'),
 	updateCabinet: (id, params) => {
 		console.log('/v1/cabinets/' + id, params);
 		return instance.post('/v1/cabinets/' + id, params)
@@ -38,6 +37,12 @@ const adminApi = {
 	createCabinet: (params) => instance.post('/v1/cabinets', params),
 	deleteCabinet: (id) => instance.delete('/v1/cabinets/' + id),
 	getBoxesInCabinet: (id) => instance.get('/v1/cabinets/' + id + '/boxes'),
+	getCabinetById: (id) => instance.get('/v1/cabinets/' + id),
+
+
+	// API for Cainet Template
+	getCabitnetTemplate: () => instance.get('/v1/cabinet-templates'),
+	getTemplateByCabinetId: (id) => instance.get('/v1/cabinets/' + id + '/template-info'),
 
 
 	// API for Box Size Model

@@ -49,6 +49,7 @@ export default function Transaction() {
                         return new Date(b.createdAt) - new Date(a.createdAt);
                     })
                     setTrans(tmp);
+                    // setFilterList(tmp)
                 } else {
                     alert('Cant get Trans !')
                 }
@@ -90,7 +91,7 @@ export default function Transaction() {
                 setActiveFilter([]);
 
             } else {
-                setActiveFilter(filterList.map(filter => filter.value));
+                setActiveFilter(filterList.map(filter => filter.statusName));
             }
         } else {
             if (activeFilter.includes(filter)) {
@@ -101,10 +102,14 @@ export default function Transaction() {
 
             } else {
                 setActiveFilter([...activeFilter, filter]);
-
             }
+            setTimeout(console.log("active filter", activeFilter)
+                , 200);
+
         }
     }
+
+
 
     let filteredList;
     if (
@@ -112,10 +117,14 @@ export default function Transaction() {
         activeFilter.length === filterList.length
     ) {
         filteredList = trans;
+        console.log("show res", filteredList);
+
     } else {
         filteredList = trans.filter(item =>
-            activeFilter.includes(item.type)
+            activeFilter.includes(item.statusName)
         );
+        console.log("show res", filteredList);
+
     }
 
     return (
@@ -134,32 +143,26 @@ export default function Transaction() {
 
                                 <div id="basic-collapse">
                                     <div>
-                                        <Form>
-                                            {/* <div className="mb-3 f-16 text-dark">
-                                                <Form.Check inline label="Requesting" />
-                                                <Form.Check inline label="Accepted" />
-                                                <Form.Check inline label="Renting" />
-                                                <Form.Check inline label="Finished" />
-                                                <Form.Check inline label="Expired" />
-                                            </div> */}
-                                            <label className="mx-1" type="checkbox"
-                                                htmlFor="myInput">All</label>
+                                        <Form className="text-dark">
+
                                             <input
                                                 className="mx-1" type="checkbox"
-
                                                 type="checkbox"
                                                 onClick={() => onFilterChange("ALL")}
                                                 checked={activeFilter.length === filterList.length}
                                             />
+                                            <label className="mx-1" type="checkbox"
+                                                htmlFor="myInput">All</label>
 
                                             {filterList.map(filter => (
                                                 <React.Fragment className="f-15">
-                                                    <label htmlFor={filter.status}>{filter.statusName}</label>
+
                                                     <input
                                                         className="mx-1" type="checkbox"
-                                                        checked={activeFilter.includes(filter.value)}
-                                                        onClick={() => onFilterChange(filter.value)}
+                                                        checked={activeFilter.includes(filter.statusName)}
+                                                        onClick={() => onFilterChange(filter.statusName)}
                                                     />
+                                                    <label htmlFor={filter.status}>{filter.statusName}</label>
                                                 </React.Fragment>
                                             ))}
                                         </Form>
@@ -177,7 +180,7 @@ export default function Transaction() {
                 <Col className="text-right justify-content-end" md={6} xl={6}>
                     <Form inline className="justify-content-end">
                         <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-                        <Button variant="outline-secondary">Search</Button>
+                        <Button size="sm" variant="outline-secondary">Search</Button>
                     </Form>
 
                 </Col>
@@ -251,19 +254,8 @@ export default function Transaction() {
                                 <tbody>
 
                                     {
-                                        filteredList.map(item => (
-                                            <div key={item.id}>
-                                                <li>
-                                                    {item.name} -- {item.type}
-                                                </li>
-                                            </div>
-                                        ))
-                                    }
 
-
-                                    {
-
-                                        trans.map(transaction =>
+                                        filteredList.map(transaction =>
 
                                             <tr className="unread row">
                                                 <td className="col-md-1 justify-content-center text-center d-flex align-items-center">

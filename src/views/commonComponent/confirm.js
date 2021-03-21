@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button } from 'react-bootstrap';
-import { TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
+import { Button, Form } from 'react-bootstrap';
+import { TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Switch } from '@material-ui/core';
 
 export default function ConfirmDialog(props) {
   const { open, title, message, onAccess, onCancel } = props;
@@ -20,8 +20,8 @@ export default function ConfirmDialog(props) {
             Cancel
               </Button>
           <Button className='px-4' onClick={onAccess} color="primary">
-            OK
-              </Button>
+            Open
+            </Button>
         </DialogActions>
       </Dialog>
     </div>

@@ -173,13 +173,13 @@ export default function UserForm(props) {
     return (
         <div>
 
-            <Dialog maxWidth={'lg'} className="dialog-userForm" open={open} onClose={handleClickClose} aria-labelledby="form-dialog-title">
+            <Dialog maxWidth={'xl'} className="dialog-userForm" open={open} onClose={handleClickClose} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">{currentCabinet ? "Update" : "Create Cabinet"}</DialogTitle>
                 <DialogContent>
                     <ConfirmDialog open={openConfirm}
                         tilte="Add Location" message={"Do you want to add " + selectedAddress.buildingName + ' ?'} onAccess={() => submitAddLocation()} onCancel={setCloseForm} />
 
-                    <Form>
+                    <Form className="w-100">
                         <Form.Row>
 
                             <Col md={6} xl={6}>
@@ -275,33 +275,42 @@ export default function UserForm(props) {
                                 </DialogActions>
 
                             </Col>
+
                             <Col md={6} xl={6}>
-                                <div style={{ display: "inline-block" }}>
-                                    <div style={{
-                                        width: '500px', height: '350px',
-                                        backgroundImage: `url('${selectedTemplate?.imgUrl}')`,
-                                        backgroundRepeat: 'no-repeat',
-                                        backgroundSize: 'contain'
-
-                                    }} >
-                                    </div>
-                                </div>
                                 <div>
-                                    <p>Choose cabinet template</p>
-                                    <div>
-                                        {template.map((value, index) =>
-                                            <div style={{
-                                                position: 'relative', display: 'inline-block', width: '80px', height: '50px', marginRight: '3px'
-                                            }} onClick={() => setSelectedTemplate(value)}>
-                                                <img width='80' src={value.imgUrl} fluid />
+                                    <div style={{ display: "inline-block" }}>
+                                        <div style={{
+                                            width: '500px', height: '350px',
+                                            backgroundImage: `url('${selectedTemplate?.imgUrl}')`,
+                                            backgroundRepeat: 'no-repeat',
+                                            backgroundSize: 'contain'
 
-                                                {selectedTemplate.id == value.id && <div style={{ position: 'absolute', top: '0', right: '0', color: 'greenyellow' }}>
-                                                    <span class="material-icons">check_circle</span>
-                                                </div>}
-                                            </div>
-                                        )}
+                                        }} >
+                                        </div>
                                     </div>
+                                    {!currentCabinet &&
+                                        <div>
+
+
+                                            <p>Choose cabinet template</p>
+                                            <div>
+                                                {template.map((value, index) =>
+                                                    <div style={{
+                                                        position: 'relative', display: 'inline-block', width: '80px', height: '50px', marginRight: '3px'
+                                                    }} onClick={() => setSelectedTemplate(value)}>
+                                                        <img width='80' src={value.imgUrl} fluid />
+
+                                                        {selectedTemplate.id == value.id && <div style={{ position: 'absolute', top: '0', right: '0', color: 'greenyellow' }}>
+                                                            <span class="material-icons">check_circle</span>
+                                                        </div>}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    }
                                 </div>
+
+
                             </Col>
 
                         </Form.Row>

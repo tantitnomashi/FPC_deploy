@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Button, Image, Form, FormControl, InputGroup } from 'react-bootstrap';
 import { TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
+import API from '../../utils/adminApi'
 
 export default function TemplateForm(props) {
     const { open, handleClickClose, currentProfile } = props;
@@ -8,6 +9,23 @@ export default function TemplateForm(props) {
     const [imagePreviewUrl, setImagePreviewUrl] = useState();
     const [boxAmount, setBoxAmount] = useState(4);
     const [arrBox, setArrBox] = useState([]);
+    const loadAdminBoxSize = () => {
+        API.getBoxSizes()
+            .then((response) => {
+                if (response.data.statusCode == 200) {
+                    console.log('load size ', response.data.data);
+                    setSize(response.data.data);
+                } else {
+                    alert('Cant get Cabi !')
+                }
+            }).catch(e => console.log(e + "hihi"));
+
+    }
+    const [size, setSize] = React.useState([]);
+
+    useEffect(() => {
+        loadAdminBoxSize();
+    }, []);
 
     let demoType = [
         {
@@ -55,16 +73,24 @@ export default function TemplateForm(props) {
                         alignItems: "center",
                         fontSize: "1.2em"
                     }}>Box {i + 1} </Col>
-                    <Col md={9} xl={9}>
+                    <Col md={6} xl={4}>
+
                         <div className="btn-group" role="group">
-                            <input type="radio" class="btn-check" name={'size' + i} id={"btnradio1" + i} defaultChecked={true} />
-                            <label className="btn btn-outline-primary" htmlFor={"btnradio1" + i} style={{ borderTopLeftRadius: '5px', borderBottomLeftRadius: '5px' }}>Small</label>
 
-                            <input type="radio" class="btn-check" name={'size' + i} id={"btnradio2" + i} />
-                            <label className="btn btn-outline-primary" htmlFor={"btnradio2" + i}>Medium</label>
+                            <select id={"size" + i} class="form-select" aria-label="Default select example">
+                                {
 
-                            <input type="radio" class="btn-check" name={'size' + i} id={"btnradio3" + i} />
-                            <label className="btn btn-outline-primary" htmlFor={"btnradio3" + i}>Large</label>
+                                    size?.map((value, index) =>
+                                        <option value={value.id} selected={index == 0 ? true : false}>{value.sizeName}</option>
+                                    )
+                                }
+                            </select>
+                        </div>
+                    </Col>
+                    <Col md={3} xl={4}>
+                        <div className="btn-group d-flex align-items-center justify-content-start" role="group">
+                            <label htmlFor={"position" + i} className="mr-2">Position</label>
+                            <input type="text" className="form-control" name={'position' + i} id={"position" + i} />
                         </div>
                     </Col>
                 </Row>
@@ -75,6 +101,37 @@ export default function TemplateForm(props) {
 
         setArrBox(arr);
 
+    }
+
+    const sumbitFormTemplate = () => {
+        let boxConfigs = [];
+
+        for (var i = 0; i < boxAmount; i++) {
+            var e = document.getElementById("size" + i);
+            var value = e.options[e.selectedIndex].value;
+            let tmp = {
+                boxSizeTypeId: parseInt(value),
+                topLeftPosition: document.getElementById('position' + i).value,
+                boxNum: i
+            }
+            boxConfigs.push(tmp);
+        }
+
+        let tmp = {
+            name: document.getElementById('name').value,
+            boxCnt: parseInt(boxAmount),
+            rowsCnt: 3,
+            colsCnt: 3,
+            imgUrl: 'https://picsum.photos/300/400',
+            boxConfigurations: boxConfigs,
+
+        }
+        console.log("### Box Configs:", tmp);
+        API.createCabinetTemplate(tmp).then((response) => {
+            console.log("create: ", response.data.statusCode);
+        }).catch(e => console.log("###create Cabinet Template ERR", e));
+
+        handleClickClose();
     }
 
 
@@ -95,7 +152,7 @@ export default function TemplateForm(props) {
                 <Form>
                     <Row>
 
-                        <Col md={6} xl={6}>
+                        <Col md={8} xl={7}>
                             <Form.Label column lg={12}>Name </Form.Label>
                             <Form.Control className="my-1" id="name" name="cabinet-name"
                                 label="Name"
@@ -118,7 +175,24 @@ export default function TemplateForm(props) {
 
 
                         </Col>
-                        <Col md={6} xl={6}>
+                        {/* <Col md={4} xl={5}>
+
+                            <img src={imagePreviewUrl} size='sm'
+                                style={{ width: '600px', height: '380px', objectFit: 'scale-down' }}
+                            />
+
+                            <div>
+                                <Form.Group>
+                                    <Form.File
+                                        onChange={(e) => { handleImageChange(e) }}
+                                        variant="secondary" id="chooseFile" label="Upload template image" />
+                                </Form.Group>
+
+                            </div>
+
+                        </Col> */}
+
+                        <Col md={4} xl={5}>
 
                             <img src={imagePreviewUrl} size='sm'
                                 style={{ width: '600px', height: '380px', objectFit: 'scale-down' }}
@@ -146,7 +220,7 @@ export default function TemplateForm(props) {
                 <Button onClick={handleClickClose} variant="secondary">
                     Cancel
               </Button>
-                <Button className='px-4' onClick={handleClickClose} variant="dark">
+                <Button className='px-4' onClick={sumbitFormTemplate} variant="dark">
                     Save
               </Button>
             </DialogActions>

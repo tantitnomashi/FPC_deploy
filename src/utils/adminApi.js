@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 
-const ngrokID = 'f58ef2ce31e9'
+const ngrokID = 'aa3f1b1c2b4b'
 const route_api = 'https://' + ngrokID + '.ngrok.io'
 const instance = axios.create({
 	baseURL: `${route_api}/api`,
@@ -41,6 +41,7 @@ const adminApi = {
 
 
 	// API for Cainet Template
+	createCabinetTemplate: (params) => instance.post('/v1/cabinet-templates', params),
 	getCabitnetTemplate: () => instance.get('/v1/cabinet-templates'),
 	getTemplateByCabinetId: (id) => instance.get('/v1/cabinets/' + id + '/template-info'),
 

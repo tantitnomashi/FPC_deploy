@@ -36,12 +36,10 @@ export default function BoxSize(props) {
 
                     </div>
                     <div className="text-dark text-center f-20" >
-                        {(item?.rentingStatus == 0) && 'REQUESTING'}
-                        {(item?.rentingStatus == 1) && 'ACCEPTED'}
-                        {(item?.rentingStatus == 2) && 'RENTING'}
-                        {(item?.rentingStatus == 3) && 'FINISHED'}
-                        {(item?.rentingStatus == 3) && 'CANCELED'}
-                        {(item?.rentingStatus == 3) && 'EXPIRED'}
+                        {(item?.rentingStatus == 0) && 'FREE'}
+                        {(item?.rentingStatus == 1) && 'RENTING'}
+                        {(item?.rentingStatus == 2) && 'EXPIRED'}
+
                     </div>
                 </div>
             </div>

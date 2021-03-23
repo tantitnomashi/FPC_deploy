@@ -41,20 +41,26 @@ export default function ActionDialog(props) {
                             <Button className='px-4' onClick={() => onOpenBox(1)} variant="primary">
                                 Open
                            </Button>
-                            <Button className='px-4' onClick={() => onOpenBox(2)} variant="danger">
-                                DeActive
-                          </Button>
+                            {(item?.rentingStatus != 1) &&
+
+                                <Button className='px-4' onClick={() => onOpenBox(2)} variant="danger">
+                                    DeActive
+                             </Button>
+                            }
                         </div>
 
                     }
                     {(item?.status == 1) &&
+
                         <div>
-                            <Button className='px-4' onClick={() => onOpenBox(0)} variant="warning">
-                                Lock
-                           </Button>
-                            <Button className='px-4' onClick={() => onOpenBox(2)} variant="danger">
-                                DeActive
-                          </Button>
+
+                            {(item?.rentingStatus != 1) &&
+
+                                <Button className='px-4' onClick={() => onOpenBox(2)} variant="danger">
+                                    DeActive
+                             </Button>
+                            }
+
                         </div>}
                     {(item?.status == 2) && <Button className='px-4' onClick={() => onOpenBox(3)} variant="success">
                         Active
@@ -64,9 +70,12 @@ export default function ActionDialog(props) {
                             <Button className='px-4' onClick={() => onOpenBox(1)} variant="primary">
                                 Open
                            </Button>
-                            <Button className='px-4' onClick={() => onOpenBox(2)} variant="danger">
-                                DeActive
+                            {(item?.rentingStatus != 1) &&
+
+                                <Button className='px-4' onClick={() => onOpenBox(2)} variant="danger">
+                                    DeActive
                              </Button>
+                            }
                         </div>
                     }
 

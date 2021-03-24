@@ -34,9 +34,6 @@ export default function Dashboard() {
                 if (response.data.statusCode == 200) {
                     //  console.log('load users ', response.data.data[0]);
                     setUser(response.data.data);
-                } else if (response.data.statusCode == 201) {
-                    setUser(response.data.data);
-
                 } else {
                     alert('Cant get Users !')
                 }

@@ -17,16 +17,7 @@ export default {
                     display: true,
 
                 },
-                {
-                    id: 'transaction',
-                    title: 'Transactions',
-                    type: 'item',
-                    url: '/transaction',
-                    icon: 'feather icon-trending-up',
-                    display: true,
 
-                }
-                ,
                 {
                     id: 'boxsize',
                     title: 'Box Size',
@@ -76,11 +67,31 @@ export default {
                     icon: 'feather icon-home',
                 },
                 {
+                    id: 'transaction',
+                    title: 'Transactions',
+                    type: 'item',
+                    url: '/transaction',
+                    icon: 'feather icon-trending-up',
+                    display: true,
+
+                }
+                ,
+                {
                     id: 'user',
                     title: 'Users',
                     type: 'item',
                     url: '/user',
                     icon: 'feather icon-users',
+                    display: true,
+
+                }
+                ,
+                {
+                    id: 'request',
+                    title: 'Checking Request',
+                    type: 'item',
+                    url: '/checking',
+                    icon: 'feather icon-triangle',
                     display: true,
 
                 }

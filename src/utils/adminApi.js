@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 
-const ngrokID = 'aa3f1b1c2b4b'
+const ngrokID = '2df5a9829351'
 const route_api = 'https://' + ngrokID + '.ngrok.io'
 const instance = axios.create({
 	baseURL: `${route_api}/api`,
@@ -75,6 +75,17 @@ const adminApi = {
 	getTimeSlots: () => instance.get('/v1/rent-time-slots'),
 	deleteTimeSlot: (id) => instance.delete('/v1/rent-time-slots/' + id),
 	createTimeSlot: (params) => instance.post('/v1/rent-time-slots', params),
+
+
+
+	// API for Checking Request
+
+	getCheckingRequest: () => instance.get('/v1/checking-request'),
+	createCheckingRequest: (params) => instance.post('/v1/checking-request', params),
+
+
+
+
 
 
 	detailRequest: (params) => instance.post('/request/post_fb_detail', params),

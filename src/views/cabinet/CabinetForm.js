@@ -199,7 +199,7 @@ export default function UserForm(props) {
 
                                 <InputGroup className="my-1 mb-2" id="address" >
 
-                                    <Form.Control as="select" value={currentCabinet ? currentCabinet.locationId : locations[0]?.id} custom
+                                    <Form.Control as="select" defaultValue={currentCabinet ? currentCabinet.locationId : locations[0]?.id} custom
                                         onChange={(e) => {
                                             let text = e.target.value;
 

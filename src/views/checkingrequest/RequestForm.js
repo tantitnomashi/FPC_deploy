@@ -6,11 +6,11 @@ import API from '../../utils/adminApi'
 export default function RequestForm(props) {
     var sapmle = [
         {
-            type: 0,
+            type: 1,
             name: "Check Box"
         },
         {
-            type: 1,
+            type: 0,
             name: "Check Connection"
         },
         {
@@ -44,6 +44,8 @@ export default function RequestForm(props) {
                 if (response.data.statusCode == 200) {
                     console.log('load cabinets ', response.data.data[0]);
                     setCabinets(response.data.data);
+                    setSelectedCabinet(response.data.data[0]?.id);
+
                 } else {
                     alert('Cant get Cabi !')
                 }
@@ -53,6 +55,13 @@ export default function RequestForm(props) {
                 if (response.data.statusCode == 200) {
                     //  console.log('load users ', response.data.data[0]);
                     setUser(response.data.data);
+                    const found = response.data.data.find(element =>
+                        element.roleId == 2
+                    );
+                    if (found) {
+                        setSelectedStaff(found.userName);
+
+                    }
                 } else {
                     alert('Cant get Users !')
                 }
@@ -126,9 +135,14 @@ export default function RequestForm(props) {
                                     }} >
 
                                     {
-                                        users.map(value =>
-                                            <option value={value.userName}>{value.fullName}</option>
-                                        )
+                                        users.map(value => {
+                                            console.log("role", value.roleId);
+                                            return (value.roleId == 2) && <option value={value.userName}>{value.fullName}</option>
+
+                                        })
+
+
+
                                     }
 
                                 </Form.Control>

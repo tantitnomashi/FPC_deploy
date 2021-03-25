@@ -9,6 +9,9 @@ import { element } from 'prop-types';
 import { useDispatch } from 'react-redux';
 import BoxDetail from './BoxDetail';
 
+
+const MAX_PADDING = 2;
+const SIZE = 4;
 export default function Box({ match }) {
 
     const cabinetId = match.params.id;
@@ -24,147 +27,10 @@ export default function Box({ match }) {
     const [dataTemplateArr, setDataTempleteArr] = useState([]);
 
     //demo obj 
-    let tmp = {
-        id: 1016,
-        boxCnt: 9,
-        createdAt: "2021-03-16T22:37:23.067",
-        updatedAt: "2021-03-16T22:37:23.067",
-        rowsCnt: 5,
-        colsCnt: 3,
-        imgUrl: "nothing to show",
-        boxConfigurations: [
-            {
-                id: 1124,
-                topLeftPosition: "1,1",
-                boxNum: 1,
-                boxSizeType: {
-                    id: 1016,
-                    sizeName: "Small",
-                    virtualWidth: 1,
-                    virtualHeight: 1,
-                    actualWidth: 30,
-                    actualHeight: 30,
-                    priceWeight: 1.2
-                }
-            },
-            {
-                id: 1125,
-                topLeftPosition: "1,2",
-                boxNum: 2,
-                boxSizeType: {
-                    id: 1017,
-                    sizeName: "Medium Potrait",
-                    virtualWidth: 1,
-                    virtualHeight: 2,
-                    actualWidth: 30,
-                    actualHeight: 60,
-                    priceWeight: 1.7
-                }
-            },
-            {
-                id: 1126,
-                topLeftPosition: "1,3",
-                boxNum: 3,
-                boxSizeType: {
-                    id: 1017,
-                    sizeName: "Medium Potrait",
-                    virtualWidth: 1,
-                    virtualHeight: 2,
-                    actualWidth: 30,
-                    actualHeight: 60,
-                    priceWeight: 1.7
-                }
-            },
-            {
-                id: 1127,
-                topLeftPosition: "2,1",
-                boxNum: 4,
-                boxSizeType: {
-                    id: 1019,
-                    sizeName: "Large Potrait",
-                    virtualWidth: 1,
-                    virtualHeight: 3,
-                    actualWidth: 30,
-                    actualHeight: 90,
-                    priceWeight: 2.2
-                }
-            },
-            {
-                id: 1128,
-                topLeftPosition: "4,2",
-                boxNum: 5,
-                boxSizeType: {
-                    id: 1016,
-                    sizeName: "Small",
-                    virtualWidth: 1,
-                    virtualHeight: 1,
-                    actualWidth: 30,
-                    actualHeight: 30,
-                    priceWeight: 1.2
-                }
-            },
-            {
-                id: 1129,
-                topLeftPosition: "4,3",
-                boxNum: 6,
-                boxSizeType: {
-                    id: 1016,
-                    sizeName: "Small",
-                    virtualWidth: 1,
-                    virtualHeight: 1,
-                    actualWidth: 30,
-                    actualHeight: 30,
-                    priceWeight: 1.2
-                }
-            },
-            {
-                id: 1130,
-                topLeftPosition: "5,1",
-                boxNum: 7,
-                boxSizeType: {
-                    id: 1016,
-                    sizeName: "Small",
-                    virtualWidth: 1,
-                    virtualHeight: 1,
-                    actualWidth: 30,
-                    actualHeight: 30,
-                    priceWeight: 1.2
-                }
-            },
-            {
-                id: 1131,
-                topLeftPosition: "5,2",
-                boxNum: 8,
-                boxSizeType: {
-                    id: 1016,
-                    sizeName: "Small",
-                    virtualWidth: 1,
-                    virtualHeight: 1,
-                    actualWidth: 30,
-                    actualHeight: 30,
-                    priceWeight: 1.2
-                }
-            },
-            {
-                id: 1132,
-                topLeftPosition: "5,3",
-                boxNum: 9,
-                boxSizeType: {
-                    id: 1016,
-                    sizeName: "Small",
-                    virtualWidth: 1,
-                    virtualHeight: 1,
-                    actualWidth: 30,
-                    actualHeight: 30,
-                    priceWeight: 1.2
-                }
-            }
-        ]
-    }
 
     let testData = [];
     //demo => 
-    const [exampleTemplate, setExampleTemplate] = useState(tmp);
+    const [exampleTemplate, setExampleTemplate] = useState({});
 
     useEffect(() => {
         console.log("### Reload data..")
@@ -320,7 +186,7 @@ export default function Box({ match }) {
                 top: top,
                 numBox: numBox,
                 w: c.boxSizeType.actualWidth,
-                h: c.boxSizeType.actualHeight
+                h: c.boxSizeType.actualHeight// + ((numBox - 1) * MAX_PADDING / 2)
             });
 
         });
@@ -338,12 +204,7 @@ export default function Box({ match }) {
                     currentIndex = e1.top;
                 }
                 currentIndex += indexTmp;
-                if (e1.sizeName === "Large Potrait") {
-                    e1.h *= 3.05;
-                }
-                if (e1.sizeName === "Medium Potrait") {
-                    e1.h *= 2.4;
-                }
+
                 boxView.push(BoxItem(items, e1, e1.w, e1.h));
             })
         });
@@ -357,9 +218,7 @@ export default function Box({ match }) {
                     let bgColor = item.rentingStatus === 1 ? "bg-warning" : item.rentingStatus === 2 ? "bg-danger" : "bg-primary"
 
                     if (e.id == item.positionId) {
-                        return <BoxDetail id={item.id} handleDetail={handleDetail} w={w} h={h} bgColor={bgColor} item={item} boxes={boxNums} ></BoxDetail>
-
-
+                        return <BoxDetail id={item.id} handleDetail={handleDetail} p={MAX_PADDING} w={w * SIZE} h={h * SIZE} bgColor={bgColor} item={item} boxes={boxNums} ></BoxDetail>
                     } else {
                         return null;
                     }
@@ -367,8 +226,10 @@ export default function Box({ match }) {
                 }
             </div>
         } else {
-            return <div className="p-1 m-1 d-flex align-items-center justify-content-center" id={e.id} style={{ width: `${w + 100}px`, height: `${h + 96}px`, border: '0.5px solid black', backgroundColor: 'grey' }}>
+            return <div id={e.id} style={{ padding: `${MAX_PADDING}px`, width: `${w * SIZE}px`, height: `${h * SIZE}px` }}>
+                <div className="bg-secondary w-100 h-100">
 
+                </div>
             </div>
         }
     }
@@ -395,7 +256,7 @@ export default function Box({ match }) {
                                 </Col>
 
                                 <Col md={8} className='text-left'>
-                                    <div className="d-flex flex-row text-center justify-content-center">
+                                    <div className="d-flex flex-row">
                                         {
                                             dataTemplateArr.map((e, i) => (
                                                 <div key={i}>

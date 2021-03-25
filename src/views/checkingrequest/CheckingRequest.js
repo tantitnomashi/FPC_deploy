@@ -24,11 +24,11 @@ export default function Request() {
 
     var sapmle = [
         {
-            type: 0,
+            type: 1,
             name: "Check Box"
         },
         {
-            type: 1,
+            type: 0,
             name: "Check Connection"
         },
         {

@@ -5,25 +5,25 @@ import Aux from "../../hoc/_Aux";
 
 
 export default function BoxSize(props) {
-    const { handleDetail, id, w, h, bgColor, item, boxes } = props;
+    const { handleDetail, id, w, h, bgColor, item, boxes, p } = props;
 
 
     console.log("boxes", boxes, id);
 
     return (
 
-        <div
-            className={"p-1 m-1 d-flex align-items-center justify-content-center font-weight-light  " + bgColor}
-            style={{ width: `${w + 100}px`, height: `${h + 100}px`, border: '0.5px solid black' }}
+        <div //className="d-flex align-items-center justify-content-center"
+            style={{ width: `${w}px`, height: `${h}px`, padding: `${p}px` }}
             onClick={() => {
                 console.log("in detail", boxes);
                 handleDetail(id, boxes)
             }}
 
         >
-            <div className="row d-flex">
-                <div className="text-center w-100 h-100" >
-                    <div className="text-dark text-center d-flex align-items-center justify-content-center  f-20">
+            <div className={" d-flex align-items-center  justify-content-center w-100 h-100 " + bgColor}>
+                <div className="text-center"    >
+                    <div className="text-dark text-center  f-20"
+                    >
                         {(item?.status == 0) && <span class="material-icons">lock</span>}
                         {(item?.status == 1) && <span class="material-icons"> lock_open </span>}
                         {(item?.status == 2) && <span class="material-icons">gavel</span>}
@@ -43,7 +43,7 @@ export default function BoxSize(props) {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
 
 
     );

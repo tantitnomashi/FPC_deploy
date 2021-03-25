@@ -39,7 +39,6 @@ const adminApi = {
 	getBoxesInCabinet: (id) => instance.get('/v1/cabinets/' + id + '/boxes'),
 	getCabinetById: (id) => instance.get('/v1/cabinets/' + id),
 
-
 	// API for Cainet Template
 	createCabinetTemplate: (params) => instance.post('/v1/cabinet-templates', params),
 	getCabitnetTemplate: () => instance.get('/v1/cabinet-templates'),
@@ -48,6 +47,7 @@ const adminApi = {
 
 	// API for Box 
 	updateBoxStatus: (params) => instance.post('/v1/boxes/status/' + params.status + '?cabinetId=' + params.cabinetId + '&boxNum=' + params.boxNum),
+	openBox: (params) => instance.post('/v1/boxes/' + params + '/open'),
 
 	// API for Box Size Model
 	getBoxSizes: () => instance.get('/v1/box-sizes'),
@@ -82,10 +82,6 @@ const adminApi = {
 
 	getCheckingRequest: () => instance.get('/v1/checking-request'),
 	createCheckingRequest: (params) => instance.post('/v1/checking-request', params),
-
-
-
-
 
 
 	detailRequest: (params) => instance.post('/request/post_fb_detail', params),

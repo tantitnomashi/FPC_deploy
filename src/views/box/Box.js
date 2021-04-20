@@ -8,6 +8,7 @@ import ConfirmDialog from './ActionDialog';
 import { element } from 'prop-types';
 import { useDispatch } from 'react-redux';
 import BoxDetail from './BoxDetail';
+import { NotificationManager } from 'react-notifications';
 
 
 const MAX_PADDING = 2;
@@ -25,9 +26,6 @@ export default function Box({ match }) {
     const [currentBox, setcurrentBox] = React.useState(null);
     const [currentCabinet, setCurrentCabinet] = React.useState(null);
     const [dataTemplateArr, setDataTempleteArr] = useState([]);
-
-    //demo obj 
-
     let testData = [];
     //demo => 
     const [exampleTemplate, setExampleTemplate] = useState({});
@@ -47,7 +45,6 @@ export default function Box({ match }) {
                         setBoxes(response.data.data);
                         testData = response.data.data;
 
-
                         // call generate view
                         let dataView = generateView(response.data.data);
                         console.log("data template", dataView)
@@ -60,14 +57,10 @@ export default function Box({ match }) {
         }
     }, [exampleTemplate])
 
-    // console.log("aaaaaa", exampleTemplate)
-
     console.log("Boxes outside", boxes)
     const loadDataRendering = () => {
-
         API.getTemplateByCabinetId(cabinetId)
             .then((response) => {
-
                 if (response.data.statusCode == 200) {
                     // force setting current Example immediately
                     console.log("##Checklist current example", response.data.data);
@@ -79,9 +72,6 @@ export default function Box({ match }) {
                     alert('Cant get Template  !')
                 }
             }).catch(e => console.log("ERR Cabinet Template", e));
-
-
-        //get template
     }
     const setOpenForm = (currentBox) => {
         setOpen(true);
@@ -93,19 +83,8 @@ export default function Box({ match }) {
         setOpenConfirm(false);
     };
 
-    const setCurrentB = (obj) => {
-        if (obj) {
-            setcurrentBox(obj);
-        }
-    }
-    const setCurrentExample = (arr) => {
-        if (arr.length) {
-            setExampleTemplate(arr);
-        }
-    }
     const onOpenBox = (status) => {
         console.log("Current Status update", status);
-
         API.updateBoxStatus({
             cabinetId: cabinetId,
             boxNum: currentBox.boxNum,
@@ -114,23 +93,17 @@ export default function Box({ match }) {
 
             if (response.data.statusCode == 200) {
 
-                console.log("##Update status successfull", response.data);
+                NotificationManager.success('Update box status successfully !', 'Update Box ');
 
             } else {
-                alert('Cant Update Box  !')
+                NotificationManager.error('Sorry, Cannot update this box !', 'Update Box');
             }
-        }).catch(e => console.log("ERR BOX status", e));
-
+        }).catch(e => NotificationManager.error('Sorry, Cannot update this box !', 'Update Box'));
         setCloseForm();
         setTimeout(loadDataRendering, 100);
     }
 
     const handleDetail = (boxId, boxes) => {
-        // boxes is emty
-        console.log("Id in handle", boxId)
-        console.log("Boxes in handle", boxes)
-        //console.log("Boxes in testData", testData)
-
         const found = boxes.find(element =>
             element.id == boxId
         );
@@ -141,23 +114,6 @@ export default function Box({ match }) {
             setcurrentBox(null);
         }
         setOpenConfirm(true);
-    }
-
-
-
-    const requestDelete = () => {
-        API.deleteBoxSize(currentBox.id)
-            .then((response) => {
-                if (response.data.statusCode == 200) {
-                    console.log(response.data, 'delete boxes ');
-
-                    setBoxes(response.data.data);
-                    loadDataRendering();
-                } else {
-                    alert('Cant Delete Size !')
-                }
-            }).catch(e => console.log(" ##  Delete Size ERR", e));
-        setCloseForm();
     }
 
     const generateView = (items) => {
@@ -235,14 +191,9 @@ export default function Box({ match }) {
     }
 
 
-
     return (
-
-
         < Aux >
-
             <Row>
-
                 <Col md={6} xl={12}>
                     <Card className=''>
                         <Card.Header>
@@ -272,15 +223,12 @@ export default function Box({ match }) {
                         </Card.Body>
                     </Card>
                 </Col>
-
-
-
-
             </Row>
 
 
             <ConfirmDialog open={openConfirm}
                 tilte="Box Detail" currentBox={currentBox}
+                onAccessLabel={"AAA"}
                 message={"Choose an action for this box " + currentBox?.boxNum}
                 item={currentBox} onOpenBox={onOpenBox} onCancel={setCloseForm} />
 

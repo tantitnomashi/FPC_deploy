@@ -98,7 +98,7 @@ export default {
                 ,
                 {
                     id: 'basic',
-                    title: 'Component',
+                    title: 'Others',
                     type: 'collapse',
                     icon: 'feather icon-box',
                     display: true,
@@ -158,7 +158,7 @@ export default {
         },
         {
             id: 'ui-forms',
-            title: 'Forms & Tables',
+            title: 'FPC Config',
             type: 'group',
             icon: 'icon-group',
             display: true,
@@ -166,7 +166,7 @@ export default {
             children: [
                 {
                     id: 'form-basic',
-                    title: 'Form Elements',
+                    title: 'Config',
                     type: 'item',
                     url: '/forms/form-basic',
                     display: true,
@@ -175,7 +175,7 @@ export default {
                 },
                 {
                     id: 'bootstrap',
-                    title: 'Table',
+                    title: 'Spoil History',
                     type: 'item',
                     display: true,
 
@@ -186,7 +186,7 @@ export default {
         },
         {
             id: 'chart-maps',
-            title: 'Chart & Maps',
+            title: 'Chart ',
             type: 'group',
             display: true,
 
@@ -203,7 +203,7 @@ export default {
                 },
                 {
                     id: 'maps',
-                    title: 'Map',
+                    title: 'Statistics',
                     type: 'item',
                     display: true,
 

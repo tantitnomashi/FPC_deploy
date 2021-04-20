@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Button, Image, Form, FormControl, InputGroup } from 'react-bootstrap';
 import { TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
 import API from '../../utils/adminApi'
-import BoxDetail from '../box/BoxDetail';
 import { element } from 'prop-types';
 
 const MAX_PADDING = 2;
@@ -10,7 +9,7 @@ const SIZE = 4;
 export default function TemplateForm(props) {
     const { open, handleClickClose, currentProfile } = props;
     const [type, setType] = useState(0);
-    const [imagePreviewUrl, setImagePreviewUrl] = useState();
+    const [preTemplate, setPreTemplate] = useState({});
     const [boxAmount, setBoxAmount] = useState(4);
     const [arrBox, setArrBox] = useState([]);
     const [size, setSize] = React.useState([]);
@@ -36,19 +35,19 @@ export default function TemplateForm(props) {
     }
 
 
-    const handleImageChange = (e) => {
-        e.preventDefault();
+    // const handleImageChange = (e) => {
+    //     e.preventDefault();
 
-        let reader = new FileReader();
-        let file = e.target.files[0];
+    //     let reader = new FileReader();
+    //     let file = e.target.files[0];
 
-        reader.onloadend = () => {
+    //     reader.onloadend = () => {
 
-            setImagePreviewUrl(reader.result);
-        }
+    //         setImagePreviewUrl(reader.result);
+    //     }
 
-        reader.readAsDataURL(file)
-    }
+    //     reader.readAsDataURL(file)
+    // }
     const handleBoxAmountChange = (e) => {
         e.preventDefault();
 
@@ -99,39 +98,62 @@ export default function TemplateForm(props) {
         setArrBox(arr);
 
     }
-
-    const sumbitFormTemplate = () => {
+    const handlePreview = () => {
         let boxConfigs = [];
 
         for (var i = 0; i < boxAmount; i++) {
             var e = document.getElementById("size" + i);
             var value = e.options[e.selectedIndex].value;
-            let tmp = {
+            let demoConfigs = {
                 boxSizeTypeId: parseInt(value),
                 topLeftPosition: document.getElementById('position' + i).value,
                 boxNum: i + 1
             }
-            boxConfigs.push(tmp);
+            boxConfigs.push(demoConfigs);
         }
 
-        let tmp = {
+        let previewTemplate = {
             name: document.getElementById('name').value,
             boxCnt: parseInt(boxAmount),
-            rowsCnt: 3,
-            colsCnt: 3,
             imgUrl: 'https://picsum.photos/300/400',
             boxConfigurations: boxConfigs,
 
         }
-        console.log("### Box Configs:", tmp);
-        let dataView = generateView(tmp);
+        let maxColumn = 0;
+        let maxRow = 0;
+
+
+        previewTemplate.boxConfigurations.map((c) => {
+            let index = c.topLeftPosition.indexOf(",");
+            let row = parseInt(c.topLeftPosition.substr(0, index), 10);
+            let col = parseInt(c.topLeftPosition.substr(index + 1, c.topLeftPosition.length), 10);
+            if (maxColumn < col) {
+                maxColumn = col;
+            }
+
+            if (maxRow < row) {
+                maxRow = row;
+            }
+
+        })
+        previewTemplate.rowsCnt = maxRow;
+        previewTemplate.colsCnt = maxColumn;
+
+
+        console.log("### Box Configs:", previewTemplate);
+        let dataView = generateView(previewTemplate);
         setDataTempleteArr(dataView);
+        setPreTemplate(previewTemplate);
+    }
 
-        // API.createCabinetTemplate(tmp).then((response) => {
-        //     console.log("create: ", response.data.statusCode);
-        // }).catch(e => console.log("###create Cabinet Template ERR", e));
+    const sumbitFormTemplate = () => {
 
-        //  handleClickClose();
+
+        API.createCabinetTemplate(preTemplate).then((response) => {
+            console.log("create: ", response.data.statusCode);
+        }).catch(e => console.log("###create Cabinet Template ERR", e));
+
+        handleClickClose();
     }
     const generateView = (exampleTemplate) => {
         let view = [];
@@ -142,7 +164,6 @@ export default function TemplateForm(props) {
             view.push([]);
             data4View.push([]);
         }
-
 
         exampleTemplate.boxConfigurations.map((c) => {
             let index = c.topLeftPosition.indexOf(",");
@@ -179,7 +200,7 @@ export default function TemplateForm(props) {
                 }
                 currentIndex += indexTmp;
 
-                boxView.push(BoxItem(e1.name, e1, e1.w, e1.h));
+                boxView.push(BoxItem('Box ' + e1.name, e1, e1.w, e1.h));
             })
         });
         return view;
@@ -202,7 +223,7 @@ export default function TemplateForm(props) {
     return (
 
         <Dialog maxWidth={'lg'} fullWidth={true} className="dialog-userForm" open={open} onClose={handleClickClose} aria-labelledby="form-dialog-title">
-            <DialogTitle id="form-dialog-title">{currentProfile ? "Update" : "Create Cabinet"}</DialogTitle>
+            <DialogTitle id="form-dialog-title">Create New Template</DialogTitle>
             <div>
 
             </div>
@@ -227,6 +248,10 @@ export default function TemplateForm(props) {
                             <Button onClick={handleAddBoxToCabinet} variant="dark">
                                 Generate
                                  </Button>
+                            <Button onClick={handlePreview} variant="primary">
+                                Preview
+                            </Button>
+
 
                             <div style={{ overflowY: 'scroll', overflowX: 'hidden', maxHeight: '400px' }}>
                                 {
@@ -239,19 +264,6 @@ export default function TemplateForm(props) {
                         </Col>
 
                         <Col md={4} xl={5}>
-
-                            {/* <img src={imagePreviewUrl} size='sm'
-                                style={{ width: '600px', height: '380px', objectFit: 'scale-down' }}
-                            />
-
-                            <div>
-                                <Form.Group>
-                                    <Form.File
-                                        onChange={(e) => { handleImageChange(e) }}
-                                        variant="secondary" id="chooseFile" label="Upload template image" />
-                                </Form.Group>
-
-                            </div> */}
                             <div className="d-flex flex-row">
                                 {
                                     dataTemplateArr.map((e, i) => (

@@ -13,6 +13,7 @@ import avatar3 from '../../assets/images/user/avatar-3.jpg';
 import ConfirmDialog from '../commonComponent/Confirm';
 import RequestForm from './RequestForm';
 import API from '../../utils/adminApi';
+import { NotificationManager } from 'react-notifications';
 
 
 export default function Request() {
@@ -141,24 +142,20 @@ export default function Request() {
 
     return (
         <Aux>
-            <RequestForm open={open} handleClickClose={setCloseForm} currentRequest={currentRequest} />
+            <RequestForm open={open} handleClickClose={setCloseForm} currentRequest={currentRequest} reload={loadData} />
 
             <ConfirmDialog open={openConfirm}
                 tilte="Delete Confirm" message={"Are your sure to delete this request:  " + currentRequest?._id} onAccess={() => requestDelete(currentRequest?._id)} onCancel={setCloseConfirmForm} />
-
 
             <Row className="pb-3">
                 <Col className="text-left" md={6} xl={6}>
                     <Button variant="outline-secondary" onClick={() => setIsBasic(!isBasic)}>Filter Status</Button>
                     <Collapse in={isBasic}>
                         <Row>
-
                             <Col md={12}>
-
                                 <div id="basic-collapse">
                                     <div>
                                         <Form className="text-dark">
-
                                             <input
                                                 className="mx-1" type="checkbox"
                                                 type="checkbox"
@@ -203,7 +200,7 @@ export default function Request() {
             </Row>
 
             <Row>
-                <Col md={6} xl={4}>
+                {/* <Col md={6} xl={4}>
                     <Card>
                         <Card.Body>
                             <h6 className='mb-4'>Daily Request</h6>
@@ -260,6 +257,9 @@ export default function Request() {
                         </Card.Body>
                     </Card>
                 </Col>
+        
+         */}
+
                 <Col md={6} xl={12}>
                     <Card className='Recent-Users'>
                         <Card.Header>

@@ -9,8 +9,9 @@ import avatar2 from '../../assets/images/user/avatar-2.jpg';
 import avatar3 from '../../assets/images/user/avatar-3.jpg';
 import UserForm from './UserForm';
 import ConfirmDialog from '../commonComponent/Confirm';
+import { NotificationManager } from 'react-notifications';
 
-var test = require('../../sampleData.json');
+// var test = require('../../sampleData.json');
 
 export default function Dashboard() {
 
@@ -19,7 +20,7 @@ export default function Dashboard() {
 
     const [open, setOpen] = React.useState(false);
 
-    const [users, setUser] = React.useState(test);
+    const [users, setUser] = React.useState([]);
 
 
     const [openConfirm, setOpenConfirm] = React.useState(false);
@@ -29,18 +30,21 @@ export default function Dashboard() {
 
 
     useEffect(() => {
+        loadData();
+    }, []);
+
+    const loadData = () => {
         API.getUser()
             .then((response) => {
                 if (response.data.statusCode == 200) {
-                    //  console.log('load users ', response.data.data[0]);
                     setUser(response.data.data);
                 } else {
-                    alert('Cant get Users !')
+                    NotificationManager.error('Sorry, Cannot get users list !', 'Get Users list');
                 }
-            }).catch(e => console.log(e + "hihi"));
 
-    }, []);
+            }).catch(e => NotificationManager.error('Sorry, Cannot get users list !', 'Get Users list'));
 
+    }
 
 
 
@@ -59,7 +63,7 @@ export default function Dashboard() {
     };
 
 
-    const handleDelete = (currentProfile) => {
+    const handleActiveUser = (currentProfile) => {
         setOpenConfirm(true);
         if (currentProfile) {
             setCurrentProfile(currentProfile);
@@ -67,10 +71,24 @@ export default function Dashboard() {
             setCurrentProfile(null);
         }
     }
-    const requestDelete = (username) => {
+    const requestUpdate = (currentProfile) => {
+        let currAction = currentProfile?.isActive ? "Disable" : "Enable";
+        let tmp = {
+            userName: currentProfile?.userName,
+            roleId: currentProfile?.roleId,
+            isActive: !currentProfile?.isActive
+        }
+        API.updateStatusUser(tmp).then((response) => {
+            console.log("Enable/Disable ", response.data.statusCode);
+            if (response.data.statusCode == 200) {
+                NotificationManager.success(currAction + ' user successfully!', currAction + " user");
+            } else {
+                NotificationManager.error('Sorry, Cannot ' + currAction + ' user!', currAction + " user");
+            }
+        }).catch(e => NotificationManager.error('Sorry, Cannot ' + currAction + ' user!', currAction + " user"))
         setTimeout(() => {
-
-            setOpenConfirm(true);
+            setOpenConfirm(false);
+            loadData();
         }, 2000);
     }
 
@@ -80,9 +98,9 @@ export default function Dashboard() {
 
 
         <Aux>
-            <UserForm open={open} handleClickClose={setCloseForm} currentProfile={currentProfile} />
-            <ConfirmDialog open={openConfirm}
-                tilte="Delete Confirm" message={"Are your sure to delete " + currentProfile?.fullName} onAccess={() => requestDelete(currentProfile?.username)} onCancel={setCloseConfirmForm} />
+            <UserForm open={open} handleClickClose={setCloseForm} currentProfile={currentProfile} reload={loadData} />
+            <ConfirmDialog open={openConfirm} onAccessLabel={(currentProfile?.isActive ? "Disable" : "Enable")}
+                tilte="Confirm Action" message={(currentProfile?.isActive ? "Disable user " : "Enable user ") + currentProfile?.fullName + " ?"} onAccess={() => requestUpdate(currentProfile)} onCancel={setCloseConfirmForm} />
             <Row>
                 <Col md={6} xl={8}>
                 </Col>
@@ -116,9 +134,12 @@ export default function Dashboard() {
                                                 <td>
                                                     <h6 className="text-muted"><i className="fa fa-circle text-c-green f-10 m-r-15" />{user.createdAt}</h6>
                                                 </td>
+
                                                 <td>
-                                                    <Button size="small" className="label theme-bg2 text-white f-12" onClick={() => handleDelete(user)}>Delete</Button>
-                                                    <Button size="small" className="label theme-bg text-white f-12" onClick={() => setOpenForm(user)}>Details</Button>
+                                                    {(user?.isActive == 0) && <Button size="small" className="label theme-bg text-white f-12" onClick={() => handleActiveUser(user)}>Enable</Button>}
+                                                    {(user?.isActive == 1) && <Button size="small" className="label theme-bg2 text-white f-12" onClick={() => handleActiveUser(user)}>Disable</Button>}
+
+                                                    <Button size="small" className="label btn btn-dark text-white f-12" onClick={() => setOpenForm(user)}>Details</Button>
                                                 </td>
                                             </tr>
                                         )

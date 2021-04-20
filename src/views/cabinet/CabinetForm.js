@@ -4,16 +4,26 @@ import {
     Collapse, InputGroup
 } from 'react-bootstrap';
 import { TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Switch } from '@material-ui/core';
+import { NotificationManager } from 'react-notifications';
+
 import API from '../../utils/adminApi'
 import AddressSearch from '../commonComponent/AddressSearch';
 import ConfirmDialog from '../commonComponent/Confirm';
-export default function UserForm(props) {
+const MAX_PADDING = 2;
+const SIZE = 4;
+export default function CabinetForm(props) {
     const { open, handleClickClose, currentCabinet, reload } = props;
     const [selectedTemplate, setSelectedTemplate] = useState({});
     const [openConfirm, setOpenConfirm] = React.useState(false);
+    const [locations, setLocations] = useState([]);
+    const [users, setUser] = React.useState([]);
+
+    // for preview template
+    const [dataTemplateArr, setDataTempleteArr] = useState([]);
 
     const [template, setTemplate] = useState([]);
-    const [locations, setLocations] = useState([]);
+
+    // form control
 
     const [newName, setNewName] = useState('');
     const [errName, setErrName] = useState('');
@@ -26,8 +36,12 @@ export default function UserForm(props) {
     const [errLocation, setErrLocation] = useState('');
     const [isBasic, setIsBasic] = useState(false);
     const [isActive, setIsActive] = React.useState({
-        checkedB: true
+        checkedActive: false, checkedFreeRenting: false
     });
+
+
+    const [selectedStaff, setSelectedStaff] = useState('');
+
 
     const handleChange = (event) => {
         console.log("^^^");
@@ -40,10 +54,10 @@ export default function UserForm(props) {
         setNewName(currentCabinet?.name)
         if (currentCabinet) {
             setIsActive({
-                checkedB: currentCabinet?.isActive
+                checkedActive: currentCabinet?.isActive
             });
         }
-        loadData()
+        loadData();
 
 
     }, [currentCabinet]);
@@ -56,6 +70,9 @@ export default function UserForm(props) {
                     setTemplate(response.data.data);
                     setSelectedTemplate(response.data.data[0]);
 
+                    let dataView = generateView(response.data.data[0]);
+                    setDataTempleteArr(dataView);
+
                 } else if (response.data.statusCode == 201) {
                     setTemplate(response.data.data);
 
@@ -67,11 +84,29 @@ export default function UserForm(props) {
             .then((response) => {
                 if (response.data.statusCode == 200) {
                     setLocations(response.data.data);
-
+                    console.log('test select location', response.data.data[0]);
+                    setLocation(response.data.data[0].id);
                 } else {
                     alert('Cant get location list !')
                 }
             }).catch(e => console.log(e + "-- API get Locations ERR"));
+        API.getUser()
+            .then((response) => {
+                if (response.data.statusCode == 200) {
+                    //  console.log('load users ', response.data.data[0]);
+                    setUser(response.data.data);
+                    const found = response.data.data.find(element =>
+                        element.roleId == 2
+                    );
+                    if (found) {
+                        setSelectedStaff(found.userName);
+
+                    }
+                } else {
+                    alert('Cant get Users !')
+                }
+            }).catch(e => console.log(e + "hihi"));
+
     }
 
     const validData = (text = '', fieldIndex = -1) => {
@@ -110,6 +145,72 @@ export default function UserForm(props) {
         }
         return false;
     }
+    const generateView = (exampleTemplate) => {
+        let view = [];
+        let data4View = [];
+        console.log("##Generate view ....");
+        console.log("##Generate current example", exampleTemplate);
+        for (let i = 0; i < exampleTemplate.colsCnt; i++) {
+            view.push([]);
+            data4View.push([]);
+        }
+
+        exampleTemplate.boxConfigurations.map((c) => {
+            let index = c.topLeftPosition.indexOf(",");
+            let top = parseInt(c.topLeftPosition.substr(0, index), 10);
+            let left = parseInt(c.topLeftPosition.substr(index + 1, c.topLeftPosition.length), 10);
+
+            let boxView = data4View[left - 1];
+            let numBox = (c.boxSizeType.actualHeight) / 30;
+            boxView.push({
+                id: c.id,
+                name: c.boxNum,
+                sizeName: c.boxSizeType.sizeName,
+                top: top,
+                numBox: numBox,
+                w: c.boxSizeType.actualWidth,
+                h: c.boxSizeType.actualHeight// + ((numBox - 1) * MAX_PADDING / 2)
+            });
+
+        });
+
+        data4View.map((e, i) => {
+            let currentIndex = 1;
+            e.map((e1, iArr) => {
+                let boxView = view[i];
+                let indexTmp = e1.numBox;
+                if (e1.top != currentIndex) {
+                    for (let iL = 0; iL < e1.top - currentIndex; iL++) {
+
+                        boxView.push(BoxItem('Hub', iArr, 30, 30));
+                    }
+                    currentIndex = e1.top;
+                }
+                currentIndex += indexTmp;
+
+                boxView.push(BoxItem('Box' + e1.name, e1, e1.w, e1.h));
+            })
+        });
+        return view;
+    }
+    const handlePreview = (previewTemplate) => {
+        setSelectedTemplate(previewTemplate)
+        console.log("### Box Configs:", previewTemplate);
+        let dataView = generateView(previewTemplate);
+        setDataTempleteArr(dataView);
+        // setPreTemplate(preTemplate);
+    }
+    const BoxItem = (data, e, w, h) => {
+
+        return <div id={e.id} style={{ padding: `${MAX_PADDING}px`, width: `${w * SIZE}px`, height: `${h * SIZE}px` }}>
+            <div className="bg-warning w-100 h-100 d-flex align-items-center" >
+                <h3 className="text-center mx-auto">  {data}</h3>
+
+            </div>
+        </div>
+        // }
+    }
+
 
 
     const submitForm = () => {
@@ -119,12 +220,13 @@ export default function UserForm(props) {
             name: newName,
             priceWeight: parseFloat(basePrice),
             locationId: parseInt(location),
-            isActive: isActive.checkedB,
+            isActive: isActive.checkedActive,
             templateId: selectedTemplate.id,
-            locationInstruction: "FPT Building "
+            locationInstruction: "",
+            isFreeRenting: isActive.checkedFreeRenting,
+            defaultAssignedStaff: selectedStaff
 
         }
-        if (!window.confirm('Confirm ?')) return;
 
         console.log("#####");
         console.log(tmp);
@@ -133,31 +235,48 @@ export default function UserForm(props) {
         if (currentCabinet) {
             API.updateCabinet(tmp.id, tmp)
                 .then((response) => {
-                    console.log("update: ", response.data.statusCode);
-                    reload();
-                }).catch(e => console.log(e.response.data, "update Cabinet ERR"))
+
+                    if (response.data.statusCode == 200) {
+                        NotificationManager.success('Update cabinet successfully !', 'Update Cabinet');
+                        reload();
+                    } else {
+                        NotificationManager.error('Sorry, Cannot update this cabinet !', 'Update Cabinet');
+                    }
+                }).catch(e => NotificationManager.error('Sorry, Cannot update this cabinet !', 'Update Cabinet'))
 
         } else {
             API.createCabinet(tmp).then((response) => {
-                console.log("create: ", response.data.statusCode);
-                reload();
+
+                if (response.data.statusCode == 200) {
+                    NotificationManager.success('Create cabinet successfully !', 'Create Cabinet');
+                    reload();
+                } else {
+                    NotificationManager.error('Sorry, Cannot create this cabinet !', 'Create Cabinet');
+                }
             }).catch(e => console.log("create Cabinet ERR", e))
         }
 
         handleClickClose();
     }
+    //  title - message - type 
 
     const submitAddLocation = () => {
 
-        console.log("bfSub", selectedAddress);
 
         API.createLocation(selectedAddress).then((response) => {
-            console.log("create: ", response.data.statusCode);
+
+            if (response.data.statusCode == 200) {
+                NotificationManager.success('Add location successfully !', 'Location');
+                reload();
+            } else {
+                NotificationManager.error('Sorry, Cannot add this location !', 'Location');
+            }
+
             loadData();
             setOpenConfirm(false);
             setIsBasic(!isBasic)
 
-        }).catch(e => console.log("create Location ERR", e))
+        }).catch(e => NotificationManager.error('Sorry, Cannot add this location !', 'Location'))
     }
     const openAddLocationConfirm = (address) => {
         setSelectedAddress(address);
@@ -176,7 +295,7 @@ export default function UserForm(props) {
             <Dialog maxWidth={'xl'} className="dialog-userForm" open={open} onClose={handleClickClose} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">{currentCabinet ? "Update" : "Create Cabinet"}</DialogTitle>
                 <DialogContent>
-                    <ConfirmDialog open={openConfirm}
+                    <ConfirmDialog open={openConfirm} onAccessLabel={"Add"}
                         tilte="Add Location" message={"Do you want to add " + selectedAddress.buildingName + ' ?'} onAccess={() => submitAddLocation()} onCancel={setCloseForm} />
 
                     <Form className="w-100">
@@ -211,7 +330,7 @@ export default function UserForm(props) {
 
                                         {
                                             locations.map(value =>
-                                                <option value={value.id}>{value.buildingName}</option>
+                                                <option key={value.id} value={value.id}>{value.buildingName}</option>
                                             )
                                         }
 
@@ -231,11 +350,7 @@ export default function UserForm(props) {
                                             </div>
 
                                         </Col>
-                                        {/* <Col className="" md={2}>
-                                            <Button className='' onClick={submitForm} variant='dark'>
-                                                Add
-                                      </Button>
-                                        </Col> */}
+
 
                                     </Row>
                                 </Collapse>
@@ -250,13 +365,48 @@ export default function UserForm(props) {
                                         validData(text, 1);
                                     }}
                                 />
+
+                                <Form.Label column lg={12}>Default Staff</Form.Label>
+                                <Form.Control as="select" custom defaultValue={users[0]?.userName}
+                                    onChange={(e) => {
+                                        let text = e.target.value;
+
+                                        setSelectedStaff(text)
+
+                                        console.log("###name assigne", text)
+                                    }} >
+
+                                    {
+                                        users.map(value => {
+                                            console.log("role", value.roleId);
+                                            return (value.roleId == 2) && <option value={value.userName}>{value.fullName}</option>
+
+                                        })
+
+
+
+                                    }
+
+                                </Form.Control>
+
+
                                 <Form.Label column lg={12}> Active </Form.Label>
 
                                 <Switch
                                     defaultChecked={currentCabinet?.isActive}
                                     onChange={handleChange}
                                     color="primary"
-                                    name="checkedB"
+                                    name="checkedActive"
+                                    disabled={false}
+                                    inputProps={{ 'aria-label': 'primary checkbox' }}
+                                />
+                                <Form.Label column lg={12}> Is Free Renting </Form.Label>
+
+                                <Switch
+                                    defaultChecked={currentCabinet?.isFreeRenting}
+                                    onChange={handleChange}
+                                    color="primary"
+                                    name="checkedFreeRenting"
                                     disabled={false}
                                     inputProps={{ 'aria-label': 'primary checkbox' }}
                                 />
@@ -277,6 +427,41 @@ export default function UserForm(props) {
                             </Col>
 
                             <Col md={6} xl={6}>
+                                <div>
+                                    <div className="d-flex flex-row" style={{ height: '600px' }}>
+                                        {
+                                            dataTemplateArr.map((e, i) => (
+                                                <div key={i}>
+                                                    {e.map((b) => b)}
+                                                </div>
+                                            ))
+                                        }
+                                    </div>
+                                    {!currentCabinet &&
+                                        <div>
+
+
+                                            <p>Choose cabinet template</p>
+                                            <div>
+                                                {template.map((value, index) =>
+                                                    <div className="btn btn-dark" style={{
+                                                        position: 'relative', display: 'inline-block', width: '80px', height: '50px', marginRight: '3px'
+                                                    }} onClick={() => handlePreview(value)}>
+
+                                                        {index + 1}
+                                                        {selectedTemplate.id == value.id && <div style={{ position: 'absolute', top: '0', right: '0', color: 'greenyellow' }}>
+                                                            <span class="material-icons">check_circle</span>
+                                                        </div>}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+
+
+                            </Col>
+                            {/* <Col md={6} xl={6}>
                                 <div>
                                     <div style={{ display: "inline-block" }}>
                                         <div style={{
@@ -311,7 +496,7 @@ export default function UserForm(props) {
                                 </div>
 
 
-                            </Col>
+                            </Col> */}
 
                         </Form.Row>
                     </Form>

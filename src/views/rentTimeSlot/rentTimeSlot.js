@@ -4,6 +4,7 @@ import API from '../../utils/adminApi'
 import Aux from "../../hoc/_Aux";
 import TimeSlotForm from './RentTimeSlotForm';
 import ConfirmDialog from '../commonComponent/Confirm';
+import { NotificationManager } from 'react-notifications';
 
 
 export default function RentTimeSlot({ match }) {
@@ -27,9 +28,11 @@ export default function RentTimeSlot({ match }) {
                     console.log('load slots ', response.data.data[0]);
                     setSlots(response.data.data);
                 } else {
-                    alert('Cant get Slots !')
+                    NotificationManager.error('Sorry, Cannot get slot list', 'Loading data ...');
                 }
-            }).catch(e => console.log(e + "hihi"));
+
+
+            }).catch(e => NotificationManager.error('Sorry, Cannot get slot list', 'Loading data ...'));
 
     }
 
@@ -60,10 +63,11 @@ export default function RentTimeSlot({ match }) {
                     console.log(response.data, 'delete slots');
                     setSlots(response.data.data);
                     loadAdminTimeSlots();
+                    NotificationManager.success('Delete Rental time slot successfully', 'Delete ...')
                 } else {
                     alert('Cant Delete Size !')
                 }
-            }).catch(e => console.log(" ##  Delete Size ERR", e));
+            }).catch(e => NotificationManager.error('Sorry, Delete this Rental time slot', 'Delete ...'));
         setCloseForm();
     }
 
@@ -73,8 +77,8 @@ export default function RentTimeSlot({ match }) {
 
         <Aux>
             <TimeSlotForm reload={loadAdminTimeSlots} open={open} handleClickClose={setCloseForm} currentSlot={currentSlot} />
-            <ConfirmDialog open={openConfirm}
-                tilte="Delete Confirm" message={"Are your sure to delete this Time Slot "} onAccess={() => requestDelete(currentSlot?.id)} onCancel={setCloseForm} />
+            <ConfirmDialog open={openConfirm} onAccessLabel={"Delete"}
+                tilte="Delete Confirm" message={"Are your sure to delete this Rental Time Slot "} onAccess={() => requestDelete(currentSlot?.id)} onCancel={setCloseForm} />
             <Row>
                 <Col md={6} xl={8}>
 

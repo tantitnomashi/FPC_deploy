@@ -16,7 +16,7 @@ export default function Login() {
 
 
     useEffect(() => {
-        if (localStorage.getItem('admin-token').length > 1) {
+        if (localStorage.getItem('admin-token')?.length > 1) {
             window.location.href = '/cabinet';
         }
     }, []);
@@ -55,7 +55,7 @@ export default function Login() {
             password: pass
         }).then((response) => {
             console.log("create: ", response.data.statusCode);
-            if (response.data.statusCode == 200) {
+            if (response.data.statusCode == 200 && response.data.data.roleId == 1) {
                 setErrName("");
                 localStorage.setItem('admin-token', response.data.data.tokenAccess);
                 localStorage.setItem('username', response.data.data.username);

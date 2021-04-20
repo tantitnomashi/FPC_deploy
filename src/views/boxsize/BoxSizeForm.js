@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Button, Image, Form, FormControl, InputGroup } from 'react-bootstrap';
 import { TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Switch } from '@material-ui/core';
 import API from '../../utils/adminApi'
+import { NotificationManager } from 'react-notifications';
 
 export default function BoxSizeForm(props) {
     const { open, handleClickClose, currentCabinet, reload } = props;
@@ -83,11 +84,16 @@ export default function BoxSizeForm(props) {
         console.log("#####");
 
         API.createBoxSize(tmp).then((response) => {
-            console.log("create: ", response.data.statusCode);
+            console.log("create: ",);
+            if (response.data.statusCode == 200) {
+                NotificationManager.success('Create Box size successfully!', 'Create Box Size');
+            } else {
+                NotificationManager.error('Sorry, Cannot create this Box size!', 'Create Box Size')
+            }
             reload();
-        }).catch(e => console.log("create BoxSize ERR", e))
+            handleClickClose();
 
-        handleClickClose();
+        }).catch(e => NotificationManager.error('Sorry, Cannot create this Box size!', 'Create Box Size'))
     }
 
     return (

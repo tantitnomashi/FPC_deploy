@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Switch } from '@material-ui/core';
 import { Row, Col, Button, Image, Form, FormControl, InputGroup } from 'react-bootstrap';
 import API from '../../utils/adminApi'
+import { NotificationManager } from 'react-notifications';
 
 export default function TransactionDetail(props) {
     var sapmle = require('../../sampleData/transactionStatus.json');
@@ -19,7 +20,13 @@ export default function TransactionDetail(props) {
         if (selectedStatus != '') {
             API.updateTransactionStatus(currentTransaction.id, selectedStatus).then((response) => {
                 console.log("rs update status: ", response.data.statusCode);
-            }).catch(e => console.log("update Status ERR", e))
+                if (response.data.statusCode == 200) {
+                    NotificationManager.success('Update Transaction successfully!', 'Update Transaction');
+                } else {
+                    NotificationManager.error('Sorry, Cannot update this transaction!', 'Update Transaction');
+                }
+
+            }).catch(e => NotificationManager.error('Sorry, Cannot update this transaction!', 'Update Transaction'))
         }
         setTimeout(handleClickClose, 200);
         // handleClickClose();

@@ -13,6 +13,11 @@ import avatar3 from '../../assets/images/user/avatar-3.jpg';
 import ConfirmDialog from '../commonComponent/Confirm';
 import TransactionDetail from './TransactionDetail';
 import API from '../../utils/adminApi';
+import { NotificationManager } from 'react-notifications';
+
+
+
+
 
 
 export default function Transaction() {
@@ -262,7 +267,7 @@ export default function Transaction() {
                                                     <img className="rounded-circle" style={{ width: '40px' }} src={avatar1} alt="activity-user" />
                                                 </td>
                                                 <td className="col-md-3 ">
-                                                    <h6 className="mb-1"> {transaction.cabinetName} - Box {transaction.boxNum}</h6>
+                                                    <h6 className="mb-1"> {transaction.cabinetName.slice(0, 20)} - Box {transaction.boxNum}</h6>
                                                     <p className="m-0 d-flex align-items-center">
                                                         {transaction.Amount > 0 ? transaction.Amount : "Free Renting"}
                                                         <span class="material-icons f-20 px-2">

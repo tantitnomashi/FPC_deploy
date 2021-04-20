@@ -2,70 +2,33 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Button, Image, Form, FormControl, InputGroup } from 'react-bootstrap';
 import { TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Switch } from '@material-ui/core';
 import API from '../../utils/adminApi'
+import { NotificationManager } from 'react-notifications';
 
 export default function BoxSizeForm(props) {
+
     const { open, handleClickClose, currentCabinet, reload } = props;
-
-
-
-
     const [duration, setDuration] = useState('');
-
     const [basePrice, setBasePrice] = useState(1);
     const [errBasePrice, setErrBasePrice] = useState('');
-
     const [errNumber, setErrNumber] = useState('');
-
-
-
-
-    const validData = (text = '', fieldIndex = -1) => {
-        switch (fieldIndex) {
-
-            case 5:
-                if (text < 1 || text > 2) {
-                    setErrBasePrice("Base price must greater than 1!")
-                } else if (text == '') {
-                    setErrBasePrice("Base price is required!");
-                } else {
-                    setErrBasePrice("");
-                }
-                break;
-            case 0:
-                if (text.length == 0) {
-                    setErrNumber("Duration is required")
-                } if (text < 0) {
-                    setErrNumber("Value must greater than 0!")
-                } else {
-                    setErrNumber("");
-                }
-                break;
-
-            default:
-                if ((errBasePrice + errNumber).length == 0) {
-                    return true;
-                }
-                break;
-        }
-        return false;
-    }
-
 
     const submitForm = () => {
         let tmp = {
             duration: parseInt(duration),
             basePrice: parseFloat(basePrice)
         }
-
-
         console.log("#####");
         console.log(tmp);
         console.log("#####");
 
         API.createTimeSlot(tmp).then((response) => {
-            console.log("create: ", response.data.statusCode);
-            reload();
-        }).catch(e => console.log("create Time Slot ERR", e))
+            if (response.data.statusCode == 200) {
+                NotificationManager.success('Create Rental time slot successfully!', 'Create Rental time slot');
+                reload();
+            } else {
+                NotificationManager.error('Sorry, Cannot create this Rental time slot!', 'Create Rental time slot');
+            }
+        }).catch(e => NotificationManager.error('Sorry, Cannot create this Rental time slot!', 'Create Rental time slot'))
 
         handleClickClose();
     }
@@ -88,7 +51,6 @@ export default function BoxSizeForm(props) {
                                     onChange={(e) => {
                                         let text = e.target.value;
                                         setDuration(text)
-                                        validData(text, 0);
                                     }}
                                     defaultValue={currentCabinet?.name} />
                             </Col>
@@ -99,7 +61,6 @@ export default function BoxSizeForm(props) {
                                     onChange={(e) => {
                                         let text = e.target.value;
                                         setBasePrice(text)
-                                        validData(text, 1);
                                     }}
                                 />
 

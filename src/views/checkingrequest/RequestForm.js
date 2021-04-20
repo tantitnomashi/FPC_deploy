@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Switch } from '@material-ui/core';
 import { Row, Col, Button, Image, Form, FormControl, InputGroup } from 'react-bootstrap';
 import API from '../../utils/adminApi'
+import { NotificationManager } from 'react-notifications';
 
 export default function RequestForm(props) {
     var sapmle = [
@@ -19,7 +20,7 @@ export default function RequestForm(props) {
         }
     ];
 
-    const { open, handleClickClose, currentTransaction } = props;
+    const { open, handleClickClose, currentTransaction, reload } = props;
     const [statusList, setStatusList] = useState(sapmle);
     const [selectedCabinet, setSelectedCabinet] = useState();
     const [selectedStaff, setSelectedStaff] = useState('');
@@ -34,9 +35,7 @@ export default function RequestForm(props) {
     useEffect(() => {
 
         loadAdminCabinets();
-        // setSelectedType(type[0]?.type);
-        // setSelectedCabinet(cabinets[0]?.id);
-        // setSelectedStaff(users[0]?.userName);
+
     }, []);
     const loadAdminCabinets = () => {
         API.getCabitnet()
@@ -86,8 +85,16 @@ export default function RequestForm(props) {
             }
             console.log("### REQ", tmp);
             API.createCheckingRequest(tmp).then((response) => {
-                console.log("rs Checking  status: ", response.data.statusCode);
-            }).catch(e => console.log("create Checking ERR", e))
+
+                console.log("rs Checking status: ", response.data.statusCode);
+                if (response.data.statusCode == 200) {
+                    NotificationManager.success('Create Checking request successfully !', 'Checking request');
+                    reload();
+                } else {
+                    NotificationManager.error('Sorry, Cannot create Checking request!', 'Checking request');
+                }
+
+            }).catch(e => NotificationManager.error('Sorry, Cannot create Checking request!', 'Checking request'))
         }
         setTimeout(handleClickClose, 200);
 

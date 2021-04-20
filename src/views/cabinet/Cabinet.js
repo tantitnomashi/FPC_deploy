@@ -7,6 +7,7 @@ import ConfirmDialog from '../commonComponent/Confirm';
 import TemplateForm from './TemplateForm';
 import BoxList from '../box/Box';
 import { Redirect } from 'react-router-dom';
+import { NotificationManager } from 'react-notifications';
 
 export default function Dashboard() {
 
@@ -76,14 +77,13 @@ export default function Dashboard() {
         API.deleteCabinet(currentCabinet.id)
             .then((response) => {
                 if (response.data.statusCode == 200) {
-                    console.log(response.data, 'load cabinets ');
-
+                    NotificationManager.success('Delete cabinet successfully!', 'Delete Cabinet');
                     setCabinets(response.data.data);
                     loadAdminCabinets();
                 } else {
-                    alert('Cant Delete Cabinet !')
+                    NotificationManager.error('Sorry, Cannot delete this cabinet!', 'Delete Cabinet');
                 }
-            }).catch(e => console.log(" ##  Delete Cabinet ERR", e));
+            }).catch(e => NotificationManager.error('Sorry, Cannot delete this cabinet!', 'Delete Cabinet'));
         setCloseForm();
     }
 
@@ -108,17 +108,15 @@ export default function Dashboard() {
                         <Button className="mx-2" size="small" variant="dark" onClick={() => setOpenTemplateForm()}>
                             Template Mangement
                         </Button>
-
                     </div>
-
 
                 </Col>
 
             </Row>
             <CabinetForm reload={loadAdminCabinets} open={open} handleClickClose={setCloseForm} currentCabinet={currentCabinet} />
             <TemplateForm open={openTemplate} handleClickClose={setCloseForm} />
-            <ConfirmDialog open={openConfirm}
-                tilte="Delete Confirm" message={"Are your sure to delete " + currentCabinet?.name} onAccess={() => requestDelete(currentCabinet?.name)} onCancel={setCloseForm} />
+            <ConfirmDialog open={openConfirm} onAccessLabel={"Delete"}
+                tilte="Delete Confirm" message={"Are you sure to delete " + currentCabinet?.name} onAccess={() => requestDelete(currentCabinet?.name)} onCancel={setCloseForm} />
 
             <Row>
 
@@ -131,7 +129,7 @@ export default function Dashboard() {
 
                             {
                                 cabinets?.map(cabinet =>
-                                    <Row className="unread py-3 px-1 my-2 border-bottom border-light">
+                                    <Row key={cabinet.id} className="unread py-3 px-1 my-2 border-bottom border-light">
                                         <Col md={1} className='text-center' >
 
                                             {/* <img className="rounded-circle" style={{ width: '40px' }} src={avatar1} alt="activity-user" /> */}
@@ -148,7 +146,7 @@ export default function Dashboard() {
                                         <Col md={4} className='text-left'>
                                             <h6 className="text-muted">
                                                 {/* <i className="fa fa-room text-c-black f-20 m-r-15" /> */}
-                                                <span class="material-icons f-20 m-r-5">
+                                                <span className="material-icons f-20 m-r-5">
                                                     room</span>
                                                 {cabinet.location.fullAddress}
                                             </h6>
@@ -175,7 +173,7 @@ export default function Dashboard() {
                                     <i className="fa fa-cabinets text-c-black f-36" />
                                 </div>
                                 <div className="col text-right">
-                                    <h3>11,200</h3>
+                                    <h3>1210</h3>
                                     <h5 className="text-c-purple mb-0">+6.2% <span className="text-muted">Total Users</span></h5>
                                 </div>
                             </div>
@@ -183,7 +181,7 @@ export default function Dashboard() {
                         <Card.Body>
                             <div className="row align-items-center justify-content-center card-active">
                                 <div className="col-6">
-                                    <h6 className="text-center m-b-10"><span className="text-muted m-r-5">User Active:</span>2,650</h6>
+                                    <h6 className="text-center m-b-10"><span className="text-muted m-r-5">User Active:</span>250</h6>
                                     <div className="progress">
                                         <div className="progress-bar progress-c-green" role="progressbar" style={{ width: '40%', height: '6px' }} aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" />
                                     </div>
@@ -206,8 +204,8 @@ export default function Dashboard() {
                                     <i className="fa fa-google-plus text-c-red f-36" />
                                 </div>
                                 <div className="col text-right">
-                                    <h3>10,500</h3>
-                                    <h5 className="text-c-blue mb-0">+5.9% <span className="text-muted">Total Likes</span></h5>
+                                    <h3>1,512</h3>
+                                    <h5 className="text-c-blue mb-0">+5.9% <span className="text-muted">Total Transactions</span></h5>
                                 </div>
                             </div>
                         </Card.Body>

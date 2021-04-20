@@ -1,10 +1,11 @@
 import axios from 'axios';
 
 
-const ngrokID = '2df5a9829351'
+const ngrokID = '2d6c378312d3'
 const route_api = 'https://' + ngrokID + '.ngrok.io'
+const newRoute = "http://40.123.255.174"
 const instance = axios.create({
-	baseURL: `${route_api}/api`,
+	baseURL: `${newRoute}/api`,
 	timeout: 5000,
 	headers: {
 	}
@@ -60,6 +61,9 @@ const adminApi = {
 
 
 	getUser: () => instance.get('/v1/users'),
+	createUser: (params) => instance.post('/v1/users/admin/create-user', params),
+	updateUser: (params) => instance.post('/v1/users', params),
+	updateStatusUser: (params) => instance.post('/v1/users/admin/user-status', params),
 
 	// API for Rental Transaction Model
 	getTransaction: () => instance.get('/v1/rental-transactions'),

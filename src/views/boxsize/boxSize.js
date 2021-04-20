@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Card, Table, Tabs, Tab, Button } from 'react-bootstrap';
+import { Row, Col, Card, Table, Tabs, Tab, Button, Alert } from 'react-bootstrap';
+import { Snackbar } from '@material-ui/core';
+
 import API from '../../utils/adminApi'
 import Aux from "../../hoc/_Aux";
 import BoxSizeForm from './BoxSizeForm';
 import ConfirmDialog from '../commonComponent/Confirm';
+import { NotificationManager } from 'react-notifications';
 
 
 export default function BoxSize({ match }) {
@@ -11,7 +14,9 @@ export default function BoxSize({ match }) {
     const [size, setSize] = React.useState([]);
 
     const [open, setOpen] = React.useState(false);
+    const [openAlert, setOpenAlert] = React.useState(false);
     const [openConfirm, setOpenConfirm] = React.useState(false);
+    const [alertMessage, setAlertMessage] = React.useState("");
 
     const [currentSize, setCurrentSize] = React.useState(null);
 
@@ -27,9 +32,10 @@ export default function BoxSize({ match }) {
                     console.log('load size ', response.data.data);
                     setSize(response.data.data);
                 } else {
-                    alert('Cant get Cabi !')
+                    NotificationManager.error('Sorry, Cannot get Box size list', 'Loading data ...');
+
                 }
-            }).catch(e => console.log(e + "hihi"));
+            }).catch(e => console.log(e));
 
     }
 
@@ -55,28 +61,35 @@ export default function BoxSize({ match }) {
             setCurrentSize(null);
         }
     }
+    const notifyByAlert = (title, type) => {
+        setOpenAlert(true);
+
+    }
     const requestDelete = () => {
         API.deleteBoxSize(currentSize.id)
             .then((response) => {
                 if (response.data.statusCode == 200) {
                     console.log(response.data, 'delete size ');
-
+                    NotificationManager.success('Delete Box size successfully!', 'Delete');
                     setSize(response.data.data);
                     loadAdminBoxSize();
                 } else {
-                    alert('Cant Delete Size !')
+                    NotificationManager.error('Sorry, Cannot delete this Box size!', 'Delete');
                 }
             }).catch(e => console.log(" ##  Delete Size ERR", e));
         setCloseForm();
+
     }
+
 
     return (
 
 
 
         <Aux>
+
             <BoxSizeForm reload={loadAdminBoxSize} open={open} handleClickClose={setCloseForm} currentSize={currentSize} />
-            <ConfirmDialog open={openConfirm}
+            <ConfirmDialog open={openConfirm} onAccessLabel={"Delete"}
                 tilte="Delete Confirm" message={"Are your sure to delete " + currentSize?.sizeName} onAccess={() => requestDelete(currentSize?.name)} onCancel={setCloseForm} />
             <Row>
                 <Col md={6} xl={8}>

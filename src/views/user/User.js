@@ -10,12 +10,16 @@ import avatar3 from '../../assets/images/user/avatar-3.jpg';
 import UserForm from './UserForm';
 import ConfirmDialog from '../commonComponent/Confirm';
 import { NotificationManager } from 'react-notifications';
+import Pagination from "react-js-pagination";
 
 // var test = require('../../sampleData.json');
 
 export default function Dashboard() {
 
+    // for paging
 
+    let [currentProcessPage, setCurrentProcessPage] = useState(1);
+    const [totalItemsCount, setTotalItemsCount] = useState(0); //projects count
 
 
     const [open, setOpen] = React.useState(false);
@@ -37,7 +41,13 @@ export default function Dashboard() {
         API.getUser()
             .then((response) => {
                 if (response.data.statusCode == 200) {
-                    setUser(response.data.data);
+                    let tmp = response.data.data;
+                    tmp = tmp.sort((a, b) => {
+                        return new Date(b.updatedAt) - new Date(a.updatedAt);
+                    })
+                    setUser(tmp);
+                    setTotalItemsCount(response.data.data.length);
+
                 } else {
                     NotificationManager.error('Sorry, Cannot get users list !', 'Get Users list');
                 }
@@ -92,7 +102,14 @@ export default function Dashboard() {
         }, 2000);
     }
 
+    // Pagination for project process data
+    const getProcessData = page => {
+        setCurrentProcessPage(page);
+        console.log(currentProcessPage)
+        console.log(totalItemsCount)
+        console.log(page);
 
+    }
     return (
 
 
@@ -124,7 +141,7 @@ export default function Dashboard() {
                             <Table responsive hover>
                                 <tbody>
                                     {
-                                        users.map(user =>
+                                        users.slice((currentProcessPage - 1) * 6, currentProcessPage * 6).map(user =>
                                             <tr className="unread">
                                                 <td><img className="rounded-circle" style={{ width: '40px' }} src={avatar1} alt="activity-user" /></td>
                                                 <td>
@@ -132,7 +149,9 @@ export default function Dashboard() {
                                                     <p className="m-0">{user.userName}</p>
                                                 </td>
                                                 <td>
-                                                    <h6 className="text-muted"><i className="fa fa-circle text-c-green f-10 m-r-15" />{user.createdAt}</h6>
+                                                    <h6 className="text-muted"><i className="fa fa-circle text-c-green f-10 m-r-15" />
+                                                        {new Date(user.updatedAt).toGMTString()}
+                                                    </h6>
                                                 </td>
 
                                                 <td>
@@ -147,11 +166,21 @@ export default function Dashboard() {
 
                                 </tbody>
                             </Table>
+                            <Pagination
+                                itemClass="page-item"
+                                linkClass="page-link"
+                                activePage={currentProcessPage}
+                                itemsCountPerPage={6} //projects per page
+                                totalItemsCount={totalItemsCount}
+                                pageRangeDisplayed={5}
+                                onChange={getProcessData}
+                                innerClass="pagination justify-content-center mt-3"
+                            />
                         </Card.Body>
                     </Card>
                 </Col>
 
-                <Col md={6} xl={6}>
+                {/* <Col md={6} xl={6}>
                     <Card className='card-social'>
                         <Card.Body className='border-bottom'>
                             <div className="row align-items-center justify-content-center">
@@ -214,22 +243,8 @@ export default function Dashboard() {
                     </Card>
                 </Col>
 
-                <Col md={6} xl={8} className='m-b-30'>
-                    {/* <Tabs defaultActiveKey="today" id="uncontrolled-tab-example">
-                        <Tab eventKey="today" title="Today">
-                            {tabContent}
-                        </Tab>
-                        <Tab eventKey="week" title="This Week">
-                            {tabContent}
-                        </Tab>
-                        <Tab eventKey="all" title="All">
-                            {tabContent}
-                        </Tab>
-                    </Tabs> */}
-                </Col>
+               */}
             </Row>
-            {/* <Modal open={openForm}> */}
-            {/* </Modal> */}
 
         </Aux>
     );

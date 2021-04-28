@@ -33,7 +33,6 @@ export default function BoxSize({ match }) {
                     setSize(response.data.data);
                 } else {
                     NotificationManager.error('Sorry, Cannot get Box size list', 'Loading data ...');
-
                 }
             }).catch(e => console.log(e));
 

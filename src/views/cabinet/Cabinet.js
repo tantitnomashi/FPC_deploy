@@ -8,9 +8,14 @@ import TemplateForm from './TemplateForm';
 import BoxList from '../box/Box';
 import { Redirect } from 'react-router-dom';
 import { NotificationManager } from 'react-notifications';
+import Pagination from "react-js-pagination";
 
 export default function Dashboard() {
 
+    // for paging
+
+    let [currentProcessPage, setCurrentProcessPage] = useState(1);
+    const [totalItemsCount, setTotalItemsCount] = useState(0); //projects count
 
 
     // const history = useHistory();
@@ -30,15 +35,15 @@ export default function Dashboard() {
         API.getCabitnet()
             .then((response) => {
                 if (response.data.statusCode == 200) {
-                    console.log('load cabinets ', response.data.data[0]);
                     setCabinets(response.data.data);
+                    setTotalItemsCount(response.data.data.length);
                 } else if (response.data.statusCode == 201) {
                     setCabinets(response.data.data);
 
                 } else {
-                    alert('Cant get Cabi !')
+                    NotificationManager.error('Sorry, Cannot get cabinet list!', "Get Cabinets");
                 }
-            }).catch(e => console.log(e + "hihi"));
+            }).catch(e => NotificationManager.error('Sorry, Cannot get cabinet list!', "Get Cabinets"));
 
     }
 
@@ -87,6 +92,12 @@ export default function Dashboard() {
         setCloseForm();
     }
 
+    // Pagination for project process data
+    const getProcessData = page => {
+        setCurrentProcessPage(page);
+
+    }
+
     return (
 
 
@@ -95,10 +106,10 @@ export default function Dashboard() {
             <Row>
 
                 <Col className="text-left justify-content-start" md={6} xl={6}>
-                    <Form inline className=" justify-content-start d-flex align-items-center ">
+                    {/* <Form inline className=" justify-content-start d-flex align-items-center ">
                         <FormControl type="text" placeholder="Search" className="mr-sm-2" />
                         <Button variant="outline-secondary" className="mt-1">Search</Button>
-                    </Form>
+                    </Form> */}
                 </Col>
                 <Col className="text-right justify-content-end" md={6} xl={6}>
                     <div className="text-right mb-3">
@@ -106,7 +117,7 @@ export default function Dashboard() {
                             Create Cabinet
                         </Button>
                         <Button className="mx-2" size="small" variant="dark" onClick={() => setOpenTemplateForm()}>
-                            Template Mangement
+                            Create Template
                         </Button>
                     </div>
 
@@ -128,7 +139,7 @@ export default function Dashboard() {
                         <Card.Body className='px-3 py-2'>
 
                             {
-                                cabinets?.map(cabinet =>
+                                cabinets?.slice((currentProcessPage - 1) * 4, currentProcessPage * 4).map(cabinet =>
                                     <Row key={cabinet.id} className="unread py-3 px-1 my-2 border-bottom border-light">
                                         <Col md={1} className='text-center' >
 
@@ -142,7 +153,6 @@ export default function Dashboard() {
                                             <h6 className="mb-1">{cabinet.name}</h6>
                                             <p className="m-0">{cabinet.location.buildingName}</p>
                                         </Col>
-
                                         <Col md={4} className='text-left'>
                                             <h6 className="text-muted">
                                                 {/* <i className="fa fa-room text-c-black f-20 m-r-15" /> */}
@@ -162,10 +172,20 @@ export default function Dashboard() {
 
 
                         </Card.Body>
+                        <Pagination
+                            itemClass="page-item"
+                            linkClass="page-link"
+                            activePage={currentProcessPage}
+                            itemsCountPerPage={4} //projects per page
+                            totalItemsCount={totalItemsCount}
+                            pageRangeDisplayed={5}
+                            onChange={getProcessData}
+                            innerClass="pagination justify-content-center mt-3"
+                        />
                     </Card>
                 </Col>
 
-                <Col md={6} xl={6}>
+                {/* <Col md={6} xl={6}>
                     <Card className='card-social'>
                         <Card.Body className='border-bottom'>
                             <div className="row align-items-center justify-content-center">
@@ -173,7 +193,7 @@ export default function Dashboard() {
                                     <i className="fa fa-cabinets text-c-black f-36" />
                                 </div>
                                 <div className="col text-right">
-                                    <h3>1210</h3>
+                                    <h3>12</h3>
                                     <h5 className="text-c-purple mb-0">+6.2% <span className="text-muted">Total Users</span></h5>
                                 </div>
                             </div>
@@ -181,13 +201,13 @@ export default function Dashboard() {
                         <Card.Body>
                             <div className="row align-items-center justify-content-center card-active">
                                 <div className="col-6">
-                                    <h6 className="text-center m-b-10"><span className="text-muted m-r-5">User Active:</span>250</h6>
+                                    <h6 className="text-center m-b-10"><span className="text-muted m-r-5">User Active:</span>7</h6>
                                     <div className="progress">
                                         <div className="progress-bar progress-c-green" role="progressbar" style={{ width: '40%', height: '6px' }} aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" />
                                     </div>
                                 </div>
                                 <div className="col-6">
-                                    <h6 className="text-center  m-b-10"><span className="text-muted m-r-5">Customer Retention:</span>800</h6>
+                                    <h6 className="text-center  m-b-10"><span className="text-muted m-r-5">Customer Retention:</span>8</h6>
                                     <div className="progress">
                                         <div className="progress-bar progress-c-blue" role="progressbar" style={{ width: '70%', height: '6px' }} aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" />
                                     </div>
@@ -226,7 +246,7 @@ export default function Dashboard() {
                             </div>
                         </Card.Body>
                     </Card>
-                </Col>
+                </Col> */}
 
 
             </Row>

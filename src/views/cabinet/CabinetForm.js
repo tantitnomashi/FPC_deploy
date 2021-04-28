@@ -68,10 +68,24 @@ export default function CabinetForm(props) {
             .then((response) => {
                 if (response.data.statusCode == 200) {
                     setTemplate(response.data.data);
-                    setSelectedTemplate(response.data.data[0]);
+                    if (!currentCabinet) {
+                        setSelectedTemplate(response.data.data[0]);
+                        let dataView = generateView(response.data.data[0]);
+                        setDataTempleteArr(dataView);
+                    } else {
 
-                    let dataView = generateView(response.data.data[0]);
-                    setDataTempleteArr(dataView);
+                        console.log("### CURRENT CABINET");
+                        const found = response.data.data.find(element =>
+                            element.id == currentCabinet.templateId
+                        );
+                        if (found) {
+                            setSelectedTemplate(found);
+                            let dataView = generateView(found);
+                            setDataTempleteArr(dataView);
+                            console.log("### CURRENT CABINET RENDERINGGG");
+
+                        }
+                    }
 
                 } else if (response.data.statusCode == 201) {
                     setTemplate(response.data.data);
@@ -109,42 +123,7 @@ export default function CabinetForm(props) {
 
     }
 
-    const validData = (text = '', fieldIndex = -1) => {
-        switch (fieldIndex) {
-            case 0:
-                if (text.length >= 30) {
-                    setErrName("Name too long ! Under 30 digits please!");
-                } else if (text === '') {
-                    setErrName("Name is required!");
-                } else {
-                    setErrName("");
-                }
-                break;
-            case 1:
-                if (text < 1 || text > 2) {
-                    setErrBasePrice("Base price must greater than 1!")
-                } else if (text == '') {
-                    setErrBasePrice("Base price is required!");
-                } else {
-                    setErrBasePrice("");
-                }
-                break;
-            case 2:
-                if (text.length == 0) {
-                    setErrLocation("Location is required")
-                } else {
-                    setErrLocation("");
-                }
-                break;
 
-            default:
-                if ((errBasePrice + errLocation + errName).length == 0) {
-                    return true;
-                }
-                break;
-        }
-        return false;
-    }
     const generateView = (exampleTemplate) => {
         let view = [];
         let data4View = [];
@@ -182,7 +161,7 @@ export default function CabinetForm(props) {
                 if (e1.top != currentIndex) {
                     for (let iL = 0; iL < e1.top - currentIndex; iL++) {
 
-                        boxView.push(BoxItem('Hub', iArr, 30, 30));
+                        boxView.push(BoxItem('', iArr, 30, 30));
                     }
                     currentIndex = e1.top;
                 }
@@ -202,12 +181,11 @@ export default function CabinetForm(props) {
     }
     const BoxItem = (data, e, w, h) => {
 
-        return <div id={e.id} style={{ padding: `${MAX_PADDING}px`, width: `${w * SIZE}px`, height: `${h * SIZE}px` }}>
-            <div className="bg-warning w-100 h-100 d-flex align-items-center" >
+        return <div key={1} id={e.id} style={{ padding: `${MAX_PADDING}px`, width: `${w * SIZE}px`, height: `${h * SIZE}px` }}>
+            <div className={"w-100 h-100 d-flex align-items-center" + (data.length > 3 ? " bg-warning" : " bg-secondary")} >
                 <h3 className="text-center mx-auto">  {data}</h3>
-
             </div>
-        </div>
+        </div >
         // }
     }
 
@@ -310,7 +288,6 @@ export default function CabinetForm(props) {
                                         let text = e.target.value;
                                         console.log(text);
                                         setNewName(text)
-                                        validData(text, 0);
                                     }}
                                     defaultValue={currentCabinet?.name} />
 
@@ -362,7 +339,6 @@ export default function CabinetForm(props) {
                                     onChange={(e) => {
                                         let text = e.target.value;
                                         setBasePrice(text)
-                                        validData(text, 1);
                                     }}
                                 />
 
@@ -378,8 +354,7 @@ export default function CabinetForm(props) {
 
                                     {
                                         users.map(value => {
-                                            console.log("role", value.roleId);
-                                            return (value.roleId == 2) && <option value={value.userName}>{value.fullName}</option>
+                                            return (value.roleId == 2) && <option key={value.userName} value={value.userName}>{value.fullName}</option>
 
                                         })
 
@@ -400,7 +375,7 @@ export default function CabinetForm(props) {
                                     disabled={false}
                                     inputProps={{ 'aria-label': 'primary checkbox' }}
                                 />
-                                <Form.Label column lg={12}> Is Free Renting </Form.Label>
+                                {/* <Form.Label column lg={12}> Is Free Renting </Form.Label>
 
                                 <Switch
                                     defaultChecked={currentCabinet?.isFreeRenting}
@@ -409,12 +384,7 @@ export default function CabinetForm(props) {
                                     name="checkedFreeRenting"
                                     disabled={false}
                                     inputProps={{ 'aria-label': 'primary checkbox' }}
-                                />
-
-
-
-
-
+                                /> */}
                                 <DialogActions>
                                     <Button onClick={handleClickClose} variant="secondary">
                                         Cancel
@@ -425,26 +395,43 @@ export default function CabinetForm(props) {
                                 </DialogActions>
 
                             </Col>
-
-                            <Col md={6} xl={6}>
-                                <div>
-                                    <div className="d-flex flex-row" style={{ height: '600px' }}>
-                                        {
-                                            dataTemplateArr.map((e, i) => (
-                                                <div key={i}>
-                                                    {e.map((b) => b)}
-                                                </div>
-                                            ))
-                                        }
+                            {currentCabinet &&
+                                <Col md={6} xl={6}>
+                                    <div>
+                                        <div className="d-flex flex-row" style={{ height: '600px' }}>
+                                            {
+                                                dataTemplateArr.map((e, i) => (
+                                                    <div key={i}>
+                                                        {e.map((b) => b)}
+                                                    </div>
+                                                ))
+                                            }
+                                        </div>
                                     </div>
-                                    {!currentCabinet &&
+
+
+
+                                </Col>}
+                            {!currentCabinet &&
+                                <Col md={6} xl={6}>
+                                    <div>
+                                        <div className="d-flex flex-row" style={{ height: '600px' }}>
+                                            {
+                                                dataTemplateArr.map((e, i) => (
+                                                    <div key={i}>
+                                                        {e.map((b) => b)}
+                                                    </div>
+                                                ))
+                                            }
+                                        </div>
+
                                         <div>
 
 
                                             <p>Choose cabinet template</p>
                                             <div>
                                                 {template.map((value, index) =>
-                                                    <div className="btn btn-dark" style={{
+                                                    <div key={index} className="btn btn-dark" style={{
                                                         position: 'relative', display: 'inline-block', width: '80px', height: '50px', marginRight: '3px'
                                                     }} onClick={() => handlePreview(value)}>
 
@@ -456,47 +443,11 @@ export default function CabinetForm(props) {
                                                 )}
                                             </div>
                                         </div>
-                                    }
-                                </div>
 
-
-                            </Col>
-                            {/* <Col md={6} xl={6}>
-                                <div>
-                                    <div style={{ display: "inline-block" }}>
-                                        <div style={{
-                                            width: '500px', height: '350px',
-                                            backgroundImage: `url('${selectedTemplate?.imgUrl}')`,
-                                            backgroundRepeat: 'no-repeat',
-                                            backgroundSize: 'contain'
-
-                                        }} >
-                                        </div>
                                     </div>
-                                    {!currentCabinet &&
-                                        <div>
 
 
-                                            <p>Choose cabinet template</p>
-                                            <div>
-                                                {template.map((value, index) =>
-                                                    <div style={{
-                                                        position: 'relative', display: 'inline-block', width: '80px', height: '50px', marginRight: '3px'
-                                                    }} onClick={() => setSelectedTemplate(value)}>
-                                                        <img width='80' src={value.imgUrl} fluid />
-
-                                                        {selectedTemplate.id == value.id && <div style={{ position: 'absolute', top: '0', right: '0', color: 'greenyellow' }}>
-                                                            <span class="material-icons">check_circle</span>
-                                                        </div>}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    }
-                                </div>
-
-
-                            </Col> */}
+                                </Col>}
 
                         </Form.Row>
                     </Form>

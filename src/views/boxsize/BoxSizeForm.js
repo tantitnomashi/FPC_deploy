@@ -5,67 +5,16 @@ import API from '../../utils/adminApi'
 import { NotificationManager } from 'react-notifications';
 
 export default function BoxSizeForm(props) {
-    const { open, handleClickClose, currentCabinet, reload } = props;
+    const { open, handleClickClose, reload } = props;
 
-
-
+    const [validated, setValidated] = useState(false);
 
     const [newName, setNewName] = useState('');
-    const [errName, setErrName] = useState('');
-
     const [virtualWidth, setVirtualWidth] = useState(1);
     const [virtualHeight, setVirtualHeight] = useState(1);
-
     const [actualWidth, setActualWidth] = useState(1);
     const [actuallHeight, setActualHeight] = useState(1);
-
-
     const [basePrice, setBasePrice] = useState(1);
-    const [errBasePrice, setErrBasePrice] = useState('');
-
-    const [errNumber, setErrNumber] = useState('');
-
-
-
-
-    const validData = (text = '', fieldIndex = -1) => {
-        switch (fieldIndex) {
-            case 0:
-                if (text.length >= 30) {
-                    setErrName("Name too long ! Under 30 digits please!");
-                } else if (text === '') {
-                    setErrName("Name is required!");
-                } else {
-                    setErrName("");
-                }
-                break;
-            case 5:
-                if (text < 1 || text > 2) {
-                    setErrBasePrice("Base price must greater than 1!")
-                } else if (text == '') {
-                    setErrBasePrice("Base price is required!");
-                } else {
-                    setErrBasePrice("");
-                }
-                break;
-            case 1:
-                if (text.length == 0) {
-                    setErrNumber("Size is required")
-                } if (text < 0) {
-                    setErrNumber("Value must greater than 0!")
-                } else {
-                    setErrNumber("");
-                }
-                break;
-
-            default:
-                if ((errBasePrice + errNumber + errName).length == 0) {
-                    return true;
-                }
-                break;
-        }
-        return false;
-    }
 
 
     const submitForm = () => {
@@ -103,33 +52,47 @@ export default function BoxSizeForm(props) {
                 <DialogTitle id="form-dialog-title"> New Box Size</DialogTitle>
                 <DialogContent>
 
-                    <Form>
+                    <Form noValidate validated={validated} onSubmit={(e) => {
+                        const form = e.currentTarget;
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (form.checkValidity() === false) {
+                        } else {
+                            submitForm();
+                        }
+                        setValidated(true);
+
+                    }
+
+                    }>
                         <Form.Row>
 
                             <Col md={6} xl={6}>
                                 <Form.Label column lg={12}>Name    </Form.Label>
                                 <Form.Control className="my-1" id="name"
                                     label="Name"
-                                    type="Text" placeholder=""
+                                    type="Text" placeholder="" required={true}
                                     onChange={(e) => {
                                         let text = e.target.value;
                                         setNewName(text)
-                                        validData(text, 0);
                                     }}
-                                    defaultValue={currentCabinet?.name} />
+                                />
+                                <Form.Control.Feedback type="invalid" required={true}>
+                                    Please input username, 8 - 50 characters.
+                                 </Form.Control.Feedback>
                             </Col>
                             <Col md={6} xl={6}>
                                 <Form.Label column lg={12}>Base Price</Form.Label>
-                                <Form.Control className="my-1" id="base-price"
-                                    type="number" min="1" step="0.01" defaultValue={currentCabinet?.priceWeight}
+                                <Form.Control className="my-1" id="base-price" required={true}
+                                    type="number" min="1" step="0.01"
                                     onChange={(e) => {
                                         let text = e.target.value;
                                         setBasePrice(text)
-                                        validData(text, 1);
                                     }}
                                 />
-
-
+                                <Form.Control.Feedback type="invalid" required={true}>
+                                    Please input valid number, greater than or equal 1 [Ex: 1.28].
+                                 </Form.Control.Feedback>
                             </Col>
 
 
@@ -141,13 +104,14 @@ export default function BoxSizeForm(props) {
 
                                 <InputGroup className="my-1 mb-2" id="address" >
 
-                                    <FormControl id="inlineFormInputGroup"
+                                    <FormControl id="inlineFormInputGroup" required={true}
                                         onChange={(e) => {
                                             let text = e.target.value;
                                             setVirtualHeight(text)
-                                            validData(text, 1);
                                         }} />
-
+                                    <Form.Control.Feedback type="invalid">
+                                        Field is required !
+                                     </Form.Control.Feedback>
                                 </InputGroup>
 
                             </Col>
@@ -156,13 +120,14 @@ export default function BoxSizeForm(props) {
 
                                 <InputGroup className="my-1 mb-2" id="address" >
 
-                                    <FormControl id="inlineFormInputGroup"
+                                    <FormControl id="inlineFormInputGroup" required={true}
                                         onChange={(e) => {
                                             let text = e.target.value;
                                             setVirtualWidth(text)
-                                            validData(text, 1);
                                         }} />
-
+                                    <Form.Control.Feedback type="invalid">
+                                        Field is required !
+                                     </Form.Control.Feedback>
                                 </InputGroup>
                             </Col>
 
@@ -174,13 +139,14 @@ export default function BoxSizeForm(props) {
 
                                 <InputGroup className="my-1 mb-2" id="address" >
 
-                                    <FormControl id="inlineFormInputGroup"
+                                    <FormControl id="inlineFormInputGroup" required={true}
                                         onChange={(e) => {
                                             let text = e.target.value;
                                             setActualHeight(text)
-                                            validData(text, 1);
                                         }} />
-
+                                    <Form.Control.Feedback type="invalid">
+                                        Field is required !
+                                     </Form.Control.Feedback>
                                 </InputGroup>
 
                             </Col>
@@ -190,13 +156,14 @@ export default function BoxSizeForm(props) {
 
                                 <InputGroup className="my-1 mb-2" id="address" >
 
-                                    <FormControl id="inlineFormInputGroup"
+                                    <FormControl id="inlineFormInputGroup" required={true}
                                         onChange={(e) => {
                                             let text = e.target.value;
                                             setActualWidth(text)
-                                            validData(text, 1);
                                         }} />
-
+                                    <Form.Control.Feedback type="invalid">
+                                        Field is required !
+                                     </Form.Control.Feedback>
                                 </InputGroup>
                             </Col>
 
@@ -204,15 +171,21 @@ export default function BoxSizeForm(props) {
 
 
 
-                        <DialogActions>
-                            <Button onClick={handleClickClose} variant="secondary">
-                                Cancel
-                                    </Button>
-                            <Button className='px-4' onClick={submitForm} color="primary">
-                                Save
-                                      </Button>
-                        </DialogActions>
+                        <div>
+                            <DialogActions>
+                                <Button onClick={() => {
+                                    handleClickClose();
+                                    setValidated(false);
+                                }} variant="secondary">
+                                    Cancel
+                                 </Button>
 
+                                <Button className='px-4'
+                                    type="submit"
+                                    color="primary">
+                                    Save
+                                   </Button>
+                            </DialogActions></div>
 
 
 

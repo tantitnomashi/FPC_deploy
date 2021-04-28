@@ -6,7 +6,6 @@ import {
 
 import Aux from "../../hoc/_Aux";
 import DEMO from "../../store/constant";
-import Pagination from "react-js-pagination";
 
 import avatar1 from '../../assets/images/user/avatar-1.jpg';
 import avatar2 from '../../assets/images/user/avatar-2.jpg';
@@ -28,11 +27,6 @@ export default function Transaction() {
     const [isBasic, setIsBasic] = useState(false);
     var sapmle = require('../../sampleData/transactionStatus.json');
 
-
-    // for paging
-
-    let [currentProcessPage, setCurrentProcessPage] = useState(1);
-    const [totalItemsCount, setTotalItemsCount] = useState(0); //projects count
 
     // for details
     const [open, setOpen] = React.useState(false);
@@ -60,8 +54,6 @@ export default function Transaction() {
                         return new Date(b.createdAt) - new Date(a.createdAt);
                     })
                     setTrans(tmp);
-                    setTotalItemsCount(response.data.data.length);
-
                     // setFilterList(tmp)
                 } else {
                     alert('Cant get Trans !')
@@ -139,14 +131,6 @@ export default function Transaction() {
         console.log("show res", filteredList);
 
     }
-    // Pagination for project process data
-    const getProcessData = page => {
-        setCurrentProcessPage(page);
-        console.log(currentProcessPage)
-        console.log(totalItemsCount)
-        console.log(page);
-
-    }
 
     return (
         <Aux>
@@ -199,16 +183,16 @@ export default function Transaction() {
 
                 </Col>
                 <Col className="text-right justify-content-end" md={6} xl={6}>
-                    {/* <Form inline className="justify-content-end">
+                    <Form inline className="justify-content-end">
                         <FormControl type="text" placeholder="Search" className="mr-sm-2" />
                         <Button size="sm" variant="outline-secondary">Search</Button>
-                    </Form> */}
+                    </Form>
 
                 </Col>
             </Row>
 
             <Row>
-                {/* <Col md={6} xl={4}>
+                <Col md={6} xl={4}>
                     <Card>
                         <Card.Body>
                             <h6 className='mb-4'>Daily Sales</h6>
@@ -264,7 +248,7 @@ export default function Transaction() {
                             </div>
                         </Card.Body>
                     </Card>
-                </Col> */}
+                </Col>
                 <Col md={6} xl={12}>
                     <Card className='Recent-Users'>
                         <Card.Header>
@@ -276,43 +260,37 @@ export default function Transaction() {
 
                                     {
 
-                                        filteredList.slice((currentProcessPage - 1) * 6, currentProcessPage * 6).map(transaction =>
+                                        filteredList.map(transaction =>
 
                                             <tr className="unread row">
                                                 <td className="col-md-1 justify-content-center text-center d-flex align-items-center">
                                                     <img className="rounded-circle" style={{ width: '40px' }} src={avatar1} alt="activity-user" />
                                                 </td>
                                                 <td className="col-md-3 ">
-                                                    {
-                                                        (transaction.transactionType == "ThirdParty") &&
-                                                        <h6 className="mb-1"> 3rd Party - Box {transaction.boxNum}</h6>
-
-                                                    }
-                                                    {
-                                                        (transaction.transactionType != "ThirdParty") &&
-                                                        <h6 className="mb-1"> {transaction.cabinetName}- Box {transaction.boxNum}</h6>
-
-                                                    }
+                                                    <h6 className="mb-1"> {transaction.cabinetName} - Box {transaction.boxNum}</h6>
                                                     <p className="m-0 d-flex align-items-center">
-                                                        {transaction.amount > 0 ? transaction.amount : "Unknown"}
+                                                        {transaction.Amount > 0 ? transaction.Amount : "Free Renting"}
                                                         <span class="material-icons f-20 px-2">
                                                             assignment_ind
                                                         </span>
+
                                                         {transaction.userName}
+
                                                     </p>
                                                 </td>
-                                                <td className="col-md-3 d-flex align-items-center text-dark">
+                                                <td className="col-md-2 d-flex align-items-center">
+                                                    <h6 className="">
 
-                                                    <i className={transaction.Status == 1 ?
-                                                        "fa fa-circle text-c-green f-10 m-r-15" :
-                                                        "fa fa-circle text-c-red f-10 m-r-15"} />
+                                                        <i className={transaction.Status == 1 ?
+                                                            "fa fa-circle text-c-green f-10 m-r-15" :
+                                                            "fa fa-circle text-c-red f-10 m-r-15"} />
 
-                                                    {new Date(transaction.rentStartTime).toGMTString()}
+                                                        {transaction.rentStartTime}
 
-
+                                                    </h6>
 
                                                 </td>
-                                                <td className="col-md-1 d-flex align-items-center text-dark">
+                                                <td className="col-md-2 d-flex align-items-center">
                                                     <span class="material-icons f-20 mr-2">
                                                         query_builder
                                                     </span>
@@ -335,16 +313,6 @@ export default function Transaction() {
 
                                 </tbody>
                             </Table>
-                            <Pagination
-                                itemClass="page-item"
-                                linkClass="page-link"
-                                activePage={currentProcessPage}
-                                itemsCountPerPage={6} //projects per page
-                                totalItemsCount={totalItemsCount}
-                                pageRangeDisplayed={5}
-                                onChange={getProcessData}
-                                innerClass="pagination justify-content-center mt-3"
-                            />
                         </Card.Body>
                     </Card>
                 </Col>

@@ -9,17 +9,12 @@ const MAX_PADDING = 2;
 const SIZE = 4;
 export default function TemplateForm(props) {
     const { open, handleClickClose, currentProfile } = props;
-    const [type, setType] = useState(0);
     const [preTemplate, setPreTemplate] = useState({});
     const [boxAmount, setBoxAmount] = useState(4);
     const [arrBox, setArrBox] = useState([]);
     const [size, setSize] = React.useState([]);
+    const [selectedSize, setSelectedSize] = React.useState([]);
     const [dataTemplateArr, setDataTempleteArr] = useState([]);
-
-    //for validate
-    const [validated, setValidated] = useState(false);
-
-
     useEffect(() => {
         loadAdminBoxSize();
     }, []);
@@ -40,11 +35,8 @@ export default function TemplateForm(props) {
     }
 
 
-
     const handleBoxAmountChange = (e) => {
         e.preventDefault();
-
-
         let amount = e.target.value;
         setBoxAmount(amount);
 
@@ -79,7 +71,7 @@ export default function TemplateForm(props) {
                     <Col md={3} xl={4}>
                         <div className="btn-group d-flex align-items-center justify-content-start" role="group">
                             <label htmlFor={"position" + i} className="mr-2">Position</label>
-                            <input type="text" required className="form-control" name={'position' + i} id={"position" + i} />
+                            <input type="text" className="form-control" name={'position' + i} id={"position" + i} />
                         </div>
                     </Col>
                 </Row>
@@ -141,20 +133,10 @@ export default function TemplateForm(props) {
 
     const sumbitFormTemplate = () => {
 
-
-
-        API.createCabinetTemplate(preTemplate).then((response) => {
-            if (response.data.statusCode == 200) {
-                console.log('load cabinets ', response.data.data[0]);
-                NotificationManager.success('Create template successfully!', 'Create template');
-
-            } else if (response.data.statusCode == 201) {
-                NotificationManager.success('Create template successfully!', 'Create template');
-
-            } else {
-                NotificationManager.error('Sorry, Create this template!', 'Create template');
-            }
-        }).catch(e => NotificationManager.error('Sorry, Create this template!', 'Create template'));
+        // API.createCabinetTemplate(preTemplate).then((response) => {
+        //     console.log("create: ", response.data.statusCode);
+        // }).catch(e => console.log("###create Cabinet Template ERR", e));
+        NotificationManager.warning('Create template!', 'Delete Cabinet');
 
         handleClickClose();
     }
@@ -235,38 +217,32 @@ export default function TemplateForm(props) {
                     To {currentProfile ? "update" : "create"} Cabinet, please fill all fields below.
                             </DialogContentText>
 
-
-                <Form noValidate validated={validated} onSubmit={(e) => {
-                    const form = e.currentTarget;
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if (form.checkValidity() === false) {
-                    } else {
-                        sumbitFormTemplate();
-                    }
-                    setValidated(true);
-
-                }
-
-                }>
+                <Form>
                     <Row>
 
                         <Col md={8} xl={7}>
                             <Form.Label column lg={12}>Name </Form.Label>
                             <Form.Control className="my-1" id="name" name="cabinet-name"
-                                label="Name" required={true}
+                                label="Name"
                                 type="Text" placeholder="" />
-                            <Form.Control.Feedback type="invalid" required={true}>
-                                Please input Template name, 8 - 50 characters.
-                            </Form.Control.Feedback>
-
                             <Form.Label column lg={12}>Box Amount</Form.Label>
                             <Form.Control className="my-1" id="base-price" onChange={(e) => handleBoxAmountChange(e)}
-                                type="number" required={true} min="1" step="1" />
+                                type="number" min="1" name="base-price" />
 
-                            <Form.Control.Feedback type="invalid" required={true}>
-                                Please input Box amount, number greater than 0.
-                                 </Form.Control.Feedback>
+                            <Form.Label column lg={6}>Row count  </Form.Label>
+
+                            <InputGroup className="my-1 mb-2" id="address" >
+
+                                <FormControl id="inlineFormInputGroup" required={true}
+                                    onChange={(e) => {
+                                        let text = e.target.value;
+                                    }} />
+                                <Form.Control.Feedback type="invalid">
+                                    Field is required !
+                                     </Form.Control.Feedback>
+                            </InputGroup>
+
+
 
                             <Button onClick={handleAddBoxToCabinet} variant="dark">
                                 Generate
@@ -301,25 +277,19 @@ export default function TemplateForm(props) {
 
                     </Row>
 
-                    <DialogActions>
-                        <Button onClick={() => {
-                            handleClickClose();
-                            setValidated(false);
-                        }} variant="secondary">
-                            Cancel
-                                 </Button>
 
-                        <Button className='px-4'
-                            type="submit"
-                            color="primary">
-                            Save
-                    </Button>
-                    </DialogActions>
                 </Form>
             </DialogContent >
 
 
-
+            <DialogActions>
+                <Button onClick={handleClickClose} variant="secondary">
+                    Cancel
+              </Button>
+                <Button className='px-4' onClick={sumbitFormTemplate} variant="dark">
+                    Save
+              </Button>
+            </DialogActions>
         </Dialog >
     );
 }

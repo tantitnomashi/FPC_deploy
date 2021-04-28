@@ -20,7 +20,11 @@ export default function RequestForm(props) {
         }
     ];
 
-    const { open, handleClickClose, currentTransaction, reload } = props;
+
+
+    // for data
+
+    const { open, handleClickClose, currentRequest, reload } = props;
     const [statusList, setStatusList] = useState(sapmle);
     const [selectedCabinet, setSelectedCabinet] = useState();
     const [selectedStaff, setSelectedStaff] = useState('');
@@ -37,6 +41,7 @@ export default function RequestForm(props) {
         loadAdminCabinets();
 
     }, []);
+
     const loadAdminCabinets = () => {
         API.getCabitnet()
             .then((response) => {
@@ -84,21 +89,47 @@ export default function RequestForm(props) {
                 assignee: selectedStaff
             }
             console.log("### REQ", tmp);
-            API.createCheckingRequest(tmp).then((response) => {
 
-                console.log("rs Checking status: ", response.data.statusCode);
-                if (response.data.statusCode == 200) {
-                    NotificationManager.success('Create Checking request successfully !', 'Checking request');
-                    reload();
-                } else {
-                    NotificationManager.error('Sorry, Cannot create Checking request!', 'Checking request');
-                }
+            console.log("req ID:  " + currentRequest?.id + " ---" + currentRequest?.assignee + " from " + selectedStaff);
 
-            }).catch(e => NotificationManager.error('Sorry, Cannot create Checking request!', 'Checking request'))
+
+            if (currentRequest) {
+                console.log("### ####### UPDATE CHECKING REQ");
+
+                API.updateCheckingRequest(currentRequest.id, selectedStaff).then((response) => {
+
+                    // console.log("rs Checking status: ", response.data.statusCode);
+                    // console.log("req ID:  " + currentRequest?.assignee + " from " + selectedStaff);
+
+                    if (response.data.statusCode == 200) {
+                        NotificationManager.success('Update Checking request successfully !', 'Checking request');
+                        reload();
+                    } else {
+                        NotificationManager.error('Sorry, Cannot update Checking request!', 'Checking request');
+                    }
+
+                }).catch(e => console.log(e))
+            } else {
+                API.createCheckingRequest(tmp).then((response) => {
+
+                    console.log("rs Checking status: ", response.data.statusCode);
+                    if (response.data.statusCode == 200) {
+                        NotificationManager.success('Create Checking request successfully !', 'Checking request');
+                        reload();
+                    } else {
+                        NotificationManager.error('Sorry, Cannot create Checking request!', 'Checking request');
+                    }
+
+                }).catch(e => NotificationManager.error('Sorry, Cannot create Checking request!', 'Checking request'))
+            }
+
         }
         setTimeout(handleClickClose, 200);
 
         // handleClickClose();
+
+
+
     }
     return (
         <div>
@@ -108,28 +139,49 @@ export default function RequestForm(props) {
                 <DialogContent>
 
                     <Form>
+
+                        {
+                            (currentRequest?.id) &&
+                            <Form.Row>
+                                <Col md={12} xl={12}>
+                                    <Form.Label column lg={12}>Cabinet</Form.Label>
+                                    <Form.Control type="text" disabled={true} defaultValue={currentRequest?.cabinetName}>
+                                    </Form.Control>
+                                </Col>
+
+                                <Col md={12} xl={12}>
+                                    <Form.Label column lg={12}>Location</Form.Label>
+                                    <Form.Control type="text" disabled={true} defaultValue={currentRequest?.cabinetLocation}>
+                                    </Form.Control>
+                                </Col>
+                            </Form.Row>
+
+                        }
                         <Form.Row>
+                            {
+                                (!currentRequest?.id) &&
 
-                            <Col md={12} xl={12}>
-                                <Form.Label column lg={12}>Cabinet</Form.Label>
-                                <Form.Control as="select" custom defaultValue={cabinets[0]?.id}
-                                    onChange={(e) => {
-                                        let text = e.target.value;
-                                        setSelectedCabinet(text)
+                                <Col md={12} xl={12}>
+                                    <Form.Label column lg={12}>Cabinet</Form.Label>
+                                    <Form.Control as="select" custom defaultValue={currentRequest?.cabinetId}
+                                        onChange={(e) => {
+                                            let text = e.target.value;
+                                            setSelectedCabinet(text)
+                                        }}>
 
-                                        console.log("change status..from", text);
+                                        {
+                                            cabinets.map(value =>
+                                                <option value={value.id}>{value.name}</option>
+                                            )
+                                        }
 
-                                    }}
-                                >
+                                    </Form.Control>
+                                </Col>
 
-                                    {
-                                        cabinets.map(value =>
-                                            <option value={value.id}>{value.name}</option>
-                                        )
-                                    }
+                            }
 
-                                </Form.Control>
-                            </Col>
+
+
                             <Col md={12} xl={12}>
                                 <Form.Label column lg={12}>Assign for</Form.Label>
                                 <Form.Control as="select" custom defaultValue={users[0]?.userName}
@@ -138,17 +190,13 @@ export default function RequestForm(props) {
 
                                         setSelectedStaff(text)
 
-                                        console.log("###name assigne", text)
                                     }} >
-
                                     {
                                         users.map(value => {
                                             console.log("role", value.roleId);
                                             return (value.roleId == 2) && <option value={value.userName}>{value.fullName}</option>
 
                                         })
-
-
 
                                     }
 
@@ -172,7 +220,7 @@ export default function RequestForm(props) {
                             </Col>
                             <Col md={12} xl={12}>
                                 <Form.Label column lg={12}>Description</Form.Label>
-                                <Form.Control type="text"
+                                <Form.Control type="textarea" defaultValue={currentRequest?.description}
                                     onChange={(e) => {
                                         let text = e.target.value;
                                         setDesc(text)

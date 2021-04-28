@@ -1,5 +1,5 @@
 import React from 'react';
-import {Row, Col, Card, Form, Button, InputGroup, FormControl, DropdownButton, Dropdown} from 'react-bootstrap';
+import { Row, Col, Card, Form, Button, InputGroup, FormControl, DropdownButton, Dropdown } from 'react-bootstrap';
 
 import Aux from "../../hoc/_Aux";
 
@@ -17,7 +17,7 @@ class FormsElements extends React.Component {
                             </Card.Header>
                             <Card.Body>
                                 <h5>Form controls</h5>
-                                <hr/>
+                                <hr />
                                 <Row>
                                     <Col md={6}>
                                         <Form>
@@ -63,7 +63,7 @@ class FormsElements extends React.Component {
                                     </Col>
                                 </Row>
                                 <h5 className="mt-5">Sizing</h5>
-                                <hr/>
+                                <hr />
                                 <Row>
                                     <Col md={6}>
                                         <Form.Control size="lg" type="text" placeholder="Large text" className="mb-3" />
@@ -90,7 +90,7 @@ class FormsElements extends React.Component {
                                     </Col>
                                 </Row>
                                 <h5 className="mt-5">Inline</h5>
-                                <hr/>
+                                <hr />
                                 <Row>
                                     <Col>
                                         <Form inline>
@@ -112,7 +112,7 @@ class FormsElements extends React.Component {
                                 <Row>
                                     <Col md={12}>
                                         <h5 className="mt-5">Checkboxes</h5>
-                                        <hr/>
+                                        <hr />
                                         <Form.Group>
                                             <Form.Check
                                                 custom
@@ -124,7 +124,7 @@ class FormsElements extends React.Component {
                                     </Col>
                                     <Col md={6}>
                                         <h5 className="mt-5">Radios</h5>
-                                        <hr/>
+                                        <hr />
                                         <Form.Group>
                                             <Form.Check
                                                 custom
@@ -142,7 +142,7 @@ class FormsElements extends React.Component {
                                             />
                                         </Form.Group>
                                         <h5 className="mt-3">Inline</h5>
-                                        <hr/>
+                                        <hr />
                                         <Form.Group>
                                             <Form.Check
                                                 inline
@@ -164,7 +164,7 @@ class FormsElements extends React.Component {
                                     </Col>
                                     <Col md={6}>
                                         <h5 className="mt-5">Range</h5>
-                                        <hr/>
+                                        <hr />
                                         <Form.Label htmlFor="customRange1">Example range</Form.Label>
                                         <input type="range" className="custom-range" defaultValue="22" id="customRange1" />
                                         <Form.Label htmlFor="customRange2">Example range</Form.Label>
@@ -233,7 +233,7 @@ class FormsElements extends React.Component {
                                     </Col>
                                     <Col md={6}>
                                         <h5 className="mt-5">Sizing</h5>
-                                        <hr/>
+                                        <hr />
                                         <InputGroup size="sm" className="mb-3">
                                             <InputGroup.Prepend>
                                                 <InputGroup.Text id="inputGroup-sizing-sm">Small</InputGroup.Text>
@@ -260,7 +260,7 @@ class FormsElements extends React.Component {
                                     </Col>
                                     <Col md={6}>
                                         <h5 className="mt-5">Checkboxes and radios</h5>
-                                        <hr/>
+                                        <hr />
                                         <InputGroup className="mb-3">
                                             <InputGroup.Prepend>
                                                 <InputGroup.Checkbox aria-label="Checkbox for following text input" />
@@ -276,7 +276,7 @@ class FormsElements extends React.Component {
                                     </Col>
                                 </Row>
                                 <h5 className="mt-5">Button Addons</h5>
-                                <hr/>
+                                <hr />
                                 <Row>
                                     <Col md={6}>
                                         <InputGroup className="mb-3">
@@ -320,7 +320,7 @@ class FormsElements extends React.Component {
                                     </Col>
                                     <Col md={6}>
                                         <h5 className="mt-5">Buttons With Dropdown</h5>
-                                        <hr/>
+                                        <hr />
                                         <InputGroup className="mb-3">
                                             <DropdownButton as={InputGroup.Prepend} title="Dropdown" id="input-group-dropdown-1">
                                                 <Dropdown.Item href="#">Action</Dropdown.Item>
@@ -339,7 +339,7 @@ class FormsElements extends React.Component {
                                                 aria-describedby="basic-addon2"
                                             />
 
-                                            <DropdownButton as={InputGroup.Append} title="Dropdown" id="input-group-dropdown-2">
+                                            <DropdownButton as={InputGroup.Append} title="FPC" id="input-group-dropdown-2">
                                                 <Dropdown.Item href="#">Action</Dropdown.Item>
                                                 <Dropdown.Item href="#">Another action</Dropdown.Item>
                                                 <Dropdown.Item href="#">Something else here</Dropdown.Item>
@@ -350,7 +350,7 @@ class FormsElements extends React.Component {
                                     </Col>
                                     <Col md={6}>
                                         <h5 className="mt-5">Segmented  Buttons</h5>
-                                        <hr/>
+                                        <hr />
                                         <InputGroup className="mb-3">
                                             <Dropdown as={InputGroup.Prepend}>
                                                 <Button variant="secondary">Action</Button>

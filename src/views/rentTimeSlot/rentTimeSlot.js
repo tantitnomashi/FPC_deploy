@@ -110,7 +110,7 @@ export default function RentTimeSlot({ match }) {
                                 </Col>
 
 
-                                <Col md={3} className='text-left '>
+                                <Col md={3} className='justify-content-center '>
                                     Duration
                                 </Col>
                                 <Col md={3} className='justify-content-center'>
@@ -125,15 +125,13 @@ export default function RentTimeSlot({ match }) {
                                     < Row className="unread py-3 px-1 my-2 border-bottom border-light" >
 
                                         <Col md={3} className='text-center'>
-                                            <h5 className="d-flex align-items-center justify-content-center">{index++}</h5>
+                                            <h5 className="d-flex align-items-center justify-content-center">{++index}</h5>
                                         </Col>
 
-                                        <Col md={3} className='text-center '>
+                                        <Col md={3} className='justify-content-center '>
                                             <h5 className="d-flex align-items-center ">
 
-
                                                 {"   " + element.duration}
-
 
                                             </h5>
                                         </Col>

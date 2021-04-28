@@ -7,9 +7,9 @@ global.jQuery = $;
 
 const DashboardDefault = React.lazy(() => import('./Demo/Dashboard/Default'));
 const DashboardUser = React.lazy(() => import('./views/user/User'));
-const Login = React.lazy(() => import('./views/auth/login'));
 const DashboardTransaction = React.lazy(() => import('./views/transaction/Transaction'));
 const DashboardCabinet = React.lazy(() => import('./views/cabinet/Cabinet'));
+const Template = React.lazy(() => import('./views/template/Template'));
 const Boxsize = React.lazy(() => import('./views/boxsize/BoxSize'));
 const Box = React.lazy(() => import('./views/box/Box'));
 const RentalTime = React.lazy(() => import('./views/rentTimeSlot/RentTimeSlot'));
@@ -35,10 +35,10 @@ const OtherSamplePage = React.lazy(() => import('./Demo/Other/SamplePage'));
 const OtherDocs = React.lazy(() => import('./Demo/Other/Docs'));
 
 const routes = [
-    { path: '/login', exact: true, name: 'Login', component: Login },
     { path: '/dashboard/default', exact: true, name: 'Default', component: DashboardDefault },
     { path: '/user', exact: true, name: 'User', component: DashboardUser },
     { path: '/cabinet', exact: true, name: 'Cabinet', component: DashboardCabinet },
+    { path: '/template', exact: true, name: 'Template', component: Template },
     { path: '/transaction', exact: true, name: 'Transaction', component: DashboardTransaction },
     { path: '/basic/button', exact: true, name: 'Basic Button', component: UIBasicButton },
     { path: '/box-size', exact: true, name: 'Box Size', component: Boxsize },

@@ -6,6 +6,7 @@ import {
 
 import Aux from "../../hoc/_Aux";
 import DEMO from "../../store/constant";
+import Pagination from "react-js-pagination";
 
 import avatar1 from '../../assets/images/user/avatar-1.jpg';
 import avatar2 from '../../assets/images/user/avatar-2.jpg';
@@ -17,6 +18,14 @@ import { NotificationManager } from 'react-notifications';
 
 
 export default function Request() {
+
+    // for paging
+
+    let [currentProcessPage, setCurrentProcessPage] = useState(1);
+    const [totalItemsCount, setTotalItemsCount] = useState(0); //projects count
+
+
+    //for data
     const [openConfirm, setOpenConfirm] = React.useState(false);
     const [currentRequest, setCurrentRequest] = React.useState(null);
     const [requestList, setRequestList] = React.useState([]);
@@ -42,6 +51,7 @@ export default function Request() {
     const setOpenForm = (currentReq) => {
         setOpen(true);
         setCurrentRequest(currentReq);
+        console.log(currentReq);
     };
 
     const setCloseForm = () => {
@@ -63,6 +73,7 @@ export default function Request() {
                         return new Date(b.createdAt) - new Date(a.createdAt);
                     })
                     setRequestList(tmp);
+                    setTotalItemsCount(response.data.data.length);
                     // setFilterList(tmp)
                 } else {
                     alert('Cant get Checking request !')
@@ -72,25 +83,6 @@ export default function Request() {
     }
 
 
-    // for confirm diaglog
-    const handleDelete = (currentRequest) => {
-        setOpenConfirm(true);
-        if (currentRequest) {
-            setCurrentRequest(currentRequest);
-        } else {
-            setCurrentRequest(null);
-        }
-    }
-    const requestDelete = (username) => {
-        setTimeout(() => {
-
-            setOpenConfirm(true);
-        }, 2000);
-    }
-    const setCloseConfirmForm = () => {
-        setOpenConfirm(false);
-
-    };
 
 
     //for filter 
@@ -138,18 +130,27 @@ export default function Request() {
             activeFilter.includes(item.name)
         );
         console.log("show res", filteredList);
+
+    }
+
+
+    // Pagination for project process data
+    const getProcessData = page => {
+        setCurrentProcessPage(page);
+        console.log(currentProcessPage)
+        console.log(totalItemsCount)
+        console.log(page);
+
     }
 
     return (
         <Aux>
             <RequestForm open={open} handleClickClose={setCloseForm} currentRequest={currentRequest} reload={loadData} />
 
-            <ConfirmDialog open={openConfirm}
-                tilte="Delete Confirm" message={"Are your sure to delete this request:  " + currentRequest?._id} onAccess={() => requestDelete(currentRequest?._id)} onCancel={setCloseConfirmForm} />
 
             <Row className="pb-3">
                 <Col className="text-left" md={6} xl={6}>
-                    <Button variant="outline-secondary" onClick={() => setIsBasic(!isBasic)}>Filter Status</Button>
+                    {/* <Button variant="outline-secondary" onClick={() => setIsBasic(!isBasic)}>Filter Status</Button>
                     <Collapse in={isBasic}>
                         <Row>
                             <Col md={12}>
@@ -166,14 +167,13 @@ export default function Request() {
                                                 htmlFor="myInput">All</label>
 
                                             {filterList.map(filter => (
-                                                <React.Fragment className="f-15">
-
+                                                <React.Fragment>
                                                     <input
-                                                        className="mx-1" type="checkbox"
+                                                        className="mx-1 f-15" type="checkbox"
                                                         checked={activeFilter.includes(filter.name)}
                                                         onClick={() => onFilterChange(filter.name)}
                                                     />
-                                                    <label htmlFor={filter.type}>{filter.name}</label>
+                                                    <label className="mx-1 f-15" htmlFor={filter.type}>{filter.name}</label>
                                                 </React.Fragment>
                                             ))}
                                         </Form>
@@ -185,7 +185,7 @@ export default function Request() {
 
 
                         </Row>
-                    </Collapse>
+                    </Collapse> */}
 
                 </Col>
                 <Col className="text-right justify-content-end" md={6} xl={6}>
@@ -200,65 +200,7 @@ export default function Request() {
             </Row>
 
             <Row>
-                {/* <Col md={6} xl={4}>
-                    <Card>
-                        <Card.Body>
-                            <h6 className='mb-4'>Daily Request</h6>
-                            <div className="row d-flex align-items-center">
-                                <div className="col-9">
-                                    <h3 className="f-w-300 d-flex align-items-center m-b-0"><i className="feather icon-arrow-up text-c-green f-30 m-r-5" /> $248.95</h3>
-                                </div>
 
-                                <div className="col-3 text-right">
-                                    <p className="m-b-0">50%</p>
-                                </div>
-                            </div>
-                            <div className="progress m-t-30" style={{ height: '7px' }}>
-                                <div className="progress-bar progress-c-theme" role="progressbar" style={{ width: '50%' }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" />
-                            </div>
-                        </Card.Body>
-                    </Card>
-                </Col>
-                <Col md={6} xl={4}>
-                    <Card>
-                        <Card.Body>
-                            <h6 className='mb-4'>Monthly Request</h6>
-                            <div className="row d-flex align-items-center">
-                                <div className="col-9">
-                                    <h3 className="f-w-300 d-flex align-items-center m-b-0"><i className="feather icon-arrow-down text-c-red f-30 m-r-5" /> $2.942.32</h3>
-                                </div>
-
-                                <div className="col-3 text-right">
-                                    <p className="m-b-0">36%</p>
-                                </div>
-                            </div>
-                            <div className="progress m-t-30" style={{ height: '7px' }}>
-                                <div className="progress-bar progress-c-theme2" role="progressbar" style={{ width: '35%' }} aria-valuenow="35" aria-valuemin="0" aria-valuemax="100" />
-                            </div>
-                        </Card.Body>
-                    </Card>
-                </Col>
-                <Col xl={4}>
-                    <Card>
-                        <Card.Body>
-                            <h6 className='mb-4'>Total</h6>
-                            <div className="row d-flex align-items-center">
-                                <div className="col-9">
-                                    <h3 className="f-w-300 d-flex align-items-center m-b-0"><i className="feather icon-arrow-up text-c-green f-30 m-r-5" /> $8.638.32</h3>
-                                </div>
-
-                                <div className="col-3 text-right">
-                                    <p className="m-b-0">70%</p>
-                                </div>
-                            </div>
-                            <div className="progress m-t-30" style={{ height: '7px' }}>
-                                <div className="progress-bar progress-c-theme" role="progressbar" style={{ width: '70%' }} aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" />
-                            </div>
-                        </Card.Body>
-                    </Card>
-                </Col>
-        
-         */}
 
                 <Col md={6} xl={12}>
                     <Card className='Recent-Users'>
@@ -270,9 +212,9 @@ export default function Request() {
                                 <tbody>
 
                                     {
-                                        filteredList.map(request =>
+                                        requestList.slice((currentProcessPage - 1) * 6, currentProcessPage * 6).map(request =>
 
-                                            <tr className="unread row">
+                                            <tr key={request.id} className="unread row">
                                                 <td className="col-md-1 justify-content-center text-center d-flex align-items-center">
                                                     <img className="rounded-circle" style={{ width: '40px' }} src={avatar1} alt="activity-user" />
                                                 </td>
@@ -282,31 +224,31 @@ export default function Request() {
                                                         {(request?.requestType == 0) && <span>Check Box</span>}
                                                         {(request?.requestType == 1) && <span>Check Connection</span>}
                                                         {(request?.requestType == 2) && <span>Check Expired Items</span>}
-                                                        <span class="material-icons f-20 px-2">
+                                                        <span className="material-icons f-20 px-2">
                                                             assignment_ind
                                                         </span>
 
-                                                        {request.userName}
+                                                        {request.assigneeFullName}
 
                                                     </p>
                                                 </td>
-                                                <td className="col-md-2 d-flex align-items-center">
-                                                    <h6 className="">
+                                                <td className="col-md-3 text-dark d-flex align-items-center">
 
-                                                        <i className={request.done == 1 ?
-                                                            "fa fa-circle text-c-green f-10 m-r-15" :
-                                                            "fa fa-circle text-c-red f-10 m-r-15"} />
 
-                                                        {request.createdAt}
-
-                                                    </h6>
-
-                                                </td>
-                                                <td className="col-md-2 d-flex align-items-center">
                                                     <span class="material-icons f-20 mr-2">
                                                         query_builder
                                                     </span>
-                                                    {request.rentDuration}
+
+                                                    {new Date(request.createdAt).toGMTString()}
+
+
+                                                </td>
+                                                <td className="col-md-1 d-flex align-items-center">
+
+                                                    <i className={request.done == 1 ?
+                                                        "fa fa-circle text-c-green f-10 m-r-15" :
+                                                        "fa fa-circle text-c-red f-10 m-r-15"} />
+                                                    {request.done ? "Done" : "Checking"}
                                                 </td>
                                                 <td className="col-md-2 d-flex align-items-center">
                                                     {request.statusName}
@@ -325,6 +267,16 @@ export default function Request() {
 
                                 </tbody>
                             </Table>
+                            <Pagination
+                                itemClass="page-item"
+                                linkClass="page-link"
+                                activePage={currentProcessPage}
+                                itemsCountPerPage={6} //projects per page
+                                totalItemsCount={totalItemsCount}
+                                pageRangeDisplayed={5}
+                                onChange={getProcessData}
+                                innerClass="pagination justify-content-center mt-3"
+                            />
                         </Card.Body>
                     </Card>
                 </Col>

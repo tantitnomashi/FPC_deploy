@@ -1,14 +1,17 @@
 import axios from 'axios';
 
 
-const ngrokID = '2d6c378312d3'
+const ngrokID = '0e7e1c89dd88'
 const route_api = 'https://' + ngrokID + '.ngrok.io'
 const newRoute = "http://40.123.255.174"
 const instance = axios.create({
 	baseURL: `${newRoute}/api`,
 	timeout: 5000,
 	headers: {
+		authorization: "Bearer " + localStorage.getItem('admin-token')
 	}
+
+
 });
 
 const adminApi = {
@@ -54,9 +57,6 @@ const adminApi = {
 	getBoxSizes: () => instance.get('/v1/box-sizes'),
 	createBoxSize: (params) => instance.post('/v1/box-sizes', params),
 	deleteBoxSize: (id) => instance.delete('/v1/box-sizes/' + id),
-
-
-
 	// API for User Model
 
 
@@ -86,7 +86,9 @@ const adminApi = {
 
 	getCheckingRequest: () => instance.get('/v1/checking-request'),
 	createCheckingRequest: (params) => instance.post('/v1/checking-request', params),
-
+	updateCheckingRequest: (id, params) => {
+		return instance.post('/v1/checking-request/' + id + '/assignee?newAssignee=' + params)
+	},
 
 	detailRequest: (params) => instance.post('/request/post_fb_detail', params),
 	getRequest: (requestId) => instance.get('/request/request_edit/' + requestId),

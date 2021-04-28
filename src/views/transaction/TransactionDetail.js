@@ -12,21 +12,24 @@ export default function TransactionDetail(props) {
     const [selectedStatus, setSelectedStatus] = useState();
 
 
-
-
-
-
     const submitForm = () => {
         if (selectedStatus != '') {
-            API.updateTransactionStatus(currentTransaction.id, selectedStatus).then((response) => {
-                console.log("rs update status: ", response.data.statusCode);
-                if (response.data.statusCode == 200) {
-                    NotificationManager.success('Update Transaction successfully!', 'Update Transaction');
-                } else {
-                    NotificationManager.error('Sorry, Cannot update this transaction!', 'Update Transaction');
-                }
 
-            }).catch(e => NotificationManager.error('Sorry, Cannot update this transaction!', 'Update Transaction'))
+            if (currentTransaction?.status == 5 && selectedStatus == 3) {
+                API.updateTransactionStatus(currentTransaction.id, selectedStatus).then((response) => {
+                    console.log("rs update status: ", response.data.statusCode);
+                    if (response.data.statusCode == 200) {
+                        NotificationManager.success('Update Transaction successfully!', 'Update Transaction');
+                    } else {
+                        NotificationManager.error('Sorry, Cannot update this transaction!', 'Update Transaction');
+                    }
+
+                }).catch(e => NotificationManager.error('Sorry, Cannot update this transaction!', 'Update Transaction'))
+            } else {
+                NotificationManager.error('Cannot update from ' + currentTransaction?.statusName + " to " + sapmle[selectedStatus].statusName, 'Update Transaction');
+
+            }
+
         }
         setTimeout(handleClickClose, 200);
         // handleClickClose();
@@ -47,10 +50,7 @@ export default function TransactionDetail(props) {
                                     onChange={(e) => {
                                         let text = e.target.value;
                                         setSelectedStatus(text)
-                                        console.log("change status..from", text);
-
-                                    }}
-                                >
+                                    }} >
 
                                     {
                                         statusList.map(value =>

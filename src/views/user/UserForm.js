@@ -71,9 +71,6 @@ export default function UserForm(props) {
           } else {
             submitForm();
           }
-          console.log("load pagwe")
-
-
           setValidated(true);
 
         }
@@ -88,17 +85,17 @@ export default function UserForm(props) {
 
               {/* Left part of the Create User Form */}
 
-              <Col md={6} xl={6}>
+              <Col xl={(currentProfile ? 12 : 6)}>
                 <Form.Group controlId="validationName">
                   <Form.Label column lg={12}>Name </Form.Label>
                   <Form.Control className="my-1" autoFocus id="name" name="name" value={currentProfile?.fullName}
                     label="Name" fullWidth
-                    type="Text" placeholder="" required={true}
+                    type="Text" placeholder="" required={true} disabled={(currentProfile)}
                     onChange={(e) => {
                       let text = e.target.value;
                       setName(text)
                     }}
-                    required
+
                   />
                   <Form.Control.Feedback type="invalid">
                     Please input username, 8 - 50 characters.
@@ -112,99 +109,99 @@ export default function UserForm(props) {
                       let text = e.target.value;
                       setEmail(text)
                     }}
-                    value={currentProfile?.email}
+                    value={currentProfile?.email} disabled={(currentProfile)}
                     required={true} />
                   <Form.Control.Feedback type="invalid">
                     Please input a valid email.
                   </Form.Control.Feedback>
+
+
+                  <Form.Label column lg={12}>Phone Number </Form.Label>
+                  <Form.Control className="my-1" id="phone"
+                    type="text"
+                    onChange={(e) => {
+                      let text = e.target.value;
+                      setPhone(text)
+                    }}
+                    value={currentProfile?.phoneNumber} required={true} />
+                  <Form.Control.Feedback type="invalid">
+                    Please input a valid phone number.
+                  </Form.Control.Feedback>
+
+
+
+
+                  <Form.Label column lg={12}>Address </Form.Label>
+                  <Form.Control className="my-1" id="address"
+                    type="text"
+                    onChange={(e) => {
+                      let text = e.target.value;
+                      setAdress(text)
+                    }}
+                    value={currentProfile?.address} required={true} />
+                  <Form.Control.Feedback type="invalid">
+                    Address is required.
+                  </Form.Control.Feedback>
                 </Form.Group>
 
-
-
-
-
-                <Form.Label column lg={12}>Phone Number </Form.Label>
-                <Form.Control className="my-1" id="phone"
-                  type="text"
-                  onChange={(e) => {
-                    let text = e.target.value;
-                    setPhone(text)
-                  }}
-                  value={currentProfile?.phoneNumber} required={true} />
-                <Form.Control.Feedback type="invalid">
-                  Please input a valid phone number.
-                  </Form.Control.Feedback>
-
-
-
-
-                <Form.Label column lg={12}>Address </Form.Label>
-                <Form.Control className="my-1" id="address"
-                  type="text"
-                  onChange={(e) => {
-                    let text = e.target.value;
-                    setAdress(text)
-                  }}
-                  value={currentProfile?.address} required={true} />
-                <Form.Control.Feedback type="invalid">
-                  Address is required.
-                  </Form.Control.Feedback>
               </Col>
 
 
               {/* Right part of the Create User Form */}
+              {(!currentProfile) &&
+                <Col xl={6}>
+                  <Form.Group controlId="validate2">
 
-              <Col md={6} xl={6}>
-                <Form.Label column lg={12}>Username </Form.Label>
-                <Form.Control className="my-1" id="username" name="username"
-                  type="text" disabled={currentProfile ? true : false}
-                  value={currentProfile?.userName} required={true}
-                  onChange={(e) => {
-                    let text = e.target.value;
-                    setUserName(text)
-                  }}
-                />
-                <Form.Control.Feedback type="invalid">
-                  Password is required.
+                    <Form.Label column lg={12}>Username </Form.Label>
+                    <Form.Control className="my-1" id="username" name="username"
+                      type="text" disabled={currentProfile ? true : false}
+                      value={currentProfile?.userName} required={true}
+                      onChange={(e) => {
+                        let text = e.target.value;
+                        setUserName(text)
+                      }}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      Password is required.
                   </Form.Control.Feedback>
 
 
-                <Form.Label column lg={12}>Password </Form.Label>
-                <Form.Control className="my-1" id="password" name="password"
-                  type="password" required={true}
-                  onChange={(e) => {
-                    let text = e.target.value;
-                    setPass(text)
-                  }}
-                />
-                <Form.Control.Feedback type="invalid">
-                  Re-pass is required.
+                    <Form.Label column lg={12}>Password </Form.Label>
+                    <Form.Control className="my-1" id="password" name="password"
+                      type="password" required={true}
+                      onChange={(e) => {
+                        let text = e.target.value;
+                        setPass(text)
+                      }}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      Re-pass is required.
                   </Form.Control.Feedback>
 
-                <Form.Label column lg={12}> Re Password </Form.Label>
-                <Form.Control className="my-1" id="re-password" name="re-password"
-                  type="password" required={true}
+                    <Form.Label column lg={12}> Re Password </Form.Label>
+                    <Form.Control className="my-1" id="re-password" name="re-password"
+                      type="password" required={true}
 
-                />
+                    />
 
-                <Form.Label column lg={12}>Role</Form.Label>
-                <Form.Control as="select" custom id="role-input" >
+                    <Form.Label column lg={12}>Role</Form.Label>
+                    <Form.Control as="select" custom id="role-input" >
 
-                  <option selected value={1}>Admin</option>
-                  <option value={2}>Staff</option>
-                </Form.Control>
-                <Form.Label column lg={12}> Active </Form.Label>
+                      <option selected value={1}>Admin</option>
+                      <option value={2}>Staff</option>
+                    </Form.Control>
+                    <Form.Label column lg={12}> Active </Form.Label>
+                    <Switch
+                      checked={toggle.isActive}
+                      onChange={handleChange}
+                      color="primary"
+                      name="isActive"
+                      disabled={false}
+                      inputProps={{ 'aria-label': 'primary checkbox' }}
+                    />
+                  </Form.Group>
 
-                <Switch
-                  checked={toggle.isActive}
-                  onChange={handleChange}
-                  color="primary"
-                  name="isActive"
-                  disabled={false}
-                  inputProps={{ 'aria-label': 'primary checkbox' }}
-                />
-
-              </Col>
+                </Col>}
             </Row>
 
           </DialogContent>

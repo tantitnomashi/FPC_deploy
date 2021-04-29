@@ -22,8 +22,8 @@ export default function ActionDialog(props) {
                             <DialogContentText fullWidth>
                                 <h4 className="font-weight-light">{message} !</h4>
                             </DialogContentText>
-
-
+                            <DialogContentText fullWidth>
+                            </DialogContentText>
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={onCancel} variant="secondary">

@@ -1,11 +1,11 @@
 import axios from 'axios';
 
 
-const ngrokID = '0e7e1c89dd88'
+const ngrokID = 'c4a827e90fcc'
 const route_api = 'https://' + ngrokID + '.ngrok.io'
 const newRoute = "http://40.123.255.174"
 const instance = axios.create({
-	baseURL: `${newRoute}/api`,
+	baseURL: `${route_api}/api`,
 	timeout: 5000,
 	headers: {
 		authorization: "Bearer " + localStorage.getItem('admin-token')
@@ -52,6 +52,8 @@ const adminApi = {
 	// API for Box 
 	updateBoxStatus: (params) => instance.post('/v1/boxes/status/' + params.status + '?cabinetId=' + params.cabinetId + '&boxNum=' + params.boxNum),
 	openBox: (params) => instance.post('/v1/boxes/' + params + '/open'),
+	getBoxHistory: (params) => instance.get('/v1/box-sizes/box/' + params.boxId + '/from-to?from=' + params.from + "&to=" + params.to),
+	getBoxHistoryCount: (params) => instance.get('/v1/box-histories/box/' + params.boxId + '?itemCnt=' + params.count),
 
 	// API for Box Size Model
 	getBoxSizes: () => instance.get('/v1/box-sizes'),

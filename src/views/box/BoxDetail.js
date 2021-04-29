@@ -4,7 +4,7 @@ import API from '../../utils/adminApi'
 import Aux from "../../hoc/_Aux";
 
 
-export default function BoxSize(props) {
+export default function BoxDetail(props) {
     const { handleDetail, id, w, h, bgColor, item, boxes, p } = props;
 
 
@@ -24,10 +24,10 @@ export default function BoxSize(props) {
                 <div className="text-center"    >
                     <div className="text-dark text-center  f-20"
                     >
-                        {(item?.status == 0) && <span class="material-icons">lock</span>}
-                        {(item?.status == 1) && <span class="material-icons"> lock_open </span>}
-                        {(item?.status == 2) && <span class="material-icons">gavel</span>}
-                        {(item?.status == 3) && <span class="material-icons">verified_user</span>}
+                        {(item?.status == 0) && <span className="material-icons">lock</span>}
+                        {(item?.status == 1) && <span className="material-icons"> lock_open </span>}
+                        {(item?.status == 2) && <span className="material-icons">gavel</span>}
+                        {(item?.status == 3) && <span className="material-icons">verified_user</span>}
 
 
                     </div>

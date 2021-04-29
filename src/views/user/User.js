@@ -142,8 +142,16 @@ export default function Dashboard() {
                                 <tbody>
                                     {
                                         users.slice((currentProcessPage - 1) * 6, currentProcessPage * 6).map(user =>
-                                            <tr className="unread">
-                                                <td><img className="rounded-circle" style={{ width: '40px' }} src={avatar1} alt="activity-user" /></td>
+                                            <tr className="">
+                                                <td className="text-center text-dark">
+                                                    {user?.roleId == 1 && <i class="fa  fa-id-card-o fa-2x" aria-hidden="true"></i>}
+                                                    {user?.roleId == 2 && <i class="fa fa-id-badge fa-2x" aria-hidden="true"></i>}
+                                                    {user?.roleId == 3 && <i class="fa fa-user-circle fa-2x" aria-hidden="true"></i>}
+                                                    {user?.roleId == 1002 && <i class="fa  fa-cart-plus fa-2x" aria-hidden="true"></i>}
+
+
+
+                                                </td>
                                                 <td>
                                                     <h6 className="mb-1">{user.fullName}</h6>
                                                     <p className="m-0">{user.userName}</p>

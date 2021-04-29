@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Card, Table, Tabs, Tab, Button } from 'react-bootstrap';
-import API from '../../utils/adminApi'
-
+import { Row, Col, Card, Table, Tabs, Tab, Button, Form } from 'react-bootstrap';
+import API from '../../utils/adminApi';
+import BoxHistory from './BoxHistory';
 import Aux from "../../hoc/_Aux";
 import BoxSizeForm from '../boxsize/BoxSizeForm';
 import ConfirmDialog from './ActionDialog';
@@ -50,9 +50,19 @@ export default function Box({ match }) {
                         console.log("data template", dataView)
                         setDataTempleteArr(dataView);
                     } else {
-                        alert('Cant get Boxes in Cabinet !')
+                        NotificationManager.error('Cannot get box list! Please check the network again!', 'Load data')
                     }
-                }).catch(e => console.log("ERR Box in Cabinet", e));
+                }).catch(e => NotificationManager.error('Cannot get box list! Please check the network again!', 'Load data'));
+
+
+            API.getCabinetById(cabinetId)
+                .then((response) => {
+                    if (response.data.statusCode == 200) {
+                        setCurrentCabinet(response.data.data);
+                    } else {
+                        NotificationManager.error('Cannot get current cabinet! Please check the network again!', 'Load data')
+                    }
+                }).catch(e => NotificationManager.error('Cannot get current cabinet! Please check the network again!', 'Load data'));
 
         }
     }, [exampleTemplate])
@@ -63,15 +73,11 @@ export default function Box({ match }) {
             .then((response) => {
                 if (response.data.statusCode == 200) {
                     // force setting current Example immediately
-                    console.log("##Checklist current example", response.data.data);
-                    //setCurrentExample(response.data.data);
-                    //print --> true 
                     setExampleTemplate(response.data.data);
-
                 } else {
-                    alert('Cant get Template  !')
+                    NotificationManager.error('Cannot get template! Please check the network again!', 'Load data');
                 }
-            }).catch(e => console.log("ERR Cabinet Template", e));
+            }).catch(e => NotificationManager.error('Cannot get template! Please check the network again!', 'Load data'));
     }
     const setOpenForm = (currentBox) => {
         setOpen(true);
@@ -200,13 +206,28 @@ export default function Box({ match }) {
                             <Card.Title as='h5'>Box Management</Card.Title>
                         </Card.Header>
                         <Card.Body className='px-3 py-2'>
-                            <Row className="unread py-3 px-1 my-2 border-bottom border-light">
+                            <Row className="text-dark py-3 px-1 my-2 border-bottom border-light">
 
-                                <Col md={4} className='text-left' >
-                                    <h4>Cabinet Infomation</h4>
+                                <Col md={3} className='text-left mt-3' >
+                                    <Card.Title>{currentCabinet?.name}</Card.Title>
+                                    <Card.Text>
+                                        {currentCabinet?.location.buildingName}
+                                    </Card.Text>
+                                    <Card.Title>Address</Card.Title>
+                                    <Card.Text>
+                                        <span className="material-icons f-20 m-r-5">
+                                            room</span>
+                                        {currentCabinet?.location.fullAddress}
+                                    </Card.Text>
+                                    <Card.Title>{boxes?.length + " boxes in cabinet"}</Card.Title>
+                                    <Card.Text>
+                                        Some quick example text to build on the card title and make up the bulk of
+                                        the card's content  .
+                                      </Card.Text>
+
                                 </Col>
 
-                                <Col md={8} className='text-left'>
+                                <Col md={4} className='text-left'>
                                     <div className="d-flex flex-row">
                                         {
                                             dataTemplateArr.map((e, i) => (
@@ -216,6 +237,12 @@ export default function Box({ match }) {
                                             ))
                                         }
                                     </div>
+                                </Col>
+                                <Col md={5} className='text-left' >
+                                    <h4>Box Action History</h4>
+
+
+                                    <BoxHistory boxId={"22"} count={"10"} boxes={boxes}></BoxHistory>
                                 </Col>
                             </Row>
 

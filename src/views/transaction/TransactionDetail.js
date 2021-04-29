@@ -25,6 +25,16 @@ export default function TransactionDetail(props) {
                     }
 
                 }).catch(e => NotificationManager.error('Sorry, Cannot update this transaction!', 'Update Transaction'))
+            } else if (currentTransaction?.status == 2 && selectedStatus == 3) {
+                API.updateTransactionStatus(currentTransaction.id, selectedStatus).then((response) => {
+                    console.log("rs update status: ", response.data.statusCode);
+                    if (response.data.statusCode == 200) {
+                        NotificationManager.success('Update Transaction successfully!', 'Update Transaction');
+                    } else {
+                        NotificationManager.error('Sorry, Cannot update this transaction!', 'Update Transaction');
+                    }
+
+                }).catch(e => NotificationManager.error('Sorry, Cannot update this transaction!', 'Update Transaction'))
             } else {
                 NotificationManager.error('Cannot update from ' + currentTransaction?.statusName + " to " + sapmle[selectedStatus].statusName, 'Update Transaction');
 

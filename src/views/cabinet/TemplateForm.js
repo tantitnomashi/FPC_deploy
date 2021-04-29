@@ -15,6 +15,7 @@ export default function TemplateForm(props) {
     const [arrBox, setArrBox] = useState([]);
     const [size, setSize] = React.useState([]);
     const [dataTemplateArr, setDataTempleteArr] = useState([]);
+    const [previewFlag, setPreviewFlag] = useState(false);
 
     //for validate
     const [validated, setValidated] = useState(false);
@@ -89,6 +90,7 @@ export default function TemplateForm(props) {
         }
 
         setArrBox(arr);
+        setPreviewFlag(true);
 
     }
     const handlePreview = () => {
@@ -271,9 +273,13 @@ export default function TemplateForm(props) {
                             <Button onClick={handleAddBoxToCabinet} variant="dark">
                                 Generate
                                  </Button>
-                            <Button onClick={handlePreview} variant="primary">
-                                Preview
+                            {
+                                (previewFlag) && <Button onClick={handlePreview} className="text-dark" variant="warning">
+                                    Preview
                             </Button>
+
+                            }
+
 
 
                             <div style={{ overflowY: 'scroll', overflowX: 'hidden', maxHeight: '400px' }}>

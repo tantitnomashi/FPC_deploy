@@ -8,7 +8,7 @@ import { NotificationManager } from 'react-notifications';
 
 import API from '../../utils/adminApi'
 import AddressSearch from '../commonComponent/AddressSearch';
-import ConfirmDialog from '../commonComponent/Confirm';
+import ConfirmDialog from '../commonComponent/confirm';
 const MAX_PADDING = 2;
 const SIZE = 4;
 export default function CabinetForm(props) {

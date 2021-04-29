@@ -4,7 +4,7 @@ import PlacesAutocomplete, {
     geocodeByAddress,
     getLatLng,
 } from 'react-places-autocomplete';
-import ConfirmDialog from './Confirm';
+import ConfirmDialog from './confirm';
 export default function LocationSearchInput({ onSelectedLocation }) {
 
 

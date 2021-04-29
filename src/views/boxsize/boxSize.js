@@ -5,7 +5,7 @@ import { Snackbar } from '@material-ui/core';
 import API from '../../utils/adminApi'
 import Aux from "../../hoc/_Aux";
 import BoxSizeForm from './BoxSizeForm';
-import ConfirmDialog from '../commonComponent/Confirm';
+import ConfirmDialog from '../commonComponent/confirm';
 import { NotificationManager } from 'react-notifications';
 
 

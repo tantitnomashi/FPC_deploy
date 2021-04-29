@@ -11,7 +11,7 @@ import Pagination from "react-js-pagination";
 import avatar1 from '../../assets/images/user/avatar-1.jpg';
 import avatar2 from '../../assets/images/user/avatar-2.jpg';
 import avatar3 from '../../assets/images/user/avatar-3.jpg';
-import ConfirmDialog from '../commonComponent/Confirm';
+import ConfirmDialog from '../commonComponent/confirm';
 import RequestForm from './RequestForm';
 import API from '../../utils/adminApi';
 import { NotificationManager } from 'react-notifications';

@@ -3,7 +3,7 @@ import { Row, Col, Card, Table, Tabs, Tab, Button, Form, FormControl } from 'rea
 import API from '../../utils/adminApi';
 import Aux from "../../hoc/_Aux";
 import CabinetForm from './CabinetForm';
-import ConfirmDialog from '../commonComponent/Confirm';
+import ConfirmDialog from '../commonComponent/confirm';
 import TemplateForm from './TemplateForm';
 import BoxList from '../box/Box';
 import { Redirect } from 'react-router-dom';

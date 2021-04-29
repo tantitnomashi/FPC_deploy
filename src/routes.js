@@ -10,9 +10,9 @@ const DashboardUser = React.lazy(() => import('./views/user/User'));
 const DashboardTransaction = React.lazy(() => import('./views/transaction/Transaction'));
 const DashboardCabinet = React.lazy(() => import('./views/cabinet/Cabinet'));
 const Template = React.lazy(() => import('./views/template/Template'));
-const Boxsize = React.lazy(() => import('./views/boxsize/BoxSize'));
+const Boxsize = React.lazy(() => import('./views/boxsize/boxSize'));
 const Box = React.lazy(() => import('./views/box/Box'));
-const RentalTime = React.lazy(() => import('./views/rentTimeSlot/RentTimeSlot'));
+const RentalTime = React.lazy(() => import('./views/rentTimeSlot/rentTimeSlot'));
 const CheckingRequest = React.lazy(() => import('./views/checkingrequest/CheckingRequest'));
 
 const UIBasicButton = React.lazy(() => import('./Demo/UIElements/Basic/Button'));

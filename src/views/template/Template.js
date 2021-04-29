@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, Table, Tabs, Tab, Button, Form, FormControl } from 'react-bootstrap';
 import API from '../../utils/adminApi';
 import Aux from "../../hoc/_Aux";
-import ConfirmDialog from '../commonComponent/Confirm';
+import ConfirmDialog from '../commonComponent/confirm';
 import TemplateForm from './TemplateForm';
 import { NotificationManager } from 'react-notifications';
 

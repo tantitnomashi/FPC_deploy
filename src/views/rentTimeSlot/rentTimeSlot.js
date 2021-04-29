@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, Table, Tabs, Tab, Button } from 'react-bootstrap';
 import API from '../../utils/adminApi'
 import Aux from "../../hoc/_Aux";
-import TimeSlotForm from './RentTimeSlotForm';
-import ConfirmDialog from '../commonComponent/Confirm';
+import TimeSlotForm from './rentTimeSlotForm';
+import ConfirmDialog from '../commonComponent/confirm';
 import { NotificationManager } from 'react-notifications';
 
 

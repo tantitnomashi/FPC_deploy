@@ -8,7 +8,7 @@ import avatar1 from '../../assets/images/user/avatar-1.jpg';
 import avatar2 from '../../assets/images/user/avatar-2.jpg';
 import avatar3 from '../../assets/images/user/avatar-3.jpg';
 import UserForm from './UserForm';
-import ConfirmDialog from '../commonComponent/Confirm';
+import ConfirmDialog from '../commonComponent/confirm';
 import { NotificationManager } from 'react-notifications';
 import Pagination from "react-js-pagination";
 
